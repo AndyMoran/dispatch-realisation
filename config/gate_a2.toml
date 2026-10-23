@@ -1,0 +1,42 @@
+# Gate A2 decision rule (v1) — PROJECT.md §5A. Fixed before the pre-registration lock.
+# Every value here mirrors the rule text; change one only before lock, with a log entry.
+schema_version = "1.0"
+
+[window]
+# Dated, not "latest 12 months", so a later run cannot shift it.
+months = ["2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03",
+          "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09"]
+stage = 6
+fallback_stage = 5        # used for ALL months if any month lacks stage 6
+
+[thresholds]              # £ per MW-year
+low = 5000                # scenario low end below this -> reputation project
+high = 10000              # point estimate above this -> product-grade
+both_triggered = "middle" # low end < low AND point > high: inconclusive -> defer to Gate B
+
+[fleet]
+gate_a1_adoption = "outputs/gate_a1/adoption_dates.csv"   # M10 fleet: status == "adopted"
+
+[margin]
+# Headline: same-period MID. Conservative: the day's best alternative (Europe/London day).
+# MID per half hour: volume-weighted across providers with volume > 0.
+local_tz = "Europe/London"
+
+[neso]
+api = "https://api.neso.energy/api/3/action"
+package_id = "c7f21d91-4e93-4162-9caa-ad9165db9c5e"     # Skip Rates
+all_bm_name   = "In Merit All Balancing Mechanism"      # resource-name fragments, with month
+psa_name      = "In Merit Post System Action"
+fields = ["date", "bm_unit", "fuel", "bid_offer", "stage", "average_price_per_MWh",
+          "pair_id", "skipped_volume_MWh"]
+
+[elexon]
+base_url = "https://data.elexon.co.uk/bmrs/api/v1"
+spec_url = "https://data.elexon.co.uk/swagger/v1/swagger.json"
+mid_path = "/datasets/MID"
+mid_from_param = ""       # fill from `gate_a2 schema` output
+mid_to_param = ""
+mid_chunk_days = 7
+field_time = "startTime"  # PROVISIONAL until `gate_a2 schema` confirms
+field_price = "price"
+field_volume = "volume"

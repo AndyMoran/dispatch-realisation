@@ -144,15 +144,15 @@ Rules:
 *Decision rule (v1, fixed before lock):*
 - **Metric:** value of skipped battery volume per MW-year of registered capacity.
 - **Data:** NESO In-Merit All BM and Post System Action monthly files, **October 2025 to September 2026** inclusive, Stage 6. If any of these months lacks Stage 6, Stage 5 is used for all twelve, and the report says so.
-- **Fleet:** ASSUMPTIONS.md M10.
-- **Value:** skipped bid or offer volume × the margin in `PREREGISTRATION.md` §4 (price from BOD against same-period MID).
+- **Fleet:** ASSUMPTIONS.md M10, mapped from Elexon to National Grid unit IDs through the pinned reference snapshot. Unmapped units are counted in the report.
+- **Value:** skipped bid or offer volume × the margin in `PREREGISTRATION.md` §4. Price: the file's `average_price_per_MWh`, which NESO derives from BOD. MID: volume-weighted across providers with volume above zero, per half hour; half hours without MID are excluded and counted. The conservative margin uses the UK local day.
 - **Denominator:** MW-years of exposure: each unit's GC × the share of the window it was present (first to last month in the files). A unit without GC in the pinned reference snapshot is left out of numerator and denominator, and counted in the report. Sensitivity: GC of units present in September 2026, for a full year.
 - **Range:** low = Post-System-Action skips × the conservative daily margin; point = All-BM skips × the headline margin.
 - **Low:** low end < £5,000/MW/yr → reputation project: no product packaging, no press push, light outreach.
 - **High:** point > £10,000/MW/yr → product-grade: benchmark as lead artifact, targeted owner outreach, press.
-- **Middle:** A proceeds unchanged; packaging decided at Gate B.
+- **Middle:** A proceeds unchanged; packaging decided at Gate B. This includes the case where the low end is below £5,000 and the point is above £10,000: the range is too wide to decide.
 - **All branches:** right of reply and legal review per §7a.
-- No re-specification after the number is seen.
+- No re-specification after the number is seen. Code: `src/ingest/gate_a2.py`, settings `config/gate_a2.toml`. The code refuses to run until PREREGISTRATION.md is locked.
 
 A2 is a stakes gate. It values skips against wholesale (§4 margin), not against the marginal accepted action, as Workstream B does (ASSUMPTIONS.md E3). Its number is not the B-layer estimate and is not quoted as one. Context only, not a gate: the A2 figure may be shown as a share of a stated, sourced revenue assumption.
 

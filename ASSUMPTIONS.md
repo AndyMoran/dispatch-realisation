@@ -43,6 +43,8 @@ Last updated: 2026-10-23.
 | R14 | NESO's skip-rate exclusion of units with Quick or Slow Reserve contracts changed in-merit volume for reserve-contracted batteries in summer 2026, on an unpublished date | PROVISIONAL | NESO, *Dispatch Efficiency Beyond Energy* slides, summer 2026. Affects NESO in-merit figures only, now descriptive (M7) | Ask NESO for the date |
 | R15 | Elexon publishes settlement acceptance volumes (BOAV) by settlement date and period | GROUNDED | Elexon API spec: `/balancing/settlement/acceptance/volumes/all/{bidOffer}/{settlementDate}`, 23 Oct 2026. Revision-prone (M6) | ✓ Used as cross-check only (PREREGISTRATION.md §3) |
 | R16 | NESO In-Merit monthly files carry Stage 6 for every month from October 2025 to September 2026 | PROVISIONAL | NESO announced Stage 6 in Nov 2025 and showed Stage 6 figures for Jan–Sep 2025, but no page states when the files gained it. Fallback fixed in PROJECT.md §5A: Stage 5 for all twelve months | Before A2: check stage values only, no volumes |
+| R17 | On a skipped row, NESO's `average_price_per_MWh` is the bid or offer price of that pair | PROVISIONAL | NESO's data dictionary describes the field as the average price for accepted volume; skipped rows carry it too. NESO builds its merit stack from BOD prices. Check after lock: compare a sample of skipped rows with BOD | After lock, before A2 is reported |
+| R18 | Elexon's MID dataset gives price and volume per provider per half hour | PROVISIONAL | Field names in `config/gate_a2.toml` are unconfirmed | Before lock: `python -m src.ingest.gate_a2 schema` |
 
 ## Measurement
 
