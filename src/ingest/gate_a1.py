@@ -35,7 +35,7 @@ REQUIRED_FOR_RUN = {
     "design2": ["min_units", "min_weeks_per_unit", "min_within_unit_cv"],
     "design3": ["grace_end_announced", "min_weeks_before_cutoff", "min_reserve_units"],
     "api": ["mdo_path", "mdb_path", "from_param", "to_param",
-            "field_unit", "field_time", "field_value"],
+            "field_unit", "field_time", "field_value", "field_published", "field_serial"],
 }
 
 
@@ -69,7 +69,28 @@ class Record:
     unit: str
     ts: datetime
     mwh: float
-    dataset: str  # "MDO" or "MDB"
+    dataset: str          # "MDO" or "MDB"
+    published: str = ""   # publishTime: when this declaration was submitted
+    serial: int = 0       # serialNumber: orders submissions published at the same time
+
+
+def latest_declarations(records: list[Record]) -> tuple[list[Record], dict]:
+    """Remove exact duplicates, then keep the latest submission per unit-minute.
+
+    Chunk windows are inclusive at both ends, so neighbouring chunks overlap.
+    MDO/MDB are redeclared after every BOA, so one minute can carry several
+    submissions; earlier ones are superseded. Both counts are reported (§2).
+    """
+    unique = sorted(set(records), key=lambda r: (r.dataset, r.unit, r.ts, r.published, r.serial))
+    latest: dict[tuple[str, str, datetime], Record] = {}
+    for r in unique:
+        latest[(r.dataset, r.unit, r.ts)] = r          # later submissions overwrite earlier
+    kept = sorted(latest.values(), key=lambda r: (r.dataset, r.unit, r.ts))
+    counts = {"records_received": len(records),
+              "exact_duplicates_removed": len(records) - len(unique),
+              "superseded_submissions": len(unique) - len(kept),
+              "latest_declarations": len(kept)}
+    return kept, counts
 
 
 def adoption_dates(records: list[Record], default_abs: float) -> dict[str, dict]:
@@ -222,7 +243,8 @@ def run(cfg: dict) -> None:
         for dataset, path in (("MDO", api["mdo_path"]), ("MDB", api["mdb_path"])):
             t = start
             while t < end:
-                params = {api["from_param"]: t.isoformat(), api["to_param"]: (t + step).isoformat()}
+                params = {api["from_param"]: f"{t:%Y-%m-%dT%H:%MZ}",
+                          api["to_param"]: f"{t + step:%Y-%m-%dT%H:%MZ}"}
                 coverage["requested"] += 1
                 raw_file = raw_dir / dataset / f"{t:%Y%m%dT%H%M}.json"
                 try:
@@ -241,7 +263,9 @@ def run(cfg: dict) -> None:
                             unit=str(row[api["field_unit"]]),
                             ts=datetime.fromisoformat(str(row[api["field_time"]]).replace("Z", "+00:00")),
                             mwh=float(row[api["field_value"]]),
-                            dataset=dataset))
+                            dataset=dataset,
+                            published=str(row.get(api["field_published"], "")),
+                            serial=int(row.get(api["field_serial"]) or 0)))
                     coverage["arrived"] += 1
                 except Exception as e:  # recorded, never dropped silently (§2)
                     coverage["failed"].append({"dataset": dataset, "from": t.isoformat(),
@@ -254,8 +278,13 @@ def run(cfg: dict) -> None:
                           "Gate A1 is not evaluated on incomplete data.")
 
     default_abs = dcfg["default_abs_mwh"]
-    units = adoption_dates(records, default_abs)
-    cv = within_unit_cv(records, default_abs)
+    unique = sorted(set(records), key=lambda r: (r.dataset, r.unit, r.ts, r.published, r.serial))
+    latest, counts = latest_declarations(records)
+    coverage.update(counts)
+    (out_dir / "coverage.json").write_text(json.dumps(coverage, indent=2, sort_keys=True))
+    # Adoption: first non-default submission of any vintage. Variation: latest only.
+    units = adoption_dates(unique, default_abs)
+    cv = within_unit_cv(latest, default_abs)
     with open(out_dir / "adoption_dates.csv", "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["schema_version", "bm_unit", "status", "first_real_utc", "last_real_utc",

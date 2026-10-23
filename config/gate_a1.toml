@@ -34,12 +34,16 @@ borderline_fraction = 0.10      # within 10% of threshold -> treat as failed
 [api]
 base_url = "https://data.elexon.co.uk/bmrs/api/v1"
 spec_url = "https://data.elexon.co.uk/swagger/v1/swagger.json"   # PROVISIONAL: confirm with `probe`
-# Filled from `probe` output (endpoint shape is unverified: R12).
-mdo_path    = ""     # e.g. "/datasets/MDO"
-mdb_path    = ""
-from_param  = ""     # e.g. "from"
-to_param    = ""     # e.g. "to"
-chunk_hours = 24     # reduce to 0.5 if the API serves one settlement period per request
-field_unit  = ""     # e.g. "bmUnit"
-field_time  = ""     # e.g. "timeFrom"
-field_value = ""     # e.g. "levelFrom"
+# Filled from `probe` output and a one-hour sample of 1 Jul 2026 (23 Oct 2026).
+# The non-stream endpoints take one settlement period per request (R12);
+# the stream endpoints take a from/to range, inclusive at both ends.
+mdo_path    = "/datasets/MDO/stream"
+mdb_path    = "/datasets/MDB/stream"
+from_param  = "from"
+to_param    = "to"
+chunk_hours = 24
+field_unit  = "bmUnit"
+field_time  = "timeFrom"
+field_value = "levelFrom"
+field_published = "publishTime"
+field_serial    = "serialNumber"

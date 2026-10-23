@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 
 from src.ingest.gate_a1 import (GateA1Error, Record, adoption_dates, assert_config_complete,
-                                evaluate, passes, within_unit_cv)
+                                evaluate, latest_declarations, passes, within_unit_cv)
 
 T0 = datetime(2026, 6, 29, tzinfo=timezone.utc)  # a Monday
 
@@ -29,7 +29,8 @@ def cfg(**over):
                     "min_weeks_before_cutoff": 4, "min_reserve_units": 5},
         "rules": {"borderline_fraction": 0.10},
         "api": {k: "x" for k in ["mdo_path", "mdb_path", "from_param", "to_param",
-                                 "field_unit", "field_time", "field_value"]},
+                                 "field_unit", "field_time", "field_value",
+                                 "field_published", "field_serial"]},
     }
     for k, v in over.items():
         c[k].update(v)
@@ -108,3 +109,13 @@ def test_run_refuses_with_blank_thresholds():
     c = cfg(design1={"min_units_per_cohort": ""})
     with pytest.raises(GateA1Error, match="min_units_per_cohort"):
         assert_config_complete(c)
+
+
+def test_overlap_duplicates_removed_and_latest_kept():
+    t = T0
+    first = Record("U1", t, 50.0, "MDO", "2026-06-29T10:00:00Z", 1)
+    later = Record("U1", t, 30.0, "MDO", "2026-06-29T12:05:00Z", 2)   # redeclared after a BOA
+    kept, counts = latest_declarations([first, first, later])          # first appears in two chunks
+    assert kept == [later]
+    assert counts == {"records_received": 3, "exact_duplicates_removed": 1,
+                      "superseded_submissions": 1, "latest_declarations": 1}
