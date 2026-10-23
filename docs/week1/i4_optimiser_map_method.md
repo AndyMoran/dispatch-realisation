@@ -32,4 +32,4 @@ It shows who optimised a unit, on stated evidence, at stated dates. It does not 
 ## Inputs still needed
 
 - The reference snapshot: run `python -m src.ingest.reference`.
-- A decision on the threshold for "clean". Proposal: optimiser-level claims only if grade A covers at least half the scored fleet by MW. Fix before lock.
+- Threshold for "clean", decided 23 October 2026: optimiser-level claims only if grade A covers at least half the scored fleet by MW.

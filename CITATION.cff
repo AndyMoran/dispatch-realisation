@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+type: software
+title: "Dispatch Realisation of GB Batteries"
+abstract: >-
+  A public benchmark of how well GB battery BM units declare their available
+  energy under Grid Code GC0166 (MDO/MDB), with a declaration-attributable
+  £/MW/yr estimate. Pre-registered; open pipeline.
+authors:
+  - family-names: Moran
+    given-names: Andy
+    affiliation: Heaviside Analytics
+repository-code: "https://github.com/AndyMoran/dispatch-realisation"
+license: MIT
+keywords:
+  - battery storage
+  - balancing mechanism
+  - GC0166
+  - skip rates
+  - Great Britain

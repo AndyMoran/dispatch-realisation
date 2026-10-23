@@ -74,7 +74,7 @@ To follow. Every published number will regenerate from `src/` against pinned dat
 
 ## Licence
 
-*To decide:* e.g. MIT (code) and CC BY 4.0 (text, figures).
+Code: [MIT](LICENSE). Text, figures and derived tables: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Source data remain under their own licences; see Data attribution.
 
 ## Data attribution
 

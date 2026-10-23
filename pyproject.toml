@@ -3,6 +3,7 @@ name = "dispatch-realisation"
 version = "0.1.0"
 description = "Public benchmark of GC0166 MDO/MDB declaration quality across GB battery BM units"
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.12"
 dependencies = [
     "requests>=2.32",

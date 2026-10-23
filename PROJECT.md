@@ -254,4 +254,26 @@ Ask before A publishes (Wks 1–6): "I'm measuring declaration quality across th
 | 2026-10-22 | Pre-registration locks before Gate A2 | A2 touches outcome data |
 | 2026-10-22 | Named-unit publication policy (§7a); benchmark moves to Wks 7–8 | 10 working days' reply plus corrections |
 | 2026-10-22 | Design hierarchy written as ordered fallbacks with explicit triggers; lower designs run as secondary only | Fallback choice provably made before outcomes are seen |
+| 2026-10-23 | A's outcome switched from NESO accepted ÷ in-merit volume to accepted BM energy per registered MW | M1 refuted: NESO in-merit volume uses the unit's own MEL/MIL, and GC0166 parameters from 25 Jun 2026, so the denominator changes at the treatment date |
+| 2026-10-23 | Adoption date = first non-default MDO/MDB submission, dated by delivery time | NESO publishes ±9999 defaults for units not yet switched (M4a, R13) |
+| 2026-10-23 | Design-1 trigger: last cohort dropped from estimation and not counted towards the 3-cohort minimum | Under a mandatory deadline the last cohort has no not-yet-treated comparison group |
+| 2026-10-23 | Gate A1 thresholds fixed at commit 85aac7d: N = 5 per cohort; design 2 ≥ 10 units, ≥ 8 weeks, CV ≥ 0.05; k = 4; cut-off 29 Oct 2026 | Set before any declaration data was pulled (§3.2) |
+| 2026-10-23 | Gate A1 runs on 30 Oct with the 29 Oct cut-off, not earlier | Late adopters before 5 Nov form the cohorts design 1 depends on |
+| 2026-10-23 | Python environment managed with uv; versions pinned in uv.lock; CI runs tests on every push | Deterministic by construction (PIPELINE_RULES §8, §12) |
+| 2026-10-23 | Repository public at github.com/AndyMoran/dispatch-realisation from Week 1 | Public commit history timestamps decisions made before outcome data is seen |
+| 2026-10-23 | Registered MW = Generation Capacity (GC) from a pinned BMRS reference snapshot | GC is a seasonal registration value, not an operational declaration (M8) |
+| 2026-10-23 | Battery fleet: non-default MDO/MDB submitters, excluding pumped storage and hydro; Gate A1 code updated before the run | BMRS reference data has no battery fuel type; PS units can also submit MDO/MDB (M10) |
+| 2026-10-23 | Outcome stays BOALF − PN; Elexon BOAV is a post-lock cross-check | Settlement data revises and lags; the outcome must not depend on the comparison (R15) |
+| 2026-10-23 | Optimiser-level claims only if grade-A evidence covers ≥ 50% of scored fleet MW | Lead party is not evidence of the optimiser (I4); method in docs/week1/i4_optimiser_map_method.md |
+| 2026-10-23 | Design 1 estimator: Callaway–Sant'Anna, not-yet-treated controls, window −4 to +8 weeks | Matches §5A's comparison group; +8 matches the post-period trigger |
+| 2026-10-23 | 95% intervals clustered by unit; Holm–Bonferroni across the four metrics | Four uncorrected metrics invite one false positive in four |
+| 2026-10-23 | Outcome window 25 May – 15 Nov 2026; ranking needs ≥ 4 weeks of declarations; learning period 2 weeks | 4 pre-weeks for the earliest cohort; window ends before estimation |
+| 2026-10-23 | Margin: BM premium over same-period MID; day's best-alternative MID as sensitivity | Standard headline, with a conservative check on battery opportunity cost (E5) |
+| 2026-10-23 | Gale et al. (2026) used for comparison only, not to convert effects to £ | Its skip rate is simulated blocked time, not NESO's rate or this outcome; data end June 2023 (E1, E2a) |
+| 2026-10-23 | Gate A2 keeps £5k/£10k, not share of revenue | Low threshold carries the decision; no checkable public revenue base; a vendor base adds attack surface; lowering now would look like tuning |
+| 2026-10-23 | A2 compares the scenario low end with £5k and the point estimate with £10k; middle zone defers packaging to Gate B | Replaces "plausibly" with named statistics |
+| 2026-10-23 | A2 window Oct 2025 – Sep 2026 at Stage 6, with a Stage 5 fallback for all months if any lacks Stage 6 | A dated window cannot drift; a named stage cannot be redefined (R16) |
+| 2026-10-23 | A2 denominator: MW-years of exposure from GC | The fleet grew in the window; start, end and simple averages give different answers (M11) |
+| 2026-10-23 | A2 uses the §4 margin and is not the Workstream B estimate; right of reply and legal review apply in every A2 branch | Keeps the gate cheap and the numbers unconfusable (E6); naming risk does not scale with £ stakes (§7a) |
+| 2026-10-23 | Licence: MIT for code; CC BY 4.0 for text and figures | Standard pairing; CC BY matches the NESO licence's stated compatibility |
 | *[Gate A1 date]* | *Selected design: [ ]. Trigger statistics: cohorts [ ], units per cohort [ ], earliest post-period [ ] wks, …* | *Recorded before pre-registration lock* |

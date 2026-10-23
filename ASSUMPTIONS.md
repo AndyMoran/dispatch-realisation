@@ -107,3 +107,4 @@ Last updated: 2026-10-23.
 | O2 | Control-room operator behaviour | OMITTED | Noise, unless it correlates with particular units. Out of scope |
 | O3 | Ancillary-service commitments that reserve energy | OMITTED | Makes declarations look conservative. Flag units with DC, DM, DR or reserve contracts where identifiable |
 | O4 | NESO's reserve grace-period enforcement falls outside Gate A2's window | OMITTED | Grace period concerns reserve availability payments, not BM acceptances (R11). Effect on skip value: direction unknown | — |
+| O5 | Batteries that left the BM before June 2026 never submitted MDO/MDB, so fall outside the M10 fleet used by Gate A2 | OMITTED | Likely few units. A2 slightly undercounts skipped value from late 2025 | — |
