@@ -54,17 +54,36 @@ def test_borderline_counts_as_failure():
     assert passes(4.5, 4, 0.10)
 
 
-def test_three_spread_cohorts_select_design1():
+def test_last_cohort_is_dropped_and_not_counted():
     recs = []
-    for c, start in enumerate([0, 21, 42]):          # three ISO weeks apart
+    for c, start in enumerate([0, 21, 42]):          # three cohorts, three weeks apart
         for i in range(5):
             recs += unit_records(f"C{c}U{i}", adopt_day=start, wobble=3)
-    units = adoption_dates(recs, 9999)
-    rep = evaluate(units, within_unit_cv(recs, 9999), cfg())
-    assert rep["design1"]["cohorts_meeting_N"] == 3
-    # Last cohort has no later cohort, so not-yet-treated fails for it.
-    assert rep["design1"]["not_yet_treated_for_every_cohort"] is False
-    assert rep["selected"] != "design1"
+    rep = evaluate(adoption_dates(recs, 9999), within_unit_cv(recs, 9999), cfg())
+    assert rep["design1"]["last_cohort_dropped"] == "2026-W33"
+    assert rep["design1"]["estimable_cohorts_meeting_N"] == 2
+    assert rep["design1"]["triggered"] is False
+
+
+def test_five_spread_cohorts_select_design1():
+    recs = []
+    for c, start in enumerate([0, 14, 28, 42, 56]):  # four estimable after dropping the last
+        for i in range(5):
+            recs += unit_records(f"C{c}U{i}", adopt_day=start, wobble=3)
+    rep = evaluate(adoption_dates(recs, 9999), within_unit_cv(recs, 9999), cfg())
+    assert rep["design1"]["estimable_cohorts_meeting_N"] == 4
+    assert rep["selected"] == "design1"
+
+
+def test_three_estimable_cohorts_is_borderline():
+    # Exactly at the threshold of 3 is within 10%, so it counts as a failure.
+    recs = []
+    for c, start in enumerate([0, 14, 28, 42]):
+        for i in range(5):
+            recs += unit_records(f"C{c}U{i}", adopt_day=start, wobble=3)
+    rep = evaluate(adoption_dates(recs, 9999), within_unit_cv(recs, 9999), cfg())
+    assert rep["design1"]["estimable_cohorts_meeting_N"] == 3
+    assert rep["design1"]["triggered"] is False
 
 
 def test_compressed_adoption_falls_to_design2():

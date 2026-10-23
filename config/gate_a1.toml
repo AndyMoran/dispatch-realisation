@@ -6,27 +6,27 @@ schema_version = "1.0"
 
 [data]
 window_start   = "2026-06-25"   # P499 go-live
-data_cutoff    = ""             # YYYY-MM-DD, last day of declaration data used
+data_cutoff    = "2026-10-29"   # last day of declaration data used; Gate A1 runs 30 Oct
 cohort_bin     = "week"         # adoption dates binned by ISO week
 default_abs_mwh = 9999          # |MDO| or |MDB| >= this is NESO's default, not a submission
 
 [design1]   # staggered adoption
 min_cohorts            = 3
-min_units_per_cohort   = ""     # N
+min_units_per_cohort   = 5      # N
 min_post_weeks_earliest = 8
 
 [design2]   # within-unit metric variation
-min_units          = ""         # N
-min_weeks_per_unit = ""         # M
+min_units          = 10         # N
+min_weeks_per_unit = 8          # M
 # Declaration-only proxy for metric variation: within-unit coefficient of
 # variation of daily median (MDO + |MDB|). Needs no usable-MWh metadata.
-min_within_unit_cv = ""
+min_within_unit_cv = 0.05
 
 [design3]   # grace-period dose-response (inputs, not data)
-grace_end_announced = ""        # true / false
+grace_end_announced = false     # not announced as of 23 Oct 2026 (NESO, Sept 2026)
 grace_end_date      = ""        # YYYY-MM-DD if announced
-min_weeks_before_cutoff = ""    # k
-min_reserve_units   = ""        # N
+min_weeks_before_cutoff = 4     # k
+min_reserve_units   = 10        # N
 
 [rules]
 borderline_fraction = 0.10      # within 10% of threshold -> treat as failed

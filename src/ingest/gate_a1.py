@@ -133,18 +133,19 @@ def evaluate(units: dict[str, dict], cv: dict[str, float], cfg: dict) -> dict:
         cohorts.setdefault(cohort_key(u["first_real"]), []).append(u["unit"])
     sizes = {k: len(v) for k, v in sorted(cohorts.items())}
     n_min = cfg["design1"]["min_units_per_cohort"]
-    big = [k for k, n in sizes.items() if passes(n, n_min, bl)]
-    earliest_post = ((cutoff - week_start(big[0])).days / 7) if big else 0.0
-    later_exists = all(any(k2 > k for k2 in sizes) for k in big)
+    # The last cohort has no not-yet-treated comparison group, so it is dropped
+    # from estimation and does not count towards the cohort minimum (§5A).
+    last = max(sizes) if sizes else None
+    estimable = [k for k, n in sizes.items() if k != last and passes(n, n_min, bl)]
+    earliest_post = ((cutoff - week_start(estimable[0])).days / 7) if estimable else 0.0
     d1 = {
         "cohort_sizes": sizes,
-        "cohorts_meeting_N": len(big),
+        "last_cohort_dropped": last,
+        "estimable_cohorts_meeting_N": len(estimable),
         "earliest_cohort_post_weeks": round(earliest_post, 1),
-        "not_yet_treated_for_every_cohort": later_exists,
     }
-    d1["triggered"] = (passes(len(big), cfg["design1"]["min_cohorts"], bl)
-                       and passes(earliest_post, cfg["design1"]["min_post_weeks_earliest"], bl)
-                       and later_exists)
+    d1["triggered"] = (passes(len(estimable), cfg["design1"]["min_cohorts"], bl)
+                       and passes(earliest_post, cfg["design1"]["min_post_weeks_earliest"], bl))
 
     # Design 2
     weeks = {u: (v["last_real"] - v["first_real"]).days / 7 for u, v in adopted.items()}

@@ -123,14 +123,14 @@ The headline design is the first one, in this order, whose trigger is met. Trigg
 
 | Order | Design | Trigger (all conditions must hold) | Identifying assumption | Estimator |
 |---|---|---|---|---|
-| 1 (primary) | **Staggered adoption** | ≥3 distinct adoption cohorts; each cohort ≥ *N* units; earliest cohort ≥8 weeks of post-period; a not-yet-treated comparison group exists for every cohort | Parallel trends within cohort; no shock coinciding with any cohort's switch | Callaway–Sant'Anna or Sun–Abraham (not TWFE); event window *[−k, +k]* weeks |
+| 1 (primary) | **Staggered adoption** | ≥3 distinct adoption cohorts, each ≥ *N* units and each with a not-yet-treated comparison group; earliest of these cohorts ≥8 weeks of post-period. The last cohort has no comparison group: it is dropped from estimation and does not count towards the 3 | Parallel trends within cohort; no shock coinciding with any cohort's switch | Callaway–Sant'Anna or Sun–Abraham (not TWFE); event window *[−k, +k]* weeks |
 | 2 | **Within-unit metric variation** (H3) | Design 1 trigger fails; ≥ *N* units with ≥ *M* weeks of MDO/MDB data; within-unit SD of at least one declaration metric above *[threshold]* | Time-varying confounders (e.g. pricing changes) uncorrelated with changes in declaration quality, conditional on unit and period FE | Unit + period fixed effects; SEs clustered by unit |
 | 3 | **Grace-period dose-response** (H4) | Designs 1 and 2 fail; NESO has announced the grace-period end; it falls ≥ *k* weeks before the data cut-off; ≥ *N* reserve-contracted units with pre-shock MDO/MDB data | Units with different pre-shock declaration quality would have trended in parallel absent enforcement | DiD with pre-shock declaration quality as continuous intensity; reserve-contracted units only |
 | — | **Design note only** | No trigger met | — | Descriptive ranking (H1) and preliminary evidence; no £ estimate |
 
 Rules:
 - Lower-ranked designs whose triggers are also met run as **pre-specified secondary analyses** and are reported in full, but never replace the headline. This blocks choosing the design with the most favourable result.
-- Thresholds (*N*, *M*, *k*, SD threshold) are filled in before Gate A1 is evaluated, not after.
+- Thresholds (*N*, *M*, *k*, SD threshold) are filled in before Gate A1 is evaluated, not after. Their values live in `config/gate_a1.toml`, and the code refuses to run while any is blank.
 - If a trigger statistic is borderline (within 10% of its threshold), the lower-ranked design is used.
 - Optimiser-level claims only if the lead party → optimiser mapping is clean. Units that changed optimiser are the strongest variation; count them before promising anything.
 
