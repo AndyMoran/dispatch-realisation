@@ -76,6 +76,14 @@ To follow. Every published number will regenerate from `src/` against pinned dat
 
 *To decide:* e.g. MIT (code) and CC BY 4.0 (text, figures).
 
+## Data attribution
+
+Contains BMRS data © Elexon Limited copyright and database right 2026. Used under Elexon's [licence to use BMRS open data](https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/).
+
+Supported by National Energy SO Open Data. Used under the [NESO Open Data Licence v1.0](https://www.neso.energy/data-portal/neso-open-licence).
+
+Neither Elexon nor NESO endorses this project. Scores, rankings and estimates here are this project's derived results, not Elexon or NESO data.
+
 ## Citation
 
 *To follow (Zenodo DOI on first release).*
