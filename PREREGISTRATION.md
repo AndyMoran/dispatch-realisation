@@ -11,8 +11,8 @@ Any deviation after lock is recorded in §9 with date and reason.
 ## 1. Questions
 
 - **H1 (descriptive):** Declaration quality varies across GB battery BM units after adjusting for duration, node, commissioning date and time since GC0166 adoption.
-- **H2 (within-unit):** A unit's share of in-merit volume accepted rises after it switches to MDO/MDB declarations.
-- **H3 (within-unit):** Improvements in a unit's declaration-quality metrics are associated with higher accepted share of in-merit volume.
+- **H2 (within-unit):** A unit's accepted Balancing Mechanism volume per registered MW rises after it switches to MDO/MDB declarations.
+- **H3 (within-unit):** Improvements in a unit's declaration-quality metrics are associated with higher accepted volume per registered MW.
 - **H4 (enforcement):** Declaration quality improves fleet-wide after NESO's grace period ends. *(FORWARD-LOOKING; run only if the end date falls within the data window.)*
 
 ## 2. Data
@@ -21,7 +21,12 @@ Sources, endpoints and manifests: see `DATA_SOURCES.md`. Data window: *[to fill]
 
 ## 3. Variables
 
-**Outcome:** accepted volume ÷ in-merit volume, per unit per *[day / week]*, NESO Tier B (stage exclusions applied). If NESO caps a unit's in-merit volume by its own MEL/MDO (assumption M1 fails), use instead: *[accepted MWh per MW registered / accepted ÷ physically feasible volume]*.
+**Outcome:** accepted Balancing Mechanism energy per registered MW, per unit per ISO week (MWh/MW).
+
+- **Accepted energy:** the energy a unit delivered against accepted bid-offer instructions, relative to its Physical Notification. Computed from BMRS BOALF acceptance levels and PN, integrated over the week. Offers and bids are summed as absolute volumes for the headline outcome and reported separately as secondary outcomes. System-flagged acceptances are included in the headline. *[Implementation check, Wk 1: whether Elexon publishes per-unit acceptance volumes that match this calculation; if so, use them and record the reconciliation.]*
+- **Registered MW:** Generation Capacity (GC) from the BMRS BM unit reference data, taken from one snapshot pinned in `data/manifests/reference_manifest.csv` before lock: *[snapshot date, SHA-256]*. GC is a seasonal registration value, not an operational declaration, so it does not move with MEL, MDO or MDB. A unit with missing or zero GC is not scored, and is listed with that reason.
+- **Why not accepted ÷ in-merit volume:** NESO's in-merit volume depends on the unit's own MEL/MIL, and from 25 June 2026 on its GC0166 parameters, so its definition changes at the treatment date. Assumption M1, refuted 23 October 2026 (`docs/week1/m1_denominator_check.md`).
+- **What the outcome does not control for:** how often the unit was in merit. Unit and week fixed effects absorb fixed unit differences and fleet-wide demand for balancing. Pricing changes remain a threat (ASSUMPTIONS.md O1, I10).
 
 **Declaration-quality metrics** (definitions to finalise, with formulas):
 1. Conservation error: |MDO + MDB − usable MWh| / usable MWh
@@ -29,7 +34,7 @@ Sources, endpoints and manifests: see `DATA_SOURCES.md`. Data window: *[to fill]
 3. Redeclaration latency: minutes from BOA timestamp to next MDO/MDB update
 4. Conservatism: declared MDO ÷ reconstructed deliverable energy
 
-**Treatment (H2):** first MDO/MDB submission date per unit.
+**Treatment (H2):** first non-default MDO/MDB submission per unit, dated by delivery time (`timeFrom`), binned by ISO week. Values with |MWh| ≥ 9999 are NESO defaults, not submissions.
 
 **Adjustment set:** duration, node (or zone), commissioning date, time since adoption.
 
@@ -42,7 +47,7 @@ Sources, endpoints and manifests: see `DATA_SOURCES.md`. Data window: *[to fill]
 - **£/MW/yr definition:**
   - Numerator: declaration-attributable Δ accepted MWh per year × margin.
   - Margin: *[proposed: accepted offer price − Market Index Price for that settlement period; mirror for bids, sign conventions stated]*, i.e. the BM premium over wholesale. Alternatives: system price; Gale et al.'s profit measure if verified (E1, E2).
-  - Denominator: *[proposed: registered MW (max MEL over window)]*. Per MWh usable reported as secondary.
+  - Denominator: registered MW (GC), as for the outcome in §3. Not max MEL: MEL is a declaration. Per MWh usable reported as secondary.
   - Caveat: the BM is pay-as-bid. Better declarations may change which offers are accepted and at what price, so volume × margin is a first-order approximation.
 
 ## 5. Inference
@@ -51,7 +56,10 @@ Significance level / interval coverage: *[fill]*. Multiple comparisons across fo
 
 ## 6. Robustness (pre-specified)
 
-- Tier A and Tier C outcomes alongside Tier B
+- Offers and bids as separate outcomes
+- Excluding system-flagged acceptances
+- NESO Tier B accepted ÷ in-merit volume, reported descriptively only, with the M1 caveat stated
+- Adding the unit's offer price relative to the fleet median (from BOD) as a control, to probe the pricing threat (O1)
 - Excluding units with known ancillary-service energy reservations
 - Alternative usable-MWh assumptions (P4)
 - Dropping the first *[n]* weeks after each unit's adoption (learning period)

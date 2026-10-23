@@ -10,7 +10,7 @@ Licence: BMRS Data Licence Terms.
 
 | Dataset | Use | Granularity | Note |
 |---|---|---|---|
-| **MDO** — Maximum Delivery Offer | Declared deliverable export energy | Per unit, time profile | From 25 June 2026 (P499). ⚠ confirm endpoint and history depth |
+| **MDO** — Maximum Delivery Offer | Declared deliverable export energy | Per unit, time profile | From 25 June 2026 (P499). Use `/datasets/MDO/stream`; history from 25 Jun 2026 (R6, R12a) |
 | **MDB** — Maximum Delivery Bid | Declared deliverable import energy | Per unit, time profile | As above |
 | MELS / MILS | Power limits (pipe) | Per unit | Pre-GC0166 these carried the 30-minute rule |
 | PN | Physical notifications | Per unit, per SP | Baseline position |
@@ -19,7 +19,7 @@ Licence: BMRS Data Licence Terms.
 | B1610 | Metered generation | Per unit, per SP | Settlement data; revisions possible |
 | MID — Market Index Data | Wholesale reference price for £ margin | Per SP | — |
 | Reference: BM units | Lead party, fuel type | Per unit | For optimiser mapping (I4) |
-| FSoE | Future State of Energy | — | ⚠ publication unconfirmed (R5) |
+| FSoE | Future State of Energy | — | Not published (R5a) |
 
 ## NESO Data Portal
 
@@ -53,14 +53,15 @@ Methodology: NESO / LCP Delta skip rate methodology (v2.0, May 2025).
 
 ## Week 1 checks
 
-- [ ] MDO/MDB production endpoints return data from 25 June 2026 for battery units
+- [x] MDO/MDB production endpoints return data from 25 June 2026 (23 Oct; R6)
 - [ ] Count battery BMUs with any MDO submission; derive first-submission (adoption) date per unit
-- [ ] FSoE: published or not
+- [x] FSoE: not published (23 Oct; R5a)
 - [ ] Lead party → optimiser mapping: share of fleet with confident attribution
 - [ ] Count units that changed optimiser since 2024
 - [ ] NESO In-Merit files: confirm unit-level fields for the post-June period
 - [ ] Switch-date dispersion: number of cohorts, units per cohort, post-period length for the earliest cohort
-- [ ] NESO skip methodology: does the volume adjustment cap a unit's in-merit volume using its own MEL/MDO? (M1)
-- [ ] Is NESO's migration schedule published? (I7)
+- [x] NESO skip methodology: does the volume adjustment cap a unit's in-merit volume using its own MEL/MDO? Yes; outcome switched (23 Oct; M1, M7)
+- [x] Is NESO's migration schedule published? No (23 Oct; I7a)
 - [ ] NESO reserve grace-period end date announced? (R9)
-- [ ] BMRS and NESO licence terms permit a per-unit derived table (R10)
+- [x] BMRS and NESO licence terms permit a per-unit derived table: yes, with attribution (23 Oct; R10)
+- [ ] Registered MW: GC present and populated for battery units in a pinned reference snapshot (M8)

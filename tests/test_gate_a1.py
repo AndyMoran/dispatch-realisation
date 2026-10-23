@@ -172,3 +172,19 @@ def test_rerun_keeps_earlier_raw_vintage(tmp_path, monkeypatch):
     for _ in range(2):
         g.fetch(API, start, start + timedelta(days=1), tmp_path / "raw", tmp_path / "m.csv")
     assert len(list((tmp_path / "raw" / "MDO").glob("*.json"))) == 2
+
+
+# ---------------------------------------------------------------- reference
+
+from src.ingest.reference import inventory
+
+
+def test_reference_inventory_reports_shape_not_units():
+    rows = [{"elexonBmUnit": "T_UNITX1", "fuelType": "PS", "generationCapacity": 50, "demandCapacity": -50},
+            {"elexonBmUnit": "T_UNITX2", "fuelType": "WIND", "generationCapacity": 0},
+            {"elexonBmUnit": "T_UNITX3", "fuelType": "PS"}]
+    inv = inventory(rows)
+    assert inv["records"] == 3
+    assert inv["capacity_fields_populated"] == {"demandCapacity": 1, "generationCapacity": 1}
+    assert inv["fuel_types"] == {"PS": 2, "WIND": 1}
+    assert "T_UNITX" not in _json.dumps(inv)          # no unit IDs in the printed inventory

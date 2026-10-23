@@ -83,7 +83,7 @@ All documentation follows `WRITING.md` (Strunk and White; Zinsser): point first,
 
 **RQ2 (descriptive).** How does declaration quality vary across the battery fleet, raw and after adjusting for duration, node, commissioning date and time since GC0166 adoption?
 
-**RQ3 (stakes).** What is the declaration-attributable difference in accepted in-merit volume, expressed in £/MW/yr? Identified from **within-unit** variation (switch date, end of NESO grace period, changes in redeclaration latency), not from cross-sectional comparison alone. Denominator, price and pay-as-bid caveat defined in `PREREGISTRATION.md` §4 before lock.
+**RQ3 (stakes).** What is the declaration-attributable difference in accepted Balancing Mechanism volume, expressed in £/MW/yr? Identified from **within-unit** variation (switch date, end of NESO grace period, changes in redeclaration latency), not from cross-sectional comparison alone. Denominator, price and pay-as-bid caveat defined in `PREREGISTRATION.md` §4 before lock.
 
 **RQ4 (context).** Where in the network, and in which system states, are battery skips most costly? (Measurement layer for RQ3; standalone output downgraded.)
 
@@ -95,9 +95,7 @@ All documentation follows `WRITING.md` (Strunk and White; Zinsser): point first,
 
 **Data.** BMRS MDO, MDB, MELS, MILS, PN, BOAL/BOALF, BOD, B1610; BMRS BM unit reference data (lead party); NESO In-Merit All BM and PSA files; asset metadata (node, MW, MWh, commissioning date).
 
-**Outcome (minimal; A does not wait for B).** Accepted volume ÷ in-merit volume per unit, taken directly from NESO's unit-level In-Merit files (Tier B). B adds Tiers A/C and the £ layer afterwards.
-
-**Denominator check (Wk 1, before anything else).** Establish whether NESO's volume-adjusted in-merit stack caps a unit's in-merit volume using its own MEL or MDO. If it does, a conservative declarer shrinks its own denominator and its ratio looks better than its practice. In that case switch to a declaration-independent outcome: accepted MWh per MW registered, or accepted ÷ physically feasible volume (MW × time).
+**Outcome (A does not wait for B).** Accepted Balancing Mechanism energy per registered MW, per unit per week, from BMRS data. Definition: `PREREGISTRATION.md` §3. NESO's accepted ÷ in-merit ratio is not used, because its denominator depends on the unit's own declarations (ASSUMPTIONS.md M1, refuted 23 Oct 2026). B adds the skip measurement and £ layer afterwards.
 
 **Declaration-quality metrics (physics-first, no private data):**
 1. *Conservation:* stability of MDO + MDB against usable MWh.
@@ -136,7 +134,7 @@ Rules:
 
 **Gate A1 (end Wk 1), on declaration data only:**
 - Evaluate the design hierarchy triggers in order; record the statistics and the selected design in the decision log.
-- Denominator check passed, or outcome switched.
+- Denominator check: done 23 Oct 2026; outcome switched (M1, M7).
 - Too few adopters for any design → design note + preliminary evidence.
 
 **Pre-registration lock (start Wk 2):** after A1, before any outcome data is examined. Deposited on Zenodo with commit hash.
@@ -194,7 +192,7 @@ Ask before A publishes (Wks 1–6): "I'm measuring declaration quality across th
 - **Right of reply:** each lead party receives its unit's numbers and the full method at least 10 working days before publication.
 - **Errors:** a demonstrated data or method error is fixed before publication. If the fix changes results materially, the reply clock restarts. I adjudicate; every correction is logged publicly with its reason.
 - **Disputes that aren't errors:** publish with the lead party's reply attached. Do not withhold.
-- **Before publishing:** legal review of naming and framing; confirm BMRS and NESO licence terms allow a per-unit derived table.
+- **Before publishing:** legal review of naming and framing. The BMRS and NESO licences permit a per-unit derived table (ASSUMPTIONS.md R10), but they grant copyright and database rights only; they do not clear naming units.
 
 ## 8. Out of scope
 
@@ -216,11 +214,11 @@ Ask before A publishes (Wks 1–6): "I'm measuring declaration quality across th
 | Gale anchor wrong or misapplied | Verify against paper in Wk 1; check unit conversion (skip-rate pts vs acceptance pts) |
 | BOD / NESO file vintages | Record download dates and hashes; NESO reissued datasets Nov 2025 |
 | Switch dates compressed near the deadline | Gate A1 dispersion test; designs 2 and 3 pre-specified |
-| Outcome denominator depends on the unit's own declarations | Wk 1 check of NESO volume adjustment; declaration-independent outcome |
-| A's outcome depends on B | Minimal NESO Tier B outcome in A; £ layer from B later |
+| Outcome denominator depends on the unit's own declarations | Realised (M1). Outcome now per registered MW (GC), a seasonal registration value (M7, M8) |
+| A's outcome depends on B | A's outcome comes from BMRS directly; £ layer from B later |
 | Grace period ends late or is extended | Design 3 dropped; check NESO's stated date in Wk 1 |
 | Naming parties: legal or reputational | §7a policy; legal review before publication |
-| Licence for a per-unit derived table | Check BMRS and NESO terms in Wk 1 |
+| Licence for a per-unit derived table | Checked 23 Oct 2026: permitted with attribution (R10) |
 | Practice converges quickly | Publish fast; this is an artifact, not a business |
 
 ## 10. Definition of done
