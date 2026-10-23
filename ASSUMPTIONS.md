@@ -64,8 +64,8 @@ Last updated: 2026-10-23.
 | E1 | ~£12,000/MW/yr per 10-point skip increase (Gale et al.) | PROVISIONAL | Candidate source found 23 Oct 2026: "Balancing with batteries: The impact of revenue stacking and skip rates on battery energy storage profitability in Great Britain", *Journal of Energy Storage*, 2026. Authors and figure unverified: the publisher blocks automated reading | **Wk 1: read the paper in a browser** |
 | E2 | E1's units are skip-rate points and convert one-to-one to acceptance points | PROVISIONAL | Check the paper's definition | Wk 1 |
 | E3 | Skipped volume is valued at its cost difference from the marginal accepted action | DELIBERATE | Alternative: full LP counterfactual (cut, PROJECT.md §8) | — |
-| E4 | £/MW/yr = declaration-attributable Δ accepted MWh × margin ÷ registered MW. Pay-as-bid effects ignored to first order | DELIBERATE | Full definition in PREREGISTRATION.md §4 | Finalise before lock |
-| E5 | The Market Index Price is a fair stand-in for a battery's opportunity cost in the margin | PROVISIONAL | A battery's real opportunity cost depends on the price spread across periods, not one period's price. Test sensitivity with a daily-spread margin | Before lock |
+| E4 | £/MW/yr = declaration-attributable Δ accepted MWh × margin ÷ registered MW. Pay-as-bid effects ignored to first order | DELIBERATE | Full definition in PREREGISTRATION.md §4. Denominator: GC (M7, M8) | ✓ Defined 23 Oct 2026 |
+| E5 | The Market Index Price is a fair stand-in for a battery's opportunity cost in the margin | PROVISIONAL | A battery's real opportunity cost depends on the price spread across periods, not one period's price. Pre-specified sensitivity: offers valued against the day's highest MID, bids against its lowest (PREREGISTRATION.md §4) | ✓ Sensitivity fixed 23 Oct 2026 |
 
 ## Physics
 

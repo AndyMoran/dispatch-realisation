@@ -17,7 +17,7 @@ Any deviation after lock is recorded in §9 with date and reason.
 
 ## 2. Data
 
-Sources, endpoints and manifests: see `DATA_SOURCES.md`. Data window: *[to fill]*. Sample: battery BM units with ≥ *[N]* settlement periods of MDO/MDB data.
+Sources, endpoints and manifests: see `DATA_SOURCES.md`. Outcome data window: ISO weeks from Monday 25 May to Sunday 15 November 2026. That gives 4 pre-weeks before the earliest adoption week (w/c 22 June) and ends before estimation starts (w/c 16 November). Declaration data starts 25 June 2026, when MDO/MDB publication began. Ranking sample (H1): battery BM units with at least 4 weeks of non-default MDO/MDB data. Units with less are listed as not scored, with the reason.
 
 ## 3. Variables
 
@@ -40,19 +40,21 @@ Sources, endpoints and manifests: see `DATA_SOURCES.md`. Data window: *[to fill]
 
 ## 4. Estimation
 
-- H1: *[regression of metrics on adjustment set; ranking on residuals]*
+- H1: for each metric, OLS of the unit's mean over its scored weeks on the adjustment set (§3). The adjusted ranking orders units by residual. Rank uncertainty comes from a unit-level bootstrap and is published with the ranks, so near-ties are not read as differences. The raw ranking is published alongside; the adjusted ranking leads.
 - Design selection: by the ordered design hierarchy and triggers in `PROJECT.md` §5A (single source; not restated here). The selected design and its trigger statistics, as recorded in the PROJECT.md decision log at Gate A1, are copied here at lock: *[design, statistics, date]*.
-- H2: staggered-adoption event study, *[Callaway–Sant'Anna / Sun–Abraham]*, not-yet-treated controls, event window *[−k, +k]* weeks. Report pre-trends.
+- H2: staggered-adoption event study, Callaway–Sant'Anna estimator, not-yet-treated controls, event window −4 to +8 weeks around each unit's adoption week. Report all four pre-period coefficients and a joint pre-trend test. Cohorts with fewer than 8 post-weeks contribute to the event times they reach.
 - H3: unit fixed effects, time fixed effects; standard errors clustered by unit.
 - **£/MW/yr definition:**
   - Numerator: declaration-attributable Δ accepted MWh per year × margin.
-  - Margin: *[proposed: accepted offer price − Market Index Price for that settlement period; mirror for bids, sign conventions stated]*, i.e. the BM premium over wholesale. Alternatives: system price; Gale et al.'s profit measure if verified (E1, E2).
+  - Margin (headline): the BM premium over wholesale in the same settlement period. Offers: accepted offer price − Market Index Price (MID). Bids: MID − accepted bid price. Both positive when the BM pays better than wholesale.
+  - Margin (pre-specified sensitivity, E5): a battery's alternative is to trade at another hour of the same day. Offers are valued against the day's highest MID; bids against the day's lowest. This gives a conservative premium.
+  - Other alternatives reported only if verified: Gale et al.'s profit measure (E1, E2).
   - Denominator: registered MW (GC), as for the outcome in §3. Not max MEL: MEL is a declaration. Per MWh usable reported as secondary.
   - Caveat: the BM is pay-as-bid. Better declarations may change which offers are accepted and at what price, so volume × margin is a first-order approximation.
 
 ## 5. Inference
 
-Significance level / interval coverage: *[fill]*. Multiple comparisons across four metrics: *[fill]*. Interval method validated by simulation before use (lesson from credit-impulse project: block bootstrap undercovers in short samples).
+Intervals: 95%, with standard errors clustered by unit. For Callaway–Sant'Anna, the estimator's multiplier bootstrap, clustered by unit. Multiple comparisons: any claim about the four declaration-quality metrics (H1, H3) uses Holm–Bonferroni adjustment across the four. The headline £/MW/yr estimate is a single pre-specified quantity and is not adjusted. Interval method validated by simulation before use (lesson from credit-impulse project: block bootstrap undercovers in short samples).
 
 ## 6. Robustness (pre-specified)
 
@@ -62,13 +64,13 @@ Significance level / interval coverage: *[fill]*. Multiple comparisons across fo
 - Adding the unit's offer price relative to the fleet median (from BOD) as a control, to probe the pricing threat (O1)
 - Excluding units with known ancillary-service energy reservations
 - Alternative usable-MWh assumptions (P4)
-- Dropping the first *[n]* weeks after each unit's adoption (learning period)
+- Dropping the first 2 weeks after each unit's adoption (learning period)
 
 ## 7. What would change our conclusions
 
 - Pre-trends in H2 → report as descriptive only.
 - Mass-balance residuals too large to interpret → drop metric 2; report why.
-- Fewer than *[N]* adopters → design note only.
+- No design trigger met at Gate A1 → design note only (PROJECT.md §5A).
 
 ## 8. Publication commitments
 
