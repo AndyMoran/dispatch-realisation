@@ -9,6 +9,7 @@ window_start   = "2026-06-25"   # P499 go-live
 data_cutoff    = "2026-10-29"   # last day of declaration data used; Gate A1 runs 30 Oct
 cohort_bin     = "week"         # adoption dates binned by ISO week
 default_abs_mwh = 9999          # |MDO| or |MDB| >= this is NESO's default, not a submission
+exclude_fuel_types = ["PS", "NPSHYD"]   # not batteries, even if they submit MDO/MDB (M10)
 
 [design1]   # staggered adoption
 min_cohorts            = 3

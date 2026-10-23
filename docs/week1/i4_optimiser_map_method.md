@@ -10,7 +10,7 @@ The benchmark publishes by BM unit. It names an optimiser only where public evid
 
 ## Steps
 
-1. **Fleet.** Take battery units from a pinned BMRS reference snapshot (`src/ingest/reference.py`). Identify batteries by fuel type and behaviour, not by ID prefix (PIPELINE_RULES §9). Units with unclear fuel type are listed, not dropped.
+1. **Fleet.** The battery fleet is the set of units that submit non-default MDO/MDB, excluding pumped storage and hydro (ASSUMPTIONS.md M10). Reference data has no battery fuel type, so fuel type is a secondary check only. Units with `OTHER` fuel type and no MDO/MDB are listed for manual review, not dropped.
 2. **Lead party.** Record each unit's lead party from the same snapshot.
 3. **Classify the lead party** as optimiser, owner, utility or route-to-market provider, from the company's own description of its business. Record the source.
 4. **Find unit-level evidence** linking an optimiser to the site: the optimiser's or owner's press release naming the site, a regulatory filing, or the owner's annual report. Third-party commentary alone is not enough.

@@ -22,7 +22,8 @@ def unit_records(unit, adopt_day, days=60, base=100.0, wobble=0.0, default_days=
 
 def cfg(**over):
     c = {
-        "data": {"data_cutoff": "2026-10-31", "default_abs_mwh": 9999},
+        "data": {"data_cutoff": "2026-10-31", "default_abs_mwh": 9999,
+                 "exclude_fuel_types": ["PS", "NPSHYD"]},
         "design1": {"min_cohorts": 3, "min_units_per_cohort": 4, "min_post_weeks_earliest": 8},
         "design2": {"min_units": 10, "min_weeks_per_unit": 6, "min_within_unit_cv": 0.02},
         "design3": {"grace_end_announced": False, "grace_end_date": "",
@@ -188,3 +189,13 @@ def test_reference_inventory_reports_shape_not_units():
     assert inv["capacity_fields_populated"] == {"demandCapacity": 1, "generationCapacity": 1}
     assert inv["fuel_types"] == {"PS": 2, "WIND": 1}
     assert "T_UNITX" not in _json.dumps(inv)          # no unit IDs in the printed inventory
+
+
+def test_pumped_storage_excluded_but_kept_and_unknown_units_kept():
+    recs = unit_records("PS1", adopt_day=0) + unit_records("BAT1", adopt_day=0) \
+        + unit_records("NEW1", adopt_day=0)
+    units = g.exclude_non_battery(adoption_dates(recs, 9999),
+                                  {"PS1": "PS", "BAT1": "OTHER"}, ["PS", "NPSHYD"])
+    assert units["PS1"]["status"] == "excluded(fuel_type_PS)"
+    assert units["BAT1"]["status"] == "adopted"
+    assert units["NEW1"]["status"] == "adopted" and units["NEW1"]["fuel_type"] == ""

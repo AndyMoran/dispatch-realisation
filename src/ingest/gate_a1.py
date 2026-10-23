@@ -32,7 +32,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CONFIG = ROOT / "config" / "gate_a1.toml"
 
 REQUIRED_FOR_RUN = {
-    "data": ["data_cutoff"],
+    "data": ["data_cutoff", "exclude_fuel_types"],
     "design1": ["min_units_per_cohort"],
     "design2": ["min_units", "min_weeks_per_unit", "min_within_unit_cv"],
     "design3": ["grace_end_announced", "min_weeks_before_cutoff", "min_reserve_units"],
@@ -113,6 +113,33 @@ def adoption_dates(records: list[Record], default_abs: float) -> dict[str, dict]
     for u in units.values():
         u["status"] = "adopted" if u["first_real"] else "excluded(default_values_only)"
     return units
+
+
+def exclude_non_battery(units: dict[str, dict], fuel_by_unit: dict[str, str],
+                        excluded_fuels: list[str]) -> dict[str, dict]:
+    """Keep pumped storage and hydro out of the battery fleet (ASSUMPTIONS.md M10).
+
+    Excluded units stay in the table with a reason (PIPELINE_RULES §3). A unit missing
+    from the reference snapshot is kept: absence is not evidence it isn't a battery.
+    """
+    for unit, u in units.items():
+        fuel = fuel_by_unit.get(unit)
+        u["fuel_type"] = fuel or ""
+        if u["status"] == "adopted" and fuel in excluded_fuels:
+            u["status"] = f"excluded(fuel_type_{fuel})"
+    return units
+
+
+def load_reference_fuel(path: Path | None = None) -> tuple[dict[str, str], Path]:
+    """Fuel type by Elexon BM unit ID, from the latest pinned reference snapshot."""
+    snaps = sorted((ROOT / "data" / "raw" / "reference").glob("bmunits__dl*.json"))
+    if path is None:
+        if not snaps:
+            raise GateA1Error("No reference snapshot. Run `python -m src.ingest.reference` first.")
+        path = snaps[-1]
+    payload = json.loads(path.read_bytes())
+    rows = payload.get("data", payload) if isinstance(payload, dict) else payload
+    return {str(r["elexonBmUnit"]): str(r.get("fuelType")) for r in rows if r.get("elexonBmUnit")}, path
 
 
 def cohort_key(ts: datetime) -> str:
@@ -346,23 +373,28 @@ def run(cfg: dict) -> None:
     coverage.update(counts)
     (out_dir / "coverage.json").write_text(json.dumps(coverage, indent=2, sort_keys=True))
     # Adoption: first non-default submission of any vintage. Variation: latest only.
-    units = adoption_dates(unique, default_abs)
+    fuel_by_unit, ref_path = load_reference_fuel()
+    units = exclude_non_battery(adoption_dates(unique, default_abs), fuel_by_unit,
+                                dcfg["exclude_fuel_types"])
     cv = within_unit_cv(latest, default_abs)
     with open(out_dir / "adoption_dates.csv", "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["schema_version", "bm_unit", "status", "first_real_utc", "last_real_utc",
-                    "n_real", "n_default", "cohort", "within_unit_cv"])
+        w.writerow(["schema_version", "bm_unit", "status", "fuel_type", "first_real_utc",
+                    "last_real_utc", "n_real", "n_default", "cohort", "within_unit_cv"])
         for u in sorted(units):
             v = units[u]
-            w.writerow([SCHEMA_VERSION, u, v["status"],
+            w.writerow([SCHEMA_VERSION, u, v["status"], v["fuel_type"],
                         v["first_real"].isoformat() if v["first_real"] else "",
                         v["last_real"].isoformat() if v["last_real"] else "",
                         v["n_real"], v["n_default"],
                         cohort_key(v["first_real"]) if v["first_real"] else "",
                         f"{cv[u]:.6f}" if u in cv else ""])
 
-    report = {"schema_version": SCHEMA_VERSION, "config_sha256":
-              hashlib.sha256(CONFIG.read_bytes()).hexdigest(), **evaluate(units, cv, cfg)}
+    report = {"schema_version": SCHEMA_VERSION,
+              "config_sha256": hashlib.sha256(CONFIG.read_bytes()).hexdigest(),
+              "reference_snapshot": str(ref_path.relative_to(ROOT)),
+              "reference_sha256": hashlib.sha256(ref_path.read_bytes()).hexdigest(),
+              **evaluate(units, cv, cfg)}
     (out_dir / "gate_a1_report.json").write_text(json.dumps(report, indent=2, sort_keys=True))
     print(json.dumps(report, indent=2, sort_keys=True))
 

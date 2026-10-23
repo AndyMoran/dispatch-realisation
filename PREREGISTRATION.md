@@ -23,7 +23,8 @@ Sources, endpoints and manifests: see `DATA_SOURCES.md`. Outcome data window: IS
 
 **Outcome:** accepted Balancing Mechanism energy per registered MW, per unit per ISO week (MWh/MW).
 
-- **Accepted energy:** the energy a unit delivered against accepted bid-offer instructions, relative to its Physical Notification. Computed from BMRS BOALF acceptance levels and PN, integrated over the week. Offers and bids are summed as absolute volumes for the headline outcome and reported separately as secondary outcomes. System-flagged acceptances are included in the headline. *[Implementation check, Wk 1: whether Elexon publishes per-unit acceptance volumes that match this calculation; if so, use them and record the reconciliation.]*
+- **Accepted energy:** the energy a unit delivered against accepted bid-offer instructions, relative to its Physical Notification. Computed from BMRS BOALF acceptance levels and PN, integrated over the week. Offers and bids are summed as absolute volumes for the headline outcome and reported separately as secondary outcomes. System-flagged acceptances are included in the headline.
+- **Cross-check:** Elexon's settlement acceptance volumes (BOAV, `/balancing/settlement/acceptance/volumes/`), compared with BOALF − PN after lock, for every unit-week where a settlement run is available. The settlement run used is recorded. The agreement is reported. BOALF − PN remains the outcome whatever the comparison shows, so the choice of outcome cannot follow the results.
 - **Registered MW:** Generation Capacity (GC) from the BMRS BM unit reference data, taken from one snapshot pinned in `data/manifests/reference_manifest.csv` before lock: *[snapshot date, SHA-256]*. GC is a seasonal registration value, not an operational declaration, so it does not move with MEL, MDO or MDB. A unit with missing or zero GC is not scored, and is listed with that reason.
 - **Why not accepted ÷ in-merit volume:** NESO's in-merit volume depends on the unit's own MEL/MIL, and from 25 June 2026 on its GC0166 parameters, so its definition changes at the treatment date. Assumption M1, refuted 23 October 2026 (`docs/week1/m1_denominator_check.md`).
 - **What the outcome does not control for:** how often the unit was in merit. Unit and week fixed effects absorb fixed unit differences and fleet-wide demand for balancing. Pricing changes remain a threat (ASSUMPTIONS.md O1, I10).
@@ -48,7 +49,7 @@ Sources, endpoints and manifests: see `DATA_SOURCES.md`. Outcome data window: IS
   - Numerator: declaration-attributable Δ accepted MWh per year × margin.
   - Margin (headline): the BM premium over wholesale in the same settlement period. Offers: accepted offer price − Market Index Price (MID). Bids: MID − accepted bid price. Both positive when the BM pays better than wholesale.
   - Margin (pre-specified sensitivity, E5): a battery's alternative is to trade at another hour of the same day. Offers are valued against the day's highest MID; bids against the day's lowest. This gives a conservative premium.
-  - Other alternatives reported only if verified: Gale et al.'s profit measure (E1, E2).
+  - Comparison only, not a conversion: Gale et al. (2026) simulate about £12,000/MW/yr lost per 10% of time a battery is blocked from the BM. Their skip rate is a simulated share of blocked time, not NESO's volume-based rate nor this project's outcome (E1, E2a).
   - Denominator: registered MW (GC), as for the outcome in §3. Not max MEL: MEL is a declaration. Per MWh usable reported as secondary.
   - Caveat: the BM is pay-as-bid. Better declarations may change which offers are accepted and at what price, so volume × margin is a first-order approximation.
 

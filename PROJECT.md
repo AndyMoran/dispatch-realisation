@@ -139,9 +139,22 @@ Rules:
 
 **Pre-registration lock (start Wk 2):** after A1, before any outcome data is examined. Deposited on Zenodo with commit hash.
 
-**Gate A2 (end Wk 2): stakes.** Crude estimate from NESO unit-level in-merit files, run after the lock so it cannot shape the specification.
-- Lower bound plausibly < £5k/MW/yr → reputation project; do not invest in the benchmark as a product.
-- Plausibly > £10k/MW/yr → benchmark is a product-grade artifact.
+**Gate A2 (end Wk 2): stakes.** A crude estimate of what battery skips are worth, run after the lock so it cannot shape the specification. A2 decides how A ships, not whether it is built.
+
+*Decision rule (v1, fixed before lock):*
+- **Metric:** value of skipped battery volume per MW-year of registered capacity.
+- **Data:** NESO In-Merit All BM and Post System Action monthly files, **October 2025 to September 2026** inclusive, Stage 6. If any of these months lacks Stage 6, Stage 5 is used for all twelve, and the report says so.
+- **Fleet:** ASSUMPTIONS.md M10.
+- **Value:** skipped bid or offer volume × the margin in `PREREGISTRATION.md` §4 (price from BOD against same-period MID).
+- **Denominator:** MW-years of exposure: each unit's GC × the share of the window it was present (first to last month in the files). A unit without GC in the pinned reference snapshot is left out of numerator and denominator, and counted in the report. Sensitivity: GC of units present in September 2026, for a full year.
+- **Range:** low = Post-System-Action skips × the conservative daily margin; point = All-BM skips × the headline margin.
+- **Low:** low end < £5,000/MW/yr → reputation project: no product packaging, no press push, light outreach.
+- **High:** point > £10,000/MW/yr → product-grade: benchmark as lead artifact, targeted owner outreach, press.
+- **Middle:** A proceeds unchanged; packaging decided at Gate B.
+- **All branches:** right of reply and legal review per §7a.
+- No re-specification after the number is seen.
+
+A2 is a stakes gate. It values skips against wholesale (§4 margin), not against the marginal accepted action, as Workstream B does (ASSUMPTIONS.md E3). Its number is not the B-layer estimate and is not quoted as one. Context only, not a gate: the A2 figure may be shown as a share of a stated, sourced revenue assumption.
 
 ### B — Skip measurement layer (supporting) · Weeks 3–10
 
@@ -211,7 +224,7 @@ Ask before A publishes (Wks 1–6): "I'm measuring declaration quality across th
 | Declaration quality proxies for overall optimiser skill | £ estimate from within-unit variation only |
 | Lead party ≠ optimiser | Publish by unit; optimiser claims only where mapping is clean |
 | Named parties dispute results | Right of reply; uncertainty and limits stated up front |
-| Gale anchor wrong or misapplied | Verify against paper in Wk 1; check unit conversion (skip-rate pts vs acceptance pts) |
+| Gale anchor wrong or misapplied | Checked 23 Oct 2026: the figure is from a simulation with a different skip-rate definition. Used for order-of-magnitude comparison only (E1, E2a) |
 | BOD / NESO file vintages | Record download dates and hashes; NESO reissued datasets Nov 2025 |
 | Switch dates compressed near the deadline | Gate A1 dispersion test; designs 2 and 3 pre-specified |
 | Outcome denominator depends on the unit's own declarations | Realised (M1). Outcome now per registered MW (GC), a seasonal registration value (M7, M8) |
