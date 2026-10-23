@@ -4,6 +4,7 @@ Reads MDO/MDB from the Elexon Insights API. Never touches acceptances, skips,
 prices or metered output (PROJECT.md §5A; outcome data stays locked).
 
     python -m src.ingest.gate_a1 probe   # endpoint shape; no unit IDs printed
+    python -m src.ingest.gate_a1 smoke   # two-day pull, plumbing checks only, no statistics
     python -m src.ingest.gate_a1 run     # refuses to run until config is complete
 
 Outputs (schema_version in every file, PIPELINE_RULES §6):
@@ -18,6 +19,7 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import shutil
 import sys
 import tomllib
 from dataclasses import dataclass
@@ -220,18 +222,25 @@ def probe(cfg: dict) -> None:
           "a request of your own. Do not fill thresholds from what the data shows.")
 
 
-def run(cfg: dict) -> None:
-    assert_config_complete(cfg)
-    api, dcfg = cfg["api"], cfg["data"]
-    start = datetime.fromisoformat(dcfg["window_start"]).replace(tzinfo=timezone.utc)
-    end = (datetime.fromisoformat(dcfg["data_cutoff"]) + timedelta(days=1)).replace(tzinfo=timezone.utc)
-    step = timedelta(hours=float(api["chunk_hours"]))
-    raw_dir = ROOT / "data" / "raw" / "mdo_mdb"
-    out_dir = ROOT / "outputs" / "gate_a1"
-    man_path = ROOT / "data" / "manifests" / "gate_a1_manifest.csv"
-    for p in (raw_dir, out_dir, man_path.parent):
-        p.mkdir(parents=True, exist_ok=True)
+def parse_rows(body: bytes, dataset: str, api: dict) -> list[Record]:
+    """Parse one API response. A missing field raises, so the chunk is recorded as failed."""
+    payload = json.loads(body)
+    rows = payload.get("data", payload) if isinstance(payload, dict) else payload
+    return [Record(unit=str(row[api["field_unit"]]),
+                   ts=datetime.fromisoformat(str(row[api["field_time"]]).replace("Z", "+00:00")),
+                   mwh=float(row[api["field_value"]]),
+                   dataset=dataset,
+                   published=str(row.get(api["field_published"], "")),
+                   serial=int(row.get(api["field_serial"]) or 0))
+            for row in rows]
 
+
+def fetch(api: dict, start: datetime, end: datetime,
+          raw_dir: Path, man_path: Path) -> tuple[list[Record], dict]:
+    """Pull MDO and MDB in chunks; save raw bytes and a manifest row per request."""
+    step = timedelta(hours=float(api["chunk_hours"]))
+    for p in (raw_dir, man_path.parent):
+        p.mkdir(parents=True, exist_ok=True)
     records: list[Record] = []
     coverage = {"schema_version": SCHEMA_VERSION, "requested": 0, "arrived": 0, "failed": []}
     new_manifest = not man_path.exists()
@@ -246,31 +255,85 @@ def run(cfg: dict) -> None:
                 params = {api["from_param"]: f"{t:%Y-%m-%dT%H:%MZ}",
                           api["to_param"]: f"{t + step:%Y-%m-%dT%H:%MZ}"}
                 coverage["requested"] += 1
-                raw_file = raw_dir / dataset / f"{t:%Y%m%dT%H%M}.json"
                 try:
                     body = _get(api["base_url"] + path, params)
-                    payload = json.loads(body)
-                    rows = payload.get("data", payload) if isinstance(payload, dict) else payload
+                    downloaded = datetime.now(timezone.utc)
+                    # One file per download: earlier vintages are never overwritten (§7).
+                    raw_file = raw_dir / dataset / f"{t:%Y%m%dT%H%M}__dl{downloaded:%Y%m%dT%H%M%S%f}.json"
+                    chunk = parse_rows(body, dataset, api)
                     raw_file.parent.mkdir(parents=True, exist_ok=True)
                     raw_file.write_bytes(body)
                     man.writerow([SCHEMA_VERSION, dataset, api["base_url"] + path,
                                   json.dumps(params, sort_keys=True),
-                                  datetime.now(timezone.utc).isoformat(),
-                                  hashlib.sha256(body).hexdigest(), len(rows),
+                                  downloaded.isoformat(),
+                                  hashlib.sha256(body).hexdigest(), len(chunk),
                                   str(raw_file.relative_to(ROOT))])
-                    for row in rows:
-                        records.append(Record(
-                            unit=str(row[api["field_unit"]]),
-                            ts=datetime.fromisoformat(str(row[api["field_time"]]).replace("Z", "+00:00")),
-                            mwh=float(row[api["field_value"]]),
-                            dataset=dataset,
-                            published=str(row.get(api["field_published"], "")),
-                            serial=int(row.get(api["field_serial"]) or 0)))
+                    records += chunk
                     coverage["arrived"] += 1
                 except Exception as e:  # recorded, never dropped silently (§2)
                     coverage["failed"].append({"dataset": dataset, "from": t.isoformat(),
                                                "reason": f"{type(e).__name__}: {e}"})
                 t += step
+    return records, coverage
+
+
+def assert_api_complete(cfg: dict) -> None:
+    missing = [f"api.{k}" for k in REQUIRED_FOR_RUN["api"] if cfg["api"].get(k, "") == ""]
+    if missing:
+        raise GateA1Error("Empty in config/gate_a1.toml: " + ", ".join(missing))
+
+
+def smoke(cfg: dict, days: int = 2) -> dict:
+    """Exercise the pull end to end on a short window. Computes no adoption statistics.
+
+    Checks: every request succeeds; every row parses; manifest rows match arrivals;
+    timestamps fall inside the window; raw files on disk re-parse to the same records.
+    Output goes to data/interim/smoke/ (gitignored) and never mixes with Gate A1's.
+    """
+    assert_api_complete(cfg)
+    api = cfg["api"]
+    start = datetime.fromisoformat(cfg["data"]["window_start"]).replace(tzinfo=timezone.utc)
+    end = start + timedelta(days=days)
+    base = ROOT / "data" / "interim" / "smoke"
+    man_path = base / "manifest.csv"
+    if base.exists():
+        shutil.rmtree(base)          # scratch only: each smoke run starts clean
+    records, coverage = fetch(api, start, end, base / "raw", man_path)
+
+    with open(man_path) as f:
+        manifest_rows = sum(1 for _ in f) - 1
+    out_of_window = sum(not (start <= r.ts <= end) for r in records)
+    reparsed: list[Record] = []
+    for raw in sorted((base / "raw").rglob("*.json")):
+        reparsed += parse_rows(raw.read_bytes(), raw.parent.name, api)
+    _, counts = latest_declarations(records)
+
+    checks = {
+        "all_requests_succeeded": not coverage["failed"],
+        "manifest_rows_match_arrivals": manifest_rows == coverage["arrived"],
+        "timestamps_inside_window": out_of_window == 0,
+        "raw_files_reparse_identically": sorted(set(reparsed), key=str) == sorted(set(records), key=str),
+    }
+    summary = {"window": [start.isoformat(), end.isoformat()], "requested": coverage["requested"],
+               "arrived": coverage["arrived"], "failed": coverage["failed"],
+               "out_of_window_records": out_of_window, **counts,
+               "checks": checks, "passed": all(checks.values())}
+    print(json.dumps(summary, indent=2, sort_keys=True))
+    if not summary["passed"]:
+        raise GateA1Error("Smoke test failed: " +
+                          ", ".join(k for k, ok in checks.items() if not ok))
+    return summary
+
+
+def run(cfg: dict) -> None:
+    assert_config_complete(cfg)
+    api, dcfg = cfg["api"], cfg["data"]
+    start = datetime.fromisoformat(dcfg["window_start"]).replace(tzinfo=timezone.utc)
+    end = (datetime.fromisoformat(dcfg["data_cutoff"]) + timedelta(days=1)).replace(tzinfo=timezone.utc)
+    out_dir = ROOT / "outputs" / "gate_a1"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    records, coverage = fetch(api, start, end, ROOT / "data" / "raw" / "mdo_mdb",
+                              ROOT / "data" / "manifests" / "gate_a1_manifest.csv")
 
     (out_dir / "coverage.json").write_text(json.dumps(coverage, indent=2, sort_keys=True))
     if coverage["failed"]:
@@ -309,7 +372,9 @@ if __name__ == "__main__":
     cfg = load_config()
     if cmd == "probe":
         probe(cfg)
+    elif cmd == "smoke":
+        smoke(cfg)
     elif cmd == "run":
         run(cfg)
     else:
-        sys.exit("usage: python -m src.ingest.gate_a1 [probe|run]")
+        sys.exit("usage: python -m src.ingest.gate_a1 [probe|smoke|run]")

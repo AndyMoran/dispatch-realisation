@@ -119,3 +119,56 @@ def test_overlap_duplicates_removed_and_latest_kept():
     assert kept == [later]
     assert counts == {"records_received": 3, "exact_duplicates_removed": 1,
                       "superseded_submissions": 1, "latest_declarations": 1}
+
+
+# ------------------------------------------------------------ fetch / smoke
+
+import json as _json
+
+import src.ingest.gate_a1 as g
+
+API = {"base_url": "https://example.invalid", "mdo_path": "/MDO", "mdb_path": "/MDB",
+       "from_param": "from", "to_param": "to", "chunk_hours": 24,
+       "field_unit": "bmUnit", "field_time": "timeFrom", "field_value": "levelFrom",
+       "field_published": "publishTime", "field_serial": "serialNumber"}
+
+
+def fake_api(drop_field=None):
+    """Two records per chunk; the chunk's end minute is repeated by the next chunk."""
+    def _get(url, params):
+        rows = []
+        for ts in (params["from"], params["to"]):
+            row = {"bmUnit": "U1", "timeFrom": ts, "levelFrom": 40.0 if "MDO" in url else -40.0,
+                   "publishTime": "2026-06-24T18:00:00Z", "serialNumber": "7"}
+            row.pop(drop_field, None)
+            rows.append(row)
+        return _json.dumps({"data": rows}).encode()
+    return _get
+
+
+def smoke_cfg():
+    return {"data": {"window_start": "2026-06-25"}, "api": dict(API)}
+
+
+def test_smoke_passes_and_counts_boundary_duplicates(tmp_path, monkeypatch):
+    monkeypatch.setattr(g, "ROOT", tmp_path)
+    monkeypatch.setattr(g, "_get", fake_api())
+    out = g.smoke(smoke_cfg(), days=2)
+    assert out["passed"] and out["requested"] == 4 and out["arrived"] == 4
+    assert out["exact_duplicates_removed"] == 2          # one shared boundary minute per dataset
+
+
+def test_smoke_fails_visibly_on_missing_field(tmp_path, monkeypatch):
+    monkeypatch.setattr(g, "ROOT", tmp_path)
+    monkeypatch.setattr(g, "_get", fake_api(drop_field="levelFrom"))
+    with pytest.raises(GateA1Error, match="all_requests_succeeded"):
+        g.smoke(smoke_cfg(), days=1)
+
+
+def test_rerun_keeps_earlier_raw_vintage(tmp_path, monkeypatch):
+    monkeypatch.setattr(g, "ROOT", tmp_path)
+    monkeypatch.setattr(g, "_get", fake_api())
+    start = datetime(2026, 6, 25, tzinfo=timezone.utc)
+    for _ in range(2):
+        g.fetch(API, start, start + timedelta(days=1), tmp_path / "raw", tmp_path / "m.csv")
+    assert len(list((tmp_path / "raw" / "MDO").glob("*.json"))) == 2
