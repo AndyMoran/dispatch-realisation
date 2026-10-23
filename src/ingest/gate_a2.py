@@ -181,10 +181,46 @@ def decide(low: float, point: float, cfg: dict) -> str:
 # ---------------------------------------------------------------- I/O: NESO
 
 def _get_json(url: str, params: dict | None = None) -> dict:
+    """GET JSON; on an HTTP error, raise with the server's own message (PIPELINE_RULES §2)."""
     import requests
     r = requests.get(url, params=params, timeout=120)
-    r.raise_for_status()
+    if not r.ok:
+        raise GateA2Error(f"HTTP {r.status_code} from {r.url}: {r.text[:400]}")
     return r.json()
+
+
+def distinct_stages(api: str, resource_id: str, candidates=range(0, 10)) -> tuple[set[int], str]:
+    """Stage values present in a resource, without fetching any volumes.
+
+    Tries CKAN's SQL route, then its distinct search, then a row count per stage
+    (`limit=0` returns only a total). Returns the stages and the route that worked.
+    """
+    errors = []
+    try:
+        sql = f'SELECT DISTINCT stage FROM "{resource_id}"'
+        recs = _get_json(f"{api}/datastore_search_sql", {"sql": sql})["result"]["records"]
+        return {int(x["stage"]) for x in recs}, "sql"
+    except GateA2Error as e:
+        errors.append(f"sql: {e}")
+    try:
+        recs = _get_json(f"{api}/datastore_search",
+                         {"resource_id": resource_id, "fields": "stage",
+                          "distinct": "true", "limit": 100})["result"]["records"]
+        return {int(x["stage"]) for x in recs}, "distinct"
+    except GateA2Error as e:
+        errors.append(f"distinct: {e}")
+    try:
+        found = set()
+        for k in candidates:
+            res = _get_json(f"{api}/datastore_search",
+                            {"resource_id": resource_id, "limit": 0,
+                             "filters": json.dumps({"stage": k})})["result"]
+            if res.get("total", 0) > 0:
+                found.add(k)
+        return found, "count_per_stage"
+    except GateA2Error as e:
+        errors.append(f"count: {e}")
+    raise GateA2Error("Could not read stage values: " + " | ".join(errors))
 
 
 def month_label(m: str) -> str:
@@ -212,8 +248,10 @@ def resources_and_stages(cfg: dict) -> tuple[dict, dict, dict[str, set[int]]]:
     all_bm = match_resources(pkg["resources"], neso["all_bm_name"], window)
     psa = match_resources(pkg["resources"], neso["psa_name"], window)
     stages: dict[str, set[int]] = {}
+    routes: set[str] = set()
     for m in window:
         s: set[int] = set()
+        first = True
         for res in (all_bm[m], psa[m]):
             meta = _get_json(f"{neso['api']}/datastore_search",
                              {"resource_id": res["id"], "limit": 0})["result"]
@@ -221,12 +259,12 @@ def resources_and_stages(cfg: dict) -> tuple[dict, dict, dict[str, set[int]]]:
             missing = [f for f in neso["fields"] if f not in names]
             if missing:
                 raise GateA2Error(f"{res['name']}: missing fields {missing}")
-            got = _get_json(f"{neso['api']}/datastore_search",
-                            {"resource_id": res["id"], "fields": "stage",
-                             "distinct": "true", "limit": 100})["result"]["records"]
-            vals = {int(x["stage"]) for x in got}
-            s = vals if not s else s & vals          # a stage counts only if both files have it
+            vals, route = distinct_stages(neso["api"], res["id"])
+            routes.add(route)
+            s = vals if first else s & vals          # a stage counts only if both files have it
+            first = False
         stages[m] = s
+    print(f"stage query route(s): {sorted(routes)}", file=sys.stderr)
     return all_bm, psa, stages
 
 

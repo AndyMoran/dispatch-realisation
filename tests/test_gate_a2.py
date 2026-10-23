@@ -97,3 +97,24 @@ def test_presence_pass_through_streams_and_records():
     assert len(passed) == 3                      # every row still reaches the valuation
     assert present == {"U1": {"2026-01"}}        # U2 is fleet but has no GC: not exposure
     assert outside == {"NB"}                     # NESO battery outside the M10 fleet
+
+
+def test_distinct_stages_falls_back_to_counts(monkeypatch):
+    def fake(url, params=None):
+        if url.endswith("datastore_search_sql"):
+            raise a2.GateA2Error("HTTP 403: sql disabled")
+        if params.get("distinct"):
+            raise a2.GateA2Error("HTTP 409: distinct not allowed")
+        stage = __import__("json").loads(params["filters"])["stage"]
+        return {"result": {"total": 10 if stage in (5, 6) else 0, "records": []}}
+    monkeypatch.setattr(a2, "_get_json", fake)
+    stages, route = a2.distinct_stages("https://x", "rid")
+    assert stages == {5, 6} and route == "count_per_stage"
+
+
+def test_distinct_stages_reports_every_failure(monkeypatch):
+    def fail(url, params=None):
+        raise a2.GateA2Error("HTTP 500: down")
+    monkeypatch.setattr(a2, "_get_json", fail)
+    with pytest.raises(a2.GateA2Error, match="sql: .*distinct: .*count: "):
+        a2.distinct_stages("https://x", "rid")
