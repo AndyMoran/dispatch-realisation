@@ -118,3 +118,10 @@ def test_distinct_stages_reports_every_failure(monkeypatch):
     monkeypatch.setattr(a2, "_get_json", fail)
     with pytest.raises(a2.GateA2Error, match="sql: .*distinct: .*count: "):
         a2.distinct_stages("https://x", "rid")
+
+
+def test_mid_chunk_boundaries_deduplicated():
+    a = {"dataProvider": "APXMIDP", "startTime": "2026-01-08T00:00:00Z", "price": 50, "volume": 10}
+    b = {"dataProvider": "N2EXMIDP", "startTime": "2026-01-08T00:00:00Z", "price": 0, "volume": 0}
+    out = a2.dedupe_mid([a, b, dict(a)], "dataProvider", "startTime")   # a repeats at the boundary
+    assert len(out) == 2

@@ -354,7 +354,16 @@ def fetch_mid(cfg: dict) -> list[dict]:
                             {el["mid_from_param"]: d.isoformat(), el["mid_to_param"]: e.isoformat()})
         out += payload.get("data", payload) if isinstance(payload, dict) else payload
         d = e
-    return out
+    return dedupe_mid(out, el["field_provider"], el["field_time"])
+
+
+def dedupe_mid(records: list[dict], f_provider: str, f_time: str) -> list[dict]:
+    """One record per provider per half hour. Chunk windows include both ends, so
+    each boundary half hour arrives twice; the later copy is kept."""
+    seen: dict[tuple[str, str], dict] = {}
+    for r in records:
+        seen[(str(r[f_provider]), str(r[f_time]))] = r
+    return [seen[k] for k in sorted(seen)]
 
 
 def run(cfg: dict) -> dict:
