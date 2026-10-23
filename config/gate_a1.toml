@@ -1,0 +1,45 @@
+# Gate A1 thresholds — PROJECT.md §5A.
+# Fill every value and commit BEFORE running `gate_a1.py run`.
+# The script refuses to run while any value below is empty.
+# Record the commit hash of this file in the decision log.
+schema_version = "1.0"
+
+[data]
+window_start   = "2026-06-25"   # P499 go-live
+data_cutoff    = ""             # YYYY-MM-DD, last day of declaration data used
+cohort_bin     = "week"         # adoption dates binned by ISO week
+default_abs_mwh = 9999          # |MDO| or |MDB| >= this is NESO's default, not a submission
+
+[design1]   # staggered adoption
+min_cohorts            = 3
+min_units_per_cohort   = ""     # N
+min_post_weeks_earliest = 8
+
+[design2]   # within-unit metric variation
+min_units          = ""         # N
+min_weeks_per_unit = ""         # M
+# Declaration-only proxy for metric variation: within-unit coefficient of
+# variation of daily median (MDO + |MDB|). Needs no usable-MWh metadata.
+min_within_unit_cv = ""
+
+[design3]   # grace-period dose-response (inputs, not data)
+grace_end_announced = ""        # true / false
+grace_end_date      = ""        # YYYY-MM-DD if announced
+min_weeks_before_cutoff = ""    # k
+min_reserve_units   = ""        # N
+
+[rules]
+borderline_fraction = 0.10      # within 10% of threshold -> treat as failed
+
+[api]
+base_url = "https://data.elexon.co.uk/bmrs/api/v1"
+spec_url = "https://data.elexon.co.uk/swagger/v1/swagger.json"   # PROVISIONAL: confirm with `probe`
+# Filled from `probe` output (endpoint shape is unverified: R12).
+mdo_path    = ""     # e.g. "/datasets/MDO"
+mdb_path    = ""
+from_param  = ""     # e.g. "from"
+to_param    = ""     # e.g. "to"
+chunk_hours = 24     # reduce to 0.5 if the API serves one settlement period per request
+field_unit  = ""     # e.g. "bmUnit"
+field_time  = ""     # e.g. "timeFrom"
+field_value = ""     # e.g. "levelFrom"

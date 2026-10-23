@@ -1,0 +1,26 @@
+# Data — raw and interim never committed; manifests are
+data/raw/
+data/interim/
+!data/manifests/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Large outputs
+*.parquet
+*.feather
+*.h5
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+PROJECT_INSTRUCTIONS.txt

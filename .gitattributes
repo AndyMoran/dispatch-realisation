@@ -1,0 +1,9 @@
+# Store text with LF line endings, whatever the editor's platform.
+# Byte-identical outputs (PIPELINE_RULES §8) depend on it.
+* text=auto eol=lf
+
+*.parquet binary
+*.feather binary
+*.h5      binary
+*.png     binary
+*.pdf     binary
