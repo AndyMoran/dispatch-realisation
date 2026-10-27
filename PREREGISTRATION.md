@@ -56,7 +56,12 @@ Units without disclosed U are not scored on metric 4 or on metric 1's secondary,
 
 - H1: for each metric, OLS of the unit's mean over its scored weeks on the adjustment set (§3). The adjusted ranking orders units by residual. Rank uncertainty comes from a unit-level bootstrap and is published with the ranks, so near-ties are not read as differences. The raw ranking is published alongside; the adjusted ranking leads.
 - Design selection: by the ordered design hierarchy and triggers in `PROJECT.md` §5A (single source; not restated here). The selected design and its trigger statistics, as recorded in the PROJECT.md decision log at Gate A1, are copied here at lock: *[design, statistics, date]*.
-- H2: staggered-adoption event study, Callaway–Sant'Anna estimator, not-yet-treated controls, event window −4 to +8 weeks around each unit's adoption week. Report all four pre-period coefficients and a joint pre-trend test. Cohorts with fewer than 8 post-weeks contribute to the event times they reach.
+- H2 (**exploratory**): staggered-adoption event study. Design 1's trigger was not met at Gate A1, so H2 cannot be the headline or a secondary analysis (PROJECT.md §5A). It is pre-specified here so that it can be reported at all, and is reported whatever it shows.
+  - *Estimator:* Callaway–Sant'Anna, not-yet-treated controls, event window −4 to +8 weeks around each unit's adoption week (§3, primary treatment).
+  - *Cohorts:* ISO adoption weeks that meet Gate A1's per-cohort minimum, as recorded in the official Gate A1 report. The last cohort has no comparison group and is dropped. Cohorts below the minimum are excluded and counted.
+  - *Reporting:* all four pre-period coefficients and a joint pre-trend test. Event times reached by fewer than two cohorts are not reported. Cohorts with fewer than 8 post-weeks contribute to the event times they reach.
+  - *Limits:* no Holm adjustment, no £ conversion, and no use in the headline estimate. Every table and chart carries the label "exploratory". If its sign or size differs from the headline, both are reported and the difference is discussed, not resolved in H2's favour.
+  - *Sensitivity:* dynamic onset as treatment (§3).
 - H3: unit fixed effects, time fixed effects; standard errors clustered by unit.
 - **£/MW/yr definition:**
   - Numerator: declaration-attributable Δ accepted MWh per year × margin.

@@ -398,8 +398,21 @@ def smoke(cfg: dict, days: int = 2) -> dict:
     return summary
 
 
+def assert_cutoff_complete(cutoff: date, today: date) -> None:
+    """Refuse to evaluate until every day up to the cut-off has finished (UTC).
+
+    The API returns an empty response for days that have not happened yet, so
+    without this check a run on incomplete data would look like a complete one.
+    """
+    if today <= cutoff:
+        raise GateA1Error(f"Data cut-off {cutoff} is not complete until it ends (UTC). "
+                          f"Run on or after {cutoff + timedelta(days=1)}.")
+
+
 def run(cfg: dict) -> None:
     assert_config_complete(cfg)
+    assert_cutoff_complete(date.fromisoformat(cfg["data"]["data_cutoff"]),
+                           datetime.now(timezone.utc).date())
     api, dcfg = cfg["api"], cfg["data"]
     start = datetime.fromisoformat(dcfg["window_start"]).replace(tzinfo=timezone.utc)
     end = (datetime.fromisoformat(dcfg["data_cutoff"]) + timedelta(days=1)).replace(tzinfo=timezone.utc)

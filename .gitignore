@@ -24,3 +24,6 @@ Thumbs.db
 .vscode/
 .idea/
 PROJECT_INSTRUCTIONS.txt
+
+# Per-unit outputs stay out of the repo until right of reply (PROJECT.md §7a)
+outputs/gate_a1/adoption_dates.csv

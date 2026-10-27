@@ -250,3 +250,13 @@ def test_onset_cohorts_use_iso_weeks():
     onset = g.dynamic_onset(recs, 9999, 0.5, 7, 4)
     summ = g.onset_summary(adoption_dates(recs, 9999), onset)
     assert summ["dynamic_onset_cohort_sizes"] == {"2026-W27": 1}   # T0 is Mon 29 Jun 2026
+
+
+
+def test_run_refuses_before_cutoff_has_ended():
+    from datetime import date
+    with pytest.raises(GateA1Error, match="not complete"):
+        g.assert_cutoff_complete(date(2026, 10, 29), date(2026, 10, 27))
+    with pytest.raises(GateA1Error, match="not complete"):
+        g.assert_cutoff_complete(date(2026, 10, 29), date(2026, 10, 29))
+    g.assert_cutoff_complete(date(2026, 10, 29), date(2026, 10, 30))

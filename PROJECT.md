@@ -130,6 +130,7 @@ The headline design is the first one, in this order, whose trigger is met. Trigg
 
 Rules:
 - Lower-ranked designs whose triggers are also met run as **pre-specified secondary analyses** and are reported in full, but never replace the headline. This blocks choosing the design with the most favourable result.
+- A higher-ranked design whose trigger fails may run only as an **exploratory** analysis, and only if `PREREGISTRATION.md` specifies it before the lock. It is labelled exploratory wherever it appears, is reported whatever it shows, and never feeds the headline or the £ estimate.
 - Thresholds (*N*, *M*, *k*, SD threshold) are filled in before Gate A1 is evaluated, not after. Their values live in `config/gate_a1.toml`, and the code refuses to run while any is blank.
 - If a trigger statistic is borderline (within 10% of its threshold), the lower-ranked design is used.
 - Optimiser-level claims only if the lead party → optimiser mapping is clean. Units that changed optimiser are the strongest variation; count them before promising anything.
