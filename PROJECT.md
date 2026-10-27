@@ -98,10 +98,12 @@ All documentation follows `WRITING.md` (Strunk and White; Zinsser): point first,
 **Outcome (A does not wait for B).** Accepted Balancing Mechanism energy per registered MW, per unit per week, from BMRS data. Definition: `PREREGISTRATION.md` §3. NESO's accepted ÷ in-merit ratio is not used, because its denominator depends on the unit's own declarations (ASSUMPTIONS.md M1, refuted 23 Oct 2026). B adds the skip measurement and £ layer afterwards.
 
 **Declaration-quality metrics (physics-first, no private data):**
-1. *Conservation:* stability of MDO + MDB against usable MWh.
-2. *Mass balance:* ΔMDO vs integrated metered output and accepted BOA energy, up to round-trip efficiency.
+1. *Conservation:* stability of declared export and import energy, plus PN-protected energy.
+2. *Mass balance:* change in declared deliverable energy vs metered energy in and out, up to round-trip efficiency.
 3. *Redeclaration latency:* time from BOA to updated MDO/MDB (NESO's reserve benchmark: within 1 minute).
-4. *Conservatism:* declared MDO vs reconstructed deliverable energy.
+4. *Conservatism:* declared deliverable energy vs energy reconstructed from metered output alone.
+
+Formulas: `PREREGISTRATION.md` §3 (single source).
 
 **Outputs.**
 - Fleet-wide ranking by unit, **raw and adjusted**. Lead with adjusted. Units not scored are listed with the reason.

@@ -29,6 +29,12 @@ grace_end_date      = ""        # YYYY-MM-DD if announced
 min_weeks_before_cutoff = 4     # k
 min_reserve_units   = 10        # N
 
+[sensitivity]   # dynamic onset: H2 sensitivity and static-start description only.
+# Does not affect design selection. Added 27 Oct 2026, before the Gate A1 run.
+min_daily_mdo_range_mwh = 0.5   # a day is dynamic if latest MDO ranges by >= this
+onset_window_days       = 7     # onset: first day starting a window of this length
+onset_min_dynamic_days  = 4     # ... in which at least this many days are dynamic
+
 [rules]
 borderline_fraction = 0.10      # within 10% of threshold -> treat as failed
 

@@ -29,6 +29,8 @@ def cfg(**over):
         "design3": {"grace_end_announced": False, "grace_end_date": "",
                     "min_weeks_before_cutoff": 4, "min_reserve_units": 5},
         "rules": {"borderline_fraction": 0.10},
+        "sensitivity": {"min_daily_mdo_range_mwh": 0.5, "onset_window_days": 7,
+                        "onset_min_dynamic_days": 4},
         "api": {k: "x" for k in ["mdo_path", "mdb_path", "from_param", "to_param",
                                  "field_unit", "field_time", "field_value",
                                  "field_published", "field_serial"]},
@@ -199,3 +201,52 @@ def test_pumped_storage_excluded_but_kept_and_unknown_units_kept():
     assert units["PS1"]["status"] == "excluded(fuel_type_PS)"
     assert units["BAT1"]["status"] == "adopted"
     assert units["NEW1"]["status"] == "adopted" and units["NEW1"]["fuel_type"] == ""
+
+
+
+# ------------------------------------------------------------ dynamic onset
+
+def mdo_day(unit, day, values):
+    return [Record(unit, T0 + timedelta(days=day, hours=h), v, "MDO") for h, v in enumerate(values)]
+
+
+def test_static_then_dynamic_onset_and_summary():
+    recs = []
+    for d in range(10):                                  # 10 days copying a static maximum
+        recs += mdo_day("U1", d, [100.0, 100.0, 100.0])
+    for d in range(10, 20):                              # then tracking state of charge
+        recs += mdo_day("U1", d, [80.0, 60.0, 70.0])
+    onset = g.dynamic_onset(recs, 9999, 0.5, 7, 4)
+    assert onset["U1"] == (T0 + timedelta(days=10)).date()
+    units = adoption_dates(recs, 9999)
+    summ = g.onset_summary(units, onset)
+    assert summ["static_start_days_ge_7"] == 1 and summ["static_start_days_median"] == 10
+
+
+def test_rounding_drift_and_isolated_days_are_not_dynamic():
+    recs = []
+    for d in range(14):
+        recs += mdo_day("U2", d, [50.0, 50.002, 50.001])     # rounding drift only
+    recs += mdo_day("U2", 3, [50.0, 40.0])                    # one isolated redeclaration day
+    recs += mdo_day("U2", 9, [50.0, 40.0])
+    onset = g.dynamic_onset(recs, 9999, 0.5, 7, 4)
+    assert "U2" not in onset
+    summ = g.onset_summary(adoption_dates(recs, 9999), onset)
+    assert summ["never_dynamic_by_cutoff"] == 1
+
+
+def test_defaults_and_mdb_ignored_for_onset():
+    recs = []
+    for d in range(7):
+        recs += mdo_day("U3", d, [9999.0, 9999.0])
+        recs += [Record("U3", T0 + timedelta(days=d, hours=h), v, "MDB") for h, v in enumerate([-10.0, -90.0])]
+    assert g.dynamic_onset(recs, 9999, 0.5, 7, 4) == {}
+
+
+def test_onset_cohorts_use_iso_weeks():
+    recs = []
+    for d in range(7):
+        recs += mdo_day("U4", d, [80.0, 60.0])
+    onset = g.dynamic_onset(recs, 9999, 0.5, 7, 4)
+    summ = g.onset_summary(adoption_dates(recs, 9999), onset)
+    assert summ["dynamic_onset_cohort_sizes"] == {"2026-W27": 1}   # T0 is Mon 29 Jun 2026

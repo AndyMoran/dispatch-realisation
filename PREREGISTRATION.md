@@ -29,13 +29,26 @@ Sources, endpoints and manifests: see `DATA_SOURCES.md`. Outcome data window: IS
 - **Why not accepted ÷ in-merit volume:** NESO's in-merit volume depends on the unit's own MEL/MIL, and from 25 June 2026 on its GC0166 parameters, so its definition changes at the treatment date. Assumption M1, refuted 23 October 2026 (`docs/week1/m1_denominator_check.md`).
 - **What the outcome does not control for:** how often the unit was in merit. Unit and week fixed effects absorb fixed unit differences and fleet-wide demand for balancing. Pricing changes remain a threat (ASSUMPTIONS.md O1, I10).
 
-**Declaration-quality metrics** (definitions to finalise, with formulas):
-1. Conservation error: |MDO + MDB − usable MWh| / usable MWh
-2. Mass-balance error: |ΔMDO − (−∫ metered export + BOA energy, efficiency-adjusted)|
-3. Redeclaration latency: minutes from BOA timestamp to next MDO/MDB update
-4. Conservatism: declared MDO ÷ reconstructed deliverable energy
+**Declaration-quality metrics.** Computed per unit per ISO week. A unit's score on each metric is the median of its scored weeks.
 
-**Treatment (H2):** first non-default MDO/MDB submission per unit, dated by delivery time (`timeFrom`), binned by ISO week. Values with |MWh| ≥ 9999 are NESO defaults, not submissions.
+*Notation.* For unit *i*: MDO_t ≥ 0 and MDB_t ≤ 0 are the declarations in force at minute *t* (latest submission, M9), in MWh. E⁺_h and E⁻_h are metered export and import in settlement period *h* (B1610), in MWh. PN-protected energy: P^exp_t and P^imp_t are the export and import energy in the unit's PN from *t* to the end of the protection horizon *H* (M15). Declarations are net of PN, reserve and response protection (M12). MDO is read as export energy at the meter and |MDB| as import energy at the meter (M13).
+
+*Efficiency.* η̂ = ΣE⁺ / ΣE⁻ over the unit's scored weeks: export out over import in. The unit's start and end state of energy differ by at most U, so the error is at most U / ΣE⁻. Units with η̂ outside [0.70, 0.98] are flagged and not scored on metrics 1, 2 and 4.
+
+*Declared deliverable energy* (export MWh if fully discharged, protection included): D^decl_t = MDO_t + P^exp_t.
+
+*Reconstruction ("tank walls").* Exporting *y* MWh lowers deliverable energy by *y*; importing *x* MWh raises it by η̂·*x*. Within week *w*, let K_t = Σ_{h<t} (η̂·E⁻_h − E⁺_h), the cumulative change since the week began. Then D^rec_t = D_0 + K_t for an unknown starting level D_0. The tank cannot hold less than nothing or more than its usable export energy U (P4), so 0 ≤ D_0 + K_t ≤ U at every *t*. Hence D_0 ∈ [−min K, U − max K]. The week is *identified* when this interval is at most 0.2·U wide, and *physics-inconsistent* when max K − min K > 1.02·U (U or η̂ is wrong). D^rec_t uses the interval's midpoint; the interval is carried into the metric's uncertainty. The reconstruction uses metered energy only, never declarations.
+
+1. **Conservation (stability).** C_t = MDO_t + P^exp_t + η̂·(|MDB_t| + P^imp_t), evaluated at the start of each settlement period. With honest declarations and fixed protections, C_t is constant at U minus reserve and response protection. Weekly metric: coefficient of variation of C_t. Needs no U. *Secondary:* |median C_t − U| / U, for units with disclosed U; reserve and response protection make this read low (O3).
+2. **Mass balance.** For each settlement period *h*: r_h = ΔD^decl_h − (η̂·E⁻_h − E⁺_h), with ΔD^decl_h taken from the start of *h* to the start of *h*+1. Following the PN, delivering a BOA, charging and resubmitting a PN all change both terms alike, so honest declarations give r_h ≈ 0. Three things also enter r_h and are not errors by the unit: changes in reserve or response protection, which are unobserved (O3); a unit protecting PN energy further ahead than H (sensitivity H = 6 hours, §6); and auxiliary load, which η̂ absorbs on average but not in timing (P3). Weekly metric: Σ_h |r_h| / Σ_h (E⁺_h + E⁻_h). Weeks with throughput below 0.5·U, or with any settlement period missing B1610, are not scored. Needs no U except for that idle screen; units without U use the fleet median MWh-per-MW times their GC.
+3. **Redeclaration latency.** For each BOA (BOALF acceptance time *a*), L = minutes from *a* to the unit's first MDO or MDB submission with publishTime ≥ *a* (M14). Censored at the unit's next acceptance or *a* + 30 minutes, whichever is first. Weekly metric: share of BOAs with L ≤ 1 minute, NESO's reserve benchmark. *Secondary:* median L, censored values at 30. Weeks with fewer than 5 BOAs are not scored.
+4. **Conservatism.** At the start of each settlement period in identified weeks: Q_t = D^decl_t / D^rec_t, excluding periods with D^rec_t < 0.05·U. Weekly metric: median Q_t. Values below 1 mean under-declaring, above 1 over-declaring. Unobserved reserve and response protection push Q below 1 (O3), so reserve-contracted units are reported separately where identifiable.
+
+Units without disclosed U are not scored on metric 4 or on metric 1's secondary, and are listed with that reason.
+
+**Treatment (H2):** first non-default MDO/MDB submission per unit, dated by delivery time (`timeFrom`), binned by ISO week. Values with |MWh| ≥ 9999 are NESO defaults, not submissions. This is when the control room stops applying the 30-minute rule to the unit, whatever the quality of its declarations.
+
+**Sensitivity treatment (H2):** dynamic onset, the first day of the first 7-day window in which the unit's MDO ranges by at least 0.5 MWh on 4 or more days (`config/gate_a1.toml`, `[sensitivity]`). A unit that declares a static profile is treated from its first submission in the primary analysis; it is a poor declarer, which H3 measures, not an untreated unit. Gate A1 reports, without unit IDs, how many units began with static declarations and for how long.
 
 **Adjustment set:** duration, node (or zone), commissioning date, time since adoption.
 
@@ -59,6 +72,8 @@ Intervals: 95%, with standard errors clustered by unit. For Callaway–Sant'Anna
 
 ## 6. Robustness (pre-specified)
 
+- Protection horizon H = 6 hours instead of the current settlement period plus three (M15)
+- Metric 2 computed only on settlement periods without BOAs (I12)
 - Offers and bids as separate outcomes
 - Excluding system-flagged acceptances
 - NESO Tier B accepted ÷ in-merit volume, reported descriptively only, with the M1 caveat stated

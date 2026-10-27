@@ -22,6 +22,7 @@ import json
 import shutil
 import sys
 import tomllib
+from collections import Counter
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -36,6 +37,7 @@ REQUIRED_FOR_RUN = {
     "design1": ["min_units_per_cohort"],
     "design2": ["min_units", "min_weeks_per_unit", "min_within_unit_cv"],
     "design3": ["grace_end_announced", "min_weeks_before_cutoff", "min_reserve_units"],
+    "sensitivity": ["min_daily_mdo_range_mwh", "onset_window_days", "onset_min_dynamic_days"],
     "api": ["mdo_path", "mdb_path", "from_param", "to_param",
             "field_unit", "field_time", "field_value", "field_published", "field_serial"],
 }
@@ -165,6 +167,50 @@ def within_unit_cv(records: list[Record], default_abs: float) -> dict[str, float
         if v["MDO"] and v["MDB"]:
             daily.setdefault(unit, []).append(median(v["MDO"]) + median(v["MDB"]))
     return {u: pstdev(x) / mean(x) for u, x in daily.items() if len(x) >= 2 and mean(x) > 0}
+
+
+def dynamic_onset(latest: list[Record], default_abs: float, min_range_mwh: float,
+                  window_days: int, min_dynamic_days: int) -> dict[str, date]:
+    """First day of the first window in which the unit's MDO is dynamic (sensitivity only).
+
+    A day is dynamic when the latest-declared MDO, over that UTC day, ranges by at
+    least `min_range_mwh`. Onset is the first day d such that, of the days from d to
+    d + window_days - 1, at least `min_dynamic_days` are dynamic. A static profile,
+    such as a copied maximum, never qualifies. Units that never qualify are absent.
+    Does not affect design selection (PREREGISTRATION.md §4, H2 sensitivity).
+    """
+    by_day: dict[tuple[str, date], list[float]] = {}
+    for r in latest:
+        if r.dataset != "MDO" or abs(r.mwh) >= default_abs:
+            continue
+        by_day.setdefault((r.unit, r.ts.date()), []).append(r.mwh)
+    dynamic: dict[str, set[date]] = {}
+    for (unit, d), v in by_day.items():
+        if max(v) - min(v) >= min_range_mwh:
+            dynamic.setdefault(unit, set()).add(d)
+    onset: dict[str, date] = {}
+    for unit, days in dynamic.items():
+        for d in sorted(days):
+            span = {d + timedelta(days=k) for k in range(window_days)}
+            if len(span & days) >= min_dynamic_days:
+                onset[unit] = d
+                break
+    return onset
+
+
+def onset_summary(units: dict[str, dict], onset: dict[str, date]) -> dict:
+    """Fleet counts for the static-start finding. No unit IDs."""
+    adopted = [u for u, v in units.items() if v["status"] == "adopted"]
+    lags = sorted((onset[u] - units[u]["first_real"].date()).days for u in adopted if u in onset)
+    return {
+        "adopted_units": len(adopted),
+        "never_dynamic_by_cutoff": sum(u not in onset for u in adopted),
+        "static_start_days_ge_7": sum(x >= 7 for x in lags),
+        "static_start_days_median": median(lags) if lags else None,
+        "dynamic_onset_cohort_sizes": dict(sorted(Counter(
+            "{}-W{:02d}".format(*onset[u].isocalendar()[:2]) for u in adopted if u in onset).items())),
+        "note": "Sensitivity and description only; design selection uses first non-default submission (M4a).",
+    }
 
 
 def passes(value: float, threshold: float, borderline: float) -> bool:
@@ -377,10 +423,14 @@ def run(cfg: dict) -> None:
     units = exclude_non_battery(adoption_dates(unique, default_abs), fuel_by_unit,
                                 dcfg["exclude_fuel_types"])
     cv = within_unit_cv(latest, default_abs)
+    sens = cfg["sensitivity"]
+    onset = dynamic_onset(latest, default_abs, sens["min_daily_mdo_range_mwh"],
+                          sens["onset_window_days"], sens["onset_min_dynamic_days"])
     with open(out_dir / "adoption_dates.csv", "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["schema_version", "bm_unit", "status", "fuel_type", "first_real_utc",
-                    "last_real_utc", "n_real", "n_default", "cohort", "within_unit_cv"])
+                    "last_real_utc", "n_real", "n_default", "cohort", "within_unit_cv",
+                    "dynamic_onset_date", "static_start_days"])
         for u in sorted(units):
             v = units[u]
             w.writerow([SCHEMA_VERSION, u, v["status"], v["fuel_type"],
@@ -388,13 +438,17 @@ def run(cfg: dict) -> None:
                         v["last_real"].isoformat() if v["last_real"] else "",
                         v["n_real"], v["n_default"],
                         cohort_key(v["first_real"]) if v["first_real"] else "",
-                        f"{cv[u]:.6f}" if u in cv else ""])
+                        f"{cv[u]:.6f}" if u in cv else "",
+                        onset[u].isoformat() if u in onset else "",
+                        (onset[u] - v["first_real"].date()).days
+                        if u in onset and v["first_real"] else ""])
 
     report = {"schema_version": SCHEMA_VERSION,
               "config_sha256": hashlib.sha256(CONFIG.read_bytes()).hexdigest(),
               "reference_snapshot": str(ref_path.relative_to(ROOT)),
               "reference_sha256": hashlib.sha256(ref_path.read_bytes()).hexdigest(),
-              **evaluate(units, cv, cfg)}
+              **evaluate(units, cv, cfg),
+              "dynamic_onset_sensitivity": onset_summary(units, onset)}
     (out_dir / "gate_a1_report.json").write_text(json.dumps(report, indent=2, sort_keys=True))
     print(json.dumps(report, indent=2, sort_keys=True))
 

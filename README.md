@@ -23,10 +23,10 @@ This project asks two questions:
 
 **Declaration quality** is measured from public data only, using energy balance:
 
-- **Conservation:** MDO + MDB should stay close to usable capacity.
-- **Mass balance:** changes in MDO should track metered output and accepted instructions, allowing for efficiency losses.
+- **Conservation:** the energy a unit declares it can export and import, plus what it holds back for its own schedule, should stay steady.
+- **Mass balance:** changes in declared energy should match metered energy in and out, allowing for efficiency losses.
 - **Redeclaration latency:** how quickly a unit updates MDO/MDB after an instruction.
-- **Conservatism:** declared deliverable energy vs reconstructed deliverable energy.
+- **Conservatism:** declared deliverable energy vs the energy reconstructed from metered output alone.
 
 **Rankings** are published per BM unit, both raw and adjusted for duration, network location, commissioning date and time since GC0166 adoption. The adjusted ranking leads, because raw declaration quality mostly reflects hardware and location. Lead party is shown for context only: lead party, operator and owner are often different companies. Each lead party sees its results and the method at least 10 working days before publication.
 
