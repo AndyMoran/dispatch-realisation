@@ -34,6 +34,10 @@ Licence: NESO Open Data Licence.
 
 Methodology: NESO / LCP Delta skip rate methodology (v2.0, May 2025).
 
+| Dataset | Use | Note |
+|---|---|---|
+| Response-Reserve Results By Unit (EAC) | Contracted MW per auction unit, product and delivery window (I13) | `auctionUnit` is not a BM unit ID; mapping needed |
+
 ## Asset metadata
 
 | Field | Candidate sources | Note |

@@ -14,10 +14,9 @@ Batteries are often the cheapest seller. But a battery is a tank with a pipe: it
 
 In 2026, Grid Code modification **GC0166** let batteries declare the tank directly, through two new parameters: **Maximum Delivery Offer (MDO)** and **Maximum Delivery Bid (MDB)**. These have been published per unit on BMRS since 25 June 2026, under BSC modification P499. A third parameter, Future State of Energy (FSoE), is not confirmed as published; the method works without it, with wider uncertainty.
 
-This project asks two questions:
+This project's main contribution is a standard: **how good are those declarations?** It measures whether each battery's declarations match the physics of what it actually did, and publishes the result per unit, with a right of reply. No such standard exists yet, and it needs no assumptions about the control room.
 
-1. **How good are those declarations?** Do they match the physics of what each battery actually did?
-2. **Does declaring well pay?** When a battery's declarations improve, does it get picked more, and how much is that worth per MW per year?
+A second, harder question follows: **does declaring well pay?** That one is answered as far as the data allow, with its limits stated in advance.
 
 ## In detail
 
@@ -30,7 +29,7 @@ This project asks two questions:
 
 **Rankings** are published per BM unit, both raw and adjusted for duration, network location, commissioning date and time since GC0166 adoption. The adjusted ranking leads, because raw declaration quality mostly reflects hardware and location. Lead party is shown for context only: lead party, operator and owner are often different companies. Each lead party sees its results and the method at least 10 working days before publication.
 
-**The £ estimate** comes from change within each unit over time: its GC0166 switch date, the end of NESO's grace period, or shifts in its redeclaration behaviour. Which design is used depends on how spread out the switch dates are, and the rule for choosing was fixed in advance (PROJECT.md §5A). Cross-sectional comparisons alone can't separate declaration skill from pricing skill.
+**Whether declaring well pays** is tested from change within each unit over time. That design cannot rule out other changes happening at the same time, such as a new optimiser or reserve contract, so the result is reported as an association. Whether it counts as secondary or exploratory depends on how small an effect the data could detect, under a rule fixed in advance (PREREGISTRATION.md §4). The scale of what is at stake comes separately, from the value of battery skips (PROJECT.md §5A, Gate A2).
 
 **Skip measurement** follows NESO's published methodology (stage exclusions), reproduced and validated against NESO's aggregate figures, with a £ layer: skipped volume × cost difference vs the marginal accepted action.
 

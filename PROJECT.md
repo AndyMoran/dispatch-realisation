@@ -79,17 +79,17 @@ All documentation follows `WRITING.md` (Strunk and White; Zinsser): point first,
 
 ## 4. Research questions
 
-**RQ1 (feasibility).** Are MDO/MDB declarations published per BM unit, with enough adopters and history to measure declaration quality? *(MDO/MDB: confirmed public via BMRS since P499, 25 June 2026. FSoE: unconfirmed.)*
+**RQ1 (feasibility).** Are MDO/MDB declarations published per BM unit, with enough adopters and history to measure declaration quality? *(MDO/MDB: public via BMRS since P499, 25 June 2026. FSoE: not published.)*
 
-**RQ2 (descriptive).** How does declaration quality vary across the battery fleet, raw and after adjusting for duration, node, commissioning date and time since GC0166 adoption?
+**RQ2 (primary).** How good are battery units' MDO/MDB declarations, measured against physics, and how does quality vary across the fleet, raw and after adjusting for duration, node, commissioning date and time since GC0166 adoption? The answer is a published standard: per-unit scores with uncertainty, a ranking, and the episodes that drive each score.
 
-**RQ3 (stakes).** What is the declaration-attributable difference in accepted Balancing Mechanism volume, expressed in £/MW/yr? Identified from **within-unit** variation (switch date, end of NESO grace period, changes in redeclaration latency), not from cross-sectional comparison alone. Denominator, price and pay-as-bid caveat defined in `PREREGISTRATION.md` §4 before lock.
+**RQ3 (secondary or exploratory).** Is better declaration quality associated with more accepted Balancing Mechanism volume, and with a higher BM premium? Estimated from within-unit variation, which cannot exclude changes over time that move both, so it is reported as an association, in £/MW/yr with an interval. Its label is set by the MDE rule in `PREREGISTRATION.md` §4, fixed before lock. The scale of the stakes comes from Gate A2, not from RQ3.
 
 **RQ4 (context).** Where in the network, and in which system states, are battery skips most costly? (Measurement layer for RQ3; standalone output downgraded.)
 
 ## 5. Workstreams
 
-### A — Declaration-quality benchmark (headline) · Weeks 1–8
+### A — Declaration-quality benchmark (primary) · Weeks 1–8
 
 **Why first.** GC0166 compliance deadline is 5 November 2026. Migration is staggered unit by unit, which gives within-unit before/after variation. Relevance is time-limited; the data is not (BMRS archives it).
 
@@ -106,20 +106,21 @@ All documentation follows `WRITING.md` (Strunk and White; Zinsser): point first,
 Formulas: `PREREGISTRATION.md` §3 (single source).
 
 **Outputs.**
-- Fleet-wide ranking by unit, **raw and adjusted**. Lead with adjusted. Units not scored are listed with the reason.
+- **The standard (lead output):** per-unit scores on the four metrics, each with its own interval; a fleet-wide ranking, **raw and adjusted**, led by adjusted, with the level gate; and for each unit the settlement periods that drive its score. Units not scored are listed with the reason.
+- Reliability and known-answer results for each metric (`PREREGISTRATION.md` §3), so readers can see the standard measures what it claims.
 - Claims map: what each published number shows and doesn't show.
-- Declaration-attributable £/MW/yr estimate as the lead number, with range.
+- RQ3's £/MW/yr association, with interval, labelled secondary or exploratory by the pre-registered MDE rule.
 - Methods paper (~3,000–5,000 words), one chart, open pipeline.
 - Right of reply and naming policy: see §7a.
 
 **Identification.**
-- Cross-section → published ranking (descriptive, adjusted).
-- Within-unit → £ estimate, using the design hierarchy below.
-- Claim language: each design identifies an effect only under its stated assumptions. Pre-trends are reported. Adoption timing may be endogenous, though NESO schedules migrations with lead parties, which may limit self-selection.
+- Cross-section → the standard and its ranking (descriptive, adjusted). This needs no causal identification.
+- Within-unit → RQ3's association, using the design hierarchy below.
+- Claim language: each design identifies an effect only under its stated assumptions. Pre-trends are reported. Adoption timing may be endogenous: NESO publishes no migration schedule, and providers switched when ready (ASSUMPTIONS.md I7a).
 
 **Design hierarchy (pre-specified fallbacks).**
 
-The headline design is the first one, in this order, whose trigger is met. Triggers are evaluated at Gate A1 on **declaration data only** (MDO/MDB submissions and dates; no acceptances, skips or prices). The triggering statistics and the selected design are recorded in the decision log, with date, before the pre-registration locks. A reader can therefore verify the fallback was chosen before any outcome was seen.
+RQ3's lead design is the first one, in this order, whose trigger is met. Triggers are evaluated at Gate A1 on **declaration data only** (MDO/MDB submissions and dates; no acceptances, skips or prices). The triggering statistics and the selected design are recorded in the decision log, with date, before the pre-registration locks. A reader can therefore verify the fallback was chosen before any outcome was seen.
 
 | Order | Design | Trigger (all conditions must hold) | Identifying assumption | Estimator |
 |---|---|---|---|---|
@@ -129,8 +130,8 @@ The headline design is the first one, in this order, whose trigger is met. Trigg
 | — | **Design note only** | No trigger met | — | Descriptive ranking (H1) and preliminary evidence; no £ estimate |
 
 Rules:
-- Lower-ranked designs whose triggers are also met run as **pre-specified secondary analyses** and are reported in full, but never replace the headline. This blocks choosing the design with the most favourable result.
-- A higher-ranked design whose trigger fails may run only as an **exploratory** analysis, and only if `PREREGISTRATION.md` specifies it before the lock. It is labelled exploratory wherever it appears, is reported whatever it shows, and never feeds the headline or the £ estimate.
+- Lower-ranked designs whose triggers are also met run as **pre-specified secondary analyses** and are reported in full, but never replace the lead design. This blocks choosing the design with the most favourable result.
+- A higher-ranked design whose trigger fails may run only as an **exploratory** analysis, and only if `PREREGISTRATION.md` specifies it before the lock. It is labelled exploratory wherever it appears, is reported whatever it shows, and never feeds the lead design or RQ3's £ estimate.
 - Thresholds (*N*, *M*, *k*, SD threshold) are filled in before Gate A1 is evaluated, not after. Their values live in `config/gate_a1.toml`, and the code refuses to run while any is blank.
 - If a trigger statistic is borderline (within 10% of its threshold), the lower-ranked design is used.
 - Optimiser-level claims only if the lead party → optimiser mapping is clean. Units that changed optimiser are the strongest variation; count them before promising anything.
@@ -150,7 +151,7 @@ Rules:
 - **Fleet:** ASSUMPTIONS.md M10, mapped from Elexon to National Grid unit IDs through the pinned reference snapshot. Unmapped units are counted in the report.
 - **Value:** skipped bid or offer volume × the margin in `PREREGISTRATION.md` §4. Price: the file's `average_price_per_MWh`, which NESO derives from BOD. MID: volume-weighted across providers with volume above zero, per half hour; half hours without MID are excluded and counted. The conservative margin uses the UK local day.
 - **Denominator:** MW-years of exposure: each unit's GC × the share of the window it was present (first to last month in the files). A unit without GC in the pinned reference snapshot is left out of numerator and denominator, and counted in the report. Sensitivity: GC of units present in September 2026, for a full year.
-- **Range:** low = Post-System-Action skips × the conservative daily margin; point = All-BM skips × the headline margin.
+- **Range:** low = Post-System-Action skips × the conservative daily margin; point = All-BM skips × the primary margin.
 - **Low:** low end < £5,000/MW/yr → reputation project: no product packaging, no press push, light outreach.
 - **High:** point > £10,000/MW/yr → product-grade: benchmark as lead artifact, targeted owner outreach, press.
 - **Middle:** A proceeds unchanged; packaging decided at Gate B. This includes the case where the low end is below £5,000 and the point is above £10,000: the range is too wide to decide.
