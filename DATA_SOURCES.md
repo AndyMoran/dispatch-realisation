@@ -36,7 +36,8 @@ Methodology: NESO / LCP Delta skip rate methodology (v2.0, May 2025).
 
 | Dataset | Use | Note |
 |---|---|---|
-| Response-Reserve Results By Unit (EAC) | Contracted MW per auction unit, product and delivery window (I13) | `auctionUnit` is not a BM unit ID; mapping needed |
+| Response-Reserve Results By Unit (EAC) | Contracted MW per auction unit, product and delivery window: Claim 1 and 2 contract screens (I13) | `auctionUnit` is not a BM unit ID; alias table committed before coverage is counted |
+| Balancing Reserve and STOR results | Same use, for products outside EAC | Dataset names to be confirmed by `contract_sources.py discover` |
 
 ## Asset metadata
 

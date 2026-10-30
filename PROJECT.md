@@ -4,7 +4,7 @@
 
 Owner: Andy Moran (Heaviside Analytics)
 Start: w/c 26 October 2026 · Horizon: ~12 weeks (to mid-January 2027)
-Status: **Week 1 — pre-registration redrafted (version 2, 30 Oct 2026)**
+Status: **Week 1 — pre-registration revision 2 drafted; lock 5–6 Nov 2026 after the contract-coverage run**
 
 ---
 
@@ -132,7 +132,7 @@ Supported the deferred £ analysis. Revisit with version 2.
 | Wk | w/c | A: Audit | C: Post | D: Note | E: Outreach |
 |---|---|---|---|---|---|
 | 1 | 26 Oct | Gate A1; lock counts; U-source search; scope narrowed; pre-registration redrafted | Draft | Draft | Build list |
-| 2 | 2 Nov | Lock pre-registration (Zenodo); synthetic suite and scoring code. 5 Nov compliance deadline | Draft | Draft | — |
+| 2 | 2 Nov | Auction-unit alias table; contract-coverage run; lock pre-registration 5–6 Nov (Zenodo); synthetic suite. 5 Nov compliance deadline | Draft | Draft | — |
 | 3 | 9 Nov | Known-answer gate; data pull (PN, B1610, BOALF); case-series search (2 days) | Publish | Publish | First 5 (with C; method ask) |
 | 4 | 16 Nov | Pinned scoring run (window closes 15 Nov); reliability gate | — | — | — |
 | 5 | 23 Nov | Fleet results; private packs sent to lead parties (≥ 10 working days before fleet publication) | — | — | — |
@@ -262,3 +262,6 @@ Ask before A publishes (Wks 1–6): "I'm auditing GB battery MDO/MDB declaration
 | 2026-10-30 | Framed as testing one hypothesis for battery skips, declaration quality, which NESO's root-cause review could not test because MDO/MDB were unpublished when it concluded. Coverage stated per channel; over-declaration named as the weakest-tested; prevalence, not association with skips | Places the audit on NESO's own list of causes and states what it settles and leaves open (R23) |
 | 2026-10-30 | No carbon or £ figure anywhere in version 1, including the motivation | An unverified figure is a lock risk; any figure would need the counterfactual cut in §8 |
 | 2026-10-30 | Synthetic battery #10 (honest, derates at low charge) added; §5 states that all scored instructions fall under GC0166 | Derating mimics over-declaration (P6); the 15- and 30-minute rules never govern scored data (R25) |
+| 2026-10-30 | **Claim 2's hard flag scored on certified contract-free unit-weeks only.** A week is contract-free if it holds no mapped reserve or response contract time and the lead party has no unmappable battery auction unit. Other weeks reported as contract-exposed or status unknown. If fewer than 30 eligible units have ≥ 2 contract-free weeks at the lock run, the hard flag is a case series | Reserve and response protection legitimately lowers MDO for every period it spans, so "provable" needs the meter as the only witness; subtract-where-mapped would bias contracted units towards "none detected" (I13, O3) |
+| 2026-10-30 | Lock moved to 5 Nov 2026 (6 Nov if mapping overruns), after `contract_coverage.json` exists | Claim 2's coverage must be known before the lock; scoring starts only in the week of 16 Nov |
+| 2026-10-30 | D^decl adds back accepted-BOA energy still to be delivered (B^exp); Claim 3's r uses MDO as published before acceptance; registered MW drops the MEL fallback | Removes false lower-wall violations during multi-period BOAs; stops post-acceptance redeclarations inflating r; reference data has no MEL (M16, M21, M22) |
