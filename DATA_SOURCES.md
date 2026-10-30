@@ -14,10 +14,10 @@ Licence: BMRS Data Licence Terms.
 | **MDB** — Maximum Delivery Bid | Declared deliverable import energy | Per unit, time profile | As above |
 | MELS / MILS | Power limits (pipe) | Per unit | Pre-GC0166 these carried the 30-minute rule |
 | PN | Physical notifications | Per unit, per SP | Baseline position |
-| BOAL / BOALF | Accepted bid-offer instructions | Per unit, per acceptance | Timestamp for redeclaration latency |
-| BOD | Bid-offer prices and volumes | Per unit, per SP | Vintage-sensitive |
-| B1610 | Metered generation | Per unit, per SP | Settlement data; revisions possible |
-| MID — Market Index Data | Wholesale reference price for £ margin | Per SP | — |
+| BOAL / BOALF | Accepted bid-offer instructions | Per unit, per acceptance | Accepted energy for Claim 3; timestamp for latency (Claim 5) |
+| BOD | Bid-offer prices and volumes | Per unit, per SP | Vintage-sensitive. Not used in version 1 |
+| B1610 | Metered generation | Per unit, per SP | Settlement data; revisions possible. Basis of the tank walls (Claims 1–4) |
+| MID — Market Index Data | Wholesale reference price for £ margin | Per SP | Deferred to version 2 |
 | Reference: BM units | Lead party, fuel type | Per unit | For optimiser mapping (I4) |
 | FSoE | Future State of Energy | — | Not published (R5a) |
 
@@ -28,8 +28,8 @@ Licence: NESO Open Data Licence.
 
 | Dataset | Use | Note |
 |---|---|---|
-| Skip Rates summary | Validation target (Gate B) | Per 30 min, by stage |
-| In Merit All BM (monthly files) | Unit-level skipped/accepted volume; Gate A2 crude stakes | Fields include bm_unit, fuel, bid_offer, stage, in_merit_volume_MWh, accepted_volume_MWh, skipped_volume_MWh |
+| Skip Rates summary | Validation target (Gate B) | Per 30 min, by stage. Deferred to version 2 |
+| In Merit All BM (monthly files) | Unit-level skipped/accepted volume; Gate A2 crude stakes. Deferred to version 2 | Fields include bm_unit, fuel, bid_offer, stage, in_merit_volume_MWh, accepted_volume_MWh, skipped_volume_MWh |
 | In Merit Post System Action (monthly files) | Alternative skip definition | — |
 
 Methodology: NESO / LCP Delta skip rate methodology (v2.0, May 2025).
@@ -43,9 +43,9 @@ Methodology: NESO / LCP Delta skip rate methodology (v2.0, May 2025).
 | Field | Candidate sources | Note |
 |---|---|---|
 | Node / GSP | BMRS reference data; TEC register | — |
-| MW, MWh, duration | Developer disclosures; Ofgem/REPD; TEC register | Usable vs nameplate (P4) |
+| MW, MWh, duration | Developer disclosures (nameplate MWh, Claim 4 only); REPD (MW only); Capacity Market register (minimum duration class, no unit ID, R21); SSEN ECR (no MWh filled, R22) | Nameplate bounds usable MWh from above (P5); no public source gives U for most units (P4a) |
 | Commissioning date | REPD; first BMRS activity | Proxy if missing |
-| Optimiser | Press releases; lead party | Low confidence; document per unit |
+| Optimiser | Press releases; lead party | Low confidence. Optimiser claims deferred to version 2 |
 
 ## Vintage policy
 

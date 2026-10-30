@@ -1,46 +1,41 @@
 # Dispatch Realisation of GB Batteries
 
-How well do GB battery storage units tell the control room what they can do, and what does it cost when they're passed over?
+Do GB battery storage units tell the control room the truth about how much energy they hold? This project checks each unit's declarations against its own meter.
 
-**Status:** scoping (October 2026). Nothing here is a result yet.
+**Status:** pre-registration drafted (October 2026); nothing has been scored. Nothing here is a result yet.
 
 ---
 
 ## In plain terms
 
-The electricity control room constantly buys small adjustments: a bit more power here, a bit less there. Sellers queue up with prices. A **skip** is when the control room passes over a cheaper seller and pays a dearer one.
+The electricity control room constantly buys small adjustments: a bit more power here, a bit less there. Batteries are often the cheapest seller. But a battery is a tank with a pipe: it can push hard (power, MW), but only for so long (energy, MWh).
 
-Batteries are often the cheapest seller. But a battery is a tank with a pipe: it can push hard (power, MW), but only for so long (energy, MWh). Until 2026 a battery could declare its power but not its available energy. A control room that can't see the tank is cautious, and caution means picking something else.
+Since 2026, Grid Code modification **GC0166** has required batteries to declare what is in the tank, through two parameters: **Maximum Delivery Offer (MDO)** and **Maximum Delivery Bid (MDB)**. Elexon has published them per unit on BMRS since 25 June 2026, under BSC modification P499. The control room sizes its instructions from them. NESO's own trial found that submitted values overstated what batteries could deliver.
 
-In 2026, Grid Code modification **GC0166** let batteries declare the tank directly, through two new parameters: **Maximum Delivery Offer (MDO)** and **Maximum Delivery Bid (MDB)**. These have been published per unit on BMRS since 25 June 2026, under BSC modification P499. A third parameter, Future State of Energy (FSoE), is not confirmed as published; the method works without it, with wider uncertainty.
-
-This project's main contribution is a standard: **how good are those declarations?** It measures whether each battery's declarations match the physics of what it actually did, and publishes the result per unit, with a right of reply. No such standard exists yet, and it needs no assumptions about the control room.
-
-A second, harder question follows: **does declaring well pay?** That one is answered as far as the data allow, with its limits stated in advance.
+So the question is simple: **are the declarations physically true?** A battery's meter records every MWh that goes in and out. If its declarations say the tank held more, or less, than the meter allows, the declarations are wrong. This project audits that, for every battery unit, from public data only, and publishes the result per unit with a right of reply.
 
 ## In detail
 
-**Declaration quality** is measured from public data only, using energy balance:
+Five claims, defined in [`PREREGISTRATION.md`](PREREGISTRATION.md):
 
-- **Conservation:** the energy a unit declares it can export and import, plus what it holds back for its own schedule, should stay steady.
-- **Mass balance:** changes in declared energy should match metered energy in and out, allowing for efficiency losses.
-- **Redeclaration latency:** how quickly a unit updates MDO/MDB after an instruction.
-- **Conservatism:** declared deliverable energy vs the energy reconstructed from metered output alone.
+1. **Mass-balance coherence (primary):** declarations should change as the meter says stored energy changed.
+2. **Lower-wall violations (primary):** a unit should never declare less than the energy its meter proves it held.
+3. **Non-delivery (secondary):** if NESO instructs energy within a unit's declared MDO and the unit runs out early, it over-declared.
+4. **Upper-wall violations (case series):** where a nameplate MWh is disclosed, a unit should never declare more than its tank could hold.
+5. **Redeclaration latency (fleet level):** how quickly units update their declarations after an instruction.
 
-**Rankings** are published per BM unit, both raw and adjusted for duration, network location, commissioning date and time since GC0166 adoption. The adjusted ranking leads, because raw declaration quality mostly reflects hardware and location. Lead party is shown for context only: lead party, operator and owner are often different companies. Each lead party sees its results and the method at least 10 working days before publication.
+The result is a **flag table**, not a ranking: for each unit, whether its declarations are physically consistent with its meter, with uncertainty and with each limit stated. Lead party is shown for context only; lead party, operator and owner are often different companies. Each lead party sees its results and the method at least 10 working days before publication.
 
-**Whether declaring well pays** is tested from change within each unit over time. That design cannot rule out other changes happening at the same time, such as a new optimiser or reserve contract, so the result is reported as an association. Whether it counts as secondary or exploratory depends on how small an effect the data could detect, under a rule fixed in advance (PREREGISTRATION.md §4). The scale of what is at stake comes separately, from the value of battery skips (PROJECT.md §5A, Gate A2).
+A first finding came out of the design work: public registers do not record how much energy GB batteries hold. REPD records power only. In SSEN's Embedded Capacity Register the storage-MWh field read "DATA NOT AVAILABLE" for every connected battery site. That is why the audit uses tests that need no capacity figure.
 
-**Skip measurement** follows NESO's published methodology (stage exclusions), reproduced and validated against NESO's aggregate figures, with a £ layer: skipped volume × cost difference vs the marginal accepted action.
-
-See [`PROJECT.md`](PROJECT.md) for scope, gates and timeline, [`ASSUMPTIONS.md`](ASSUMPTIONS.md) for the assumptions ledger, [`DATA_SOURCES.md`](DATA_SOURCES.md) for datasets and vintage policy, and [`PREREGISTRATION.md`](PREREGISTRATION.md) for pre-registered analyses.
+See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMPTIONS.md) for the assumptions ledger, and [`DATA_SOURCES.md`](DATA_SOURCES.md) for datasets and vintage policy.
 
 ## What this is not
 
-- Not a verdict on any operator. It is a measurement, with stated uncertainty and stated limits.
-- Not causal without conditions. The within-unit design identifies an effect only under stated assumptions (parallel trends, no coincident shocks); pre-trends are reported.
-- Not tied to a positive result. A null is a valid outcome: if declaration quality doesn't predict acceptance, that is the finding.
-- Not a revenue forecast or siting tool.
+- Not a verdict on any operator or optimiser. It tests declarations against physics, not commercial skill or intent.
+- Not a ranking. Units are flagged, with uncertainty, not placed in order.
+- Not a revenue estimate. Whether declaring well pays is deferred to a later version; this one could not identify it.
+- Not tied to a positive result. If declarations turn out to be physically consistent, that is the finding.
 
 ## Repository layout (proposed)
 
@@ -49,7 +44,7 @@ See [`PROJECT.md`](PROJECT.md) for scope, gates and timeline, [`ASSUMPTIONS.md`]
 ├── PROJECT.md              scope, gates, timeline, decision log
 ├── ASSUMPTIONS.md          assumptions ledger
 ├── DATA_SOURCES.md         datasets, endpoints, vintage policy
-├── PREREGISTRATION.md      locked before outcome data is examined
+├── PREREGISTRATION.md      locked before any unit is scored
 ├── PIPELINE_RULES.md       how the code is built
 ├── WRITING.md              documentation standard
 ├── data/
@@ -59,9 +54,8 @@ See [`PROJECT.md`](PROJECT.md) for scope, gates and timeline, [`ASSUMPTIONS.md`]
 ├── src/
 │   ├── ingest/             BMRS, NESO pulls
 │   ├── physics/            energy balance, SoC reconstruction
-│   ├── metrics/            declaration quality
-│   ├── skips/              skip measurement layer
-│   └── estimate/           ranking, event study
+│   ├── claims/             Claims 1–5 (Claim 3 a separate module)
+│   └── synthetic/          known-answer batteries
 ├── notebooks/              exploration only; results come from src/
 ├── outputs/                figures, tables
 └── docs/                   papers, posts, notes
@@ -81,7 +75,7 @@ Contains BMRS data © Elexon Limited copyright and database right 2026. Used und
 
 Supported by National Energy SO Open Data. Used under the [NESO Open Data Licence v1.0](https://www.neso.energy/data-portal/neso-open-licence).
 
-Neither Elexon nor NESO endorses this project. Scores, rankings and estimates here are this project's derived results, not Elexon or NESO data.
+Neither Elexon nor NESO endorses this project. Scores, flags and estimates here are this project's derived results, not Elexon or NESO data.
 
 ## Citation
 

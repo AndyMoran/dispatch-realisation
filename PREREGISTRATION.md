@@ -1,167 +1,276 @@
-# Pre-registration — Declaration Quality and Battery Dispatch in GB
+# Pre-registration — A Physics Audit of GB Battery MDO/MDB Declarations
 
 **Status: DRAFT — not locked.**
-Lock target: start of Week 2, after Gate A1 (which uses declaration data only) and before any outcome data is examined, including the Gate A2 stakes calculation.
-On lock: tag a release, deposit on Zenodo (public timestamp), and record the commit hash here: *[hash]*.
+Version 2: scope narrowed on 30 October 2026 (§0). Lock: before any unit is scored. On lock, this status line is set to LOCKED and the locking commit is tagged `v1.0-lock`; Zenodo archives the tagged release with a DOI and timestamp. The tag identifies the commit, since a commit cannot contain its own hash.
 
-Any deviation after lock is recorded in §9 with date and reason.
+For: a reviewer checking that the audit's methods were fixed before any unit was scored.
+
+After lock, there is one pinned scoring run (§10). Any change to a definition or estimator after that run requires a new lock, and is recorded in §12.
 
 ---
 
-## 1. Questions
+## 0. Why this version differs from the last
 
-- **H1 (primary, descriptive):** Declaration quality, measured against physics by the four metrics in §3, varies across GB battery BM units after adjusting for duration, node, commissioning date and time since GC0166 adoption. H1 is the study's main contribution: a standard, with per-unit uncertainty, reliability and known-answer checks.
-- **H2 (exploratory, within-unit):** A unit's accepted Balancing Mechanism volume per registered MW rises after it switches to MDO/MDB declarations.
-- **H3 (secondary or exploratory, by the rule in §4):** Improvements in a unit's declaration-quality metrics are associated with higher accepted volume per registered MW, and with a higher BM premium.
-- **H4 (enforcement):** Declaration quality improves fleet-wide after NESO's grace period ends. *(FORWARD-LOOKING; run only if the end date falls within the data window.)*
+The study set out to rank battery units on declaration quality and to estimate, in £/MW/yr, whether declaring well pays. Version 2 drops both, and audits whether each unit's declarations are consistent with its own metered physics. Three findings forced the change; each is logged with its date in PROJECT.md §11.
 
-## 2. Data
+1. **The £ association could not be identified.** Its design compared each unit with itself over a few weeks of one regime change. That cannot exclude other changes over the same weeks, such as a new optimiser or reserve contract (ASSUMPTIONS.md I10). Reviewers on 28–30 October judged it a distraction from the measurement.
+2. **A usable-energy figure (U) is missing for most units.** REPD records no MWh. SSEN's Embedded Capacity Register has a storage-MWh column, but it reads "DATA NOT AVAILABLE" for all 28 connected battery sites (November 2025 register). The Capacity Market register gives a duration class, which is a minimum, so U ≥ capacity × class (P4a, R21, R22). Without U, a level comparison cannot be scored for most units, and an adjusted ranking cannot be built on it.
+3. **The tests that need no U catch under-declaration. The problem that motivates the study is over-declaration** (NESO's GC0166 proof of concept). Version 2 therefore adds Claim 3, which detects over-declaration from non-delivery, without U.
 
-Sources, endpoints and manifests: see `DATA_SOURCES.md`. Outcome data window: ISO weeks from Monday 25 May to Sunday 15 November 2026. That gives 4 pre-weeks before the earliest adoption week (w/c 22 June) and ends before estimation starts (w/c 16 November). Declaration data starts 25 June 2026, when MDO/MDB publication began. Ranking sample (H1): battery BM units with at least 4 weeks of non-default MDO/MDB data. Units with less are listed as not scored, with the reason.
+**Rules adapted after declaration statistics were seen.** Each used declaration or reference data only. Each is listed with what would have differed under the alternative:
 
-## 3. Variables
-
-**Outcome:** accepted Balancing Mechanism energy per registered MW, per unit per ISO week (MWh/MW).
-
-- **Accepted energy:** the energy a unit delivered against accepted bid-offer instructions, relative to its Physical Notification. Computed from BMRS BOALF acceptance levels and PN, integrated over the week. Offers and bids are summed as absolute volumes for the primary outcome and reported separately as secondary outcomes. System-flagged acceptances are included in the primary outcome.
-- **Cross-check:** Elexon's settlement acceptance volumes (BOAV, `/balancing/settlement/acceptance/volumes/`), compared with BOALF − PN after lock, for every unit-week where a settlement run is available. The settlement run used is recorded. The agreement is reported. BOALF − PN remains the outcome whatever the comparison shows, so the choice of outcome cannot follow the results.
-- **Registered MW:** one constant per unit, from the first source in this order that is positive (M16):
-  1. Generation Capacity (GC) from the BMRS BM unit reference data, in one snapshot pinned in `data/manifests/reference_manifest.csv` before lock: *[snapshot date, SHA-256]*.
-  2. |Demand Capacity (DC)| from the same snapshot.
-  3. The unit's maximum MEL over the outcome window: one value per unit, from BMRS MELS.
-
-  GC and DC are seasonal registration values. MEL is a declaration, but the maximum over the whole window is a single constant, so it cannot change at the treatment date (the problem with NESO's in-merit volume, M1); raising it would lower the unit's own outcome. The source used is recorded per unit. *Robustness:* H3 on units with GC only. In the lock-time snapshot, 33 of 163 adopted units had GC = 0, 29 of them with DC = 0 as well; most were secondary BM units (type V), and most adopted in October.
-- **Why not accepted ÷ in-merit volume:** NESO's in-merit volume depends on the unit's own MEL/MIL, and from 25 June 2026 on its GC0166 parameters, so its definition changes at the treatment date. Assumption M1, refuted 23 October 2026 (`docs/week1/m1_denominator_check.md`).
-- **What the outcome does not control for:** how often the unit was in merit. Unit and week fixed effects absorb fixed unit differences and fleet-wide demand for balancing. Pricing changes remain a threat (ASSUMPTIONS.md O1, I10).
-
-**Declaration-quality metrics.** Computed per unit per ISO week. A unit's score on each metric is the median of its scored weeks. A *scored week* is a complete ISO week (Monday to Sunday) after the unit's adoption week and within the outcome window, which passes that metric's screens below. The adoption week never counts, because it holds declarations for only part of the week.
-
-*Notation.* For unit *i*: MDO_t ≥ 0 and MDB_t ≤ 0 are the declarations in force at minute *t* (latest submission, M9), in MWh. E⁺_h and E⁻_h are metered export and import in settlement period *h* (B1610), in MWh, from the latest settlement run available at the pinned scoring run; the run type is recorded for each settlement period (M6). PN-protected energy: P^exp_t and P^imp_t are the export and import energy in the unit's PN from *t* to the end of the protection horizon *H* (M15). Declarations are net of PN, reserve and response protection (M12). MDO is read as export energy at the meter and |MDB| as import energy at the meter (M13).
-
-*Efficiency.* η̂ = ΣE⁺ / ΣE⁻ over the unit's scored weeks: export out over import in. The unit's start and end state of energy differ by at most U, so the error is at most U / ΣE⁻. Units with η̂ outside [0.70, 0.98] are flagged and not scored on metrics 1, 2 and 4.
-
-*Declared deliverable energy* (export MWh if fully discharged, protection included): D^decl_t = MDO_t + P^exp_t.
-
-*Reconstruction ("tank walls").* Exporting *y* MWh lowers deliverable energy by *y*; importing *x* MWh raises it by η̂·*x*. Within week *w*, let K_t = Σ_{h<t} (η̂·E⁻_h − E⁺_h), the cumulative change since the week began. Then D^rec_t = D_0 + K_t for an unknown starting level D_0. The tank cannot hold less than nothing or more than its usable export energy U (P4), so 0 ≤ D_0 + K_t ≤ U at every *t*. Hence D_0 ∈ [−min K, U − max K]. The week is *identified* when this interval is at most 0.2·U wide, and *physics-inconsistent* when max K − min K > 1.02·U (U or η̂ is wrong). D^rec_t uses the interval's midpoint; the interval is carried into the metric's uncertainty. The reconstruction uses metered energy only, never declarations.
-
-1. **Conservation (stability).** C_t = MDO_t + P^exp_t + η̂·(|MDB_t| + P^imp_t), evaluated at the start of each settlement period. With honest declarations and fixed protections, C_t is constant at U minus reserve and response protection. Weekly metric: coefficient of variation of C_t. Needs no U. *Secondary:* |median C_t − U| / U, for units with disclosed U; reserve and response protection make this read low (O3).
-2. **Mass balance.** For each settlement period *h*: r_h = ΔD^decl_h − (η̂·E⁻_h − E⁺_h), with ΔD^decl_h taken from the start of *h* to the start of *h*+1. Following the PN, delivering a BOA, charging and resubmitting a PN all change both terms alike, so honest declarations give r_h ≈ 0. Three things also enter r_h and are not errors by the unit: changes in reserve or response protection, which are unobserved (O3); a unit protecting PN energy further ahead than H (sensitivity H = 6 hours, §6); and auxiliary load, which η̂ absorbs on average but not in timing (P3). Weekly metric: Σ_h |r_h| / Σ_h (E⁺_h + E⁻_h), the mass-balance error ratio. *Secondary:* the signed ratio Σ_h r_h / Σ_h (E⁺_h + E⁻_h), where positive means declarations rose faster than the physics allows. Settlement periods in which an identified reserve or response contract starts or ends are excluded (I13). A steady level of protection cancels out of r_h; changes in it do not. Weeks with throughput below 0.5·U, or with any settlement period missing B1610, are not scored. Needs no U except for that idle screen; units without U use the fleet median MWh-per-MW times their GC.
-3. **Redeclaration latency.** For each BOA (BOALF acceptance time *a*), L = minutes from *a* to the unit's first MDO or MDB submission with publishTime ≥ *a* (M14). Censored at the unit's next acceptance or *a* + 30 minutes, whichever is first. Weekly metric: share of BOAs with L ≤ 1 minute, NESO's reserve benchmark. *Secondary:* median L, censored values at 30. Weeks with fewer than 5 BOAs are not scored.
-4. **Conservatism.** At the start of each settlement period in identified weeks: Q_t = D^decl_t / D^rec_t, excluding periods with D^rec_t < 0.05·U. Weekly metric: median Q_t. Values below 1 mean under-declaring, above 1 over-declaring. Unobserved reserve and response protection push Q below 1 (O3), so reserve-contracted units are reported separately where identifiable. Q compares declared energy with the energy the tank physically held, reconstructed from metered flows. It does not compare with energy delivered or accepted, so a unit constrained off or not dispatched is not scored as conservative for that reason. *Secondary, needing no U:* the share of settlement periods in which D^decl_t falls below the lower wall, K_t − min K, the least energy the metered history proves the tank held. That is provable under-declaration.
-
-Units without disclosed U are not scored on metric 4 or on metric 1's secondary, and are listed with that reason.
-
-*Secondary BM units* (BMRS `bmUnitType` V, registered by Virtual Lead Parties) may cover one site or several. The tank model assumes one store of energy, so for these units: they are scored if B1610 metered data exist for them; they enter the adjusted ranking only if none of their scored weeks is physics-inconsistent; and they are reported as a separate group, marked "secondary unit: may be aggregated", in every table. A secondary unit without B1610 data is listed as not scored, with that reason (R19).
-
-*What the metrics measure.* They score declarations against physics, not against the best declaration achievable given the unit's contracts. A unit holding reserve as contracted can score as conservative; the claims map says so. Mass balance (metric 2) tests whether declarations *change* as the physics does. It cannot see a constant error in *level*: a unit that always over-declares by the same amount passes it. Levels are tested by metric 4, against the tank walls.
-
-**Per-unit uncertainty.** Each unit's score on each metric carries a 95% interval from resampling its own days (1,000 draws). Ranks are published with intervals derived from the same draws, so units whose intervals overlap are not presented as different. Units with 4–7 scored weeks are marked "short record".
-
-**Reliability.** *Primary:* split-half by day. For each metric, each unit's score is computed separately on odd and even calendar days over its scored weeks; the Spearman correlation of the two across units, stepped up to full length by the Spearman–Brown formula, is the metric's reliability. Days, not settlement periods, because adjacent periods are correlated and would inflate it. Rule: if the 95% interval (unit bootstrap) lies wholly below 0.5, the metric is reported as unreliable and left out of the adjusted ranking, with the exclusion declared; if the interval straddles 0.5, the metric is ranked with a flag. *Descriptive:* week-to-week rank correlation, reported with its interval but never used to exclude, because units can genuinely change, for instance with a new optimiser.
-
-**Known-answer tests.** Synthetic batteries with planted faults, run in CI before any real unit is scored. Each must land in its band, or the build fails:
-
-| Synthetic unit (U = 100 MWh, η = 0.88, two cycles a day, PN-following with BOAs) | Metric 1 (CV) | Metric 2 (error ratio) | Metric 3 (share ≤ 1 min) | Metric 4 (median Q) | Ranking gate |
-|---|---|---|---|---|---|
-| Honest declarations | ≤ 0.02 | ≤ 0.02 | ≥ 0.95 | 0.97–1.03 | passes |
-| Constant over-declaration by 10 MWh | ≤ 0.02 | ≤ 0.02 (level-blind, by design) | ≥ 0.95 | ≥ 1.08 | barred from top quartile |
-| Static profile copied from maximum | ≥ 0.10 | ≥ 0.30 | ≤ 0.05 | — | — |
-| Redeclares 5 minutes after each BOA | ≤ 0.02 | ≤ 0.05 | ≤ 0.05 | 0.97–1.03 | passes |
-| PN protection ignored (MDO not reduced before PN delivery) | ≥ 0.05 | ≥ 0.05 | ≥ 0.95 | — | — |
-| Declares 30% below proven minimum | ≤ 0.02 | ≤ 0.02 | ≥ 0.95 | ≤ 0.75 | barred (lower wall) |
-
-Bands are fixed here. The metric code is written after lock, so a band or a metric definition may be revised only before the first real unit is scored. Each revision is logged in §9 with its date, the diff, and a certification that no score for any real unit had been computed or seen at the time. After the first real unit is scored, bands are frozen.
-
-**Incumbent comparison.** What an owner already sees is the unit's skip rate. For each metric, the Spearman rank correlation ρ between the unit's adjusted score (better declarations score higher) and its NESO Stage 5 All-BM skip rate over the same weeks, offers and bids combined, with a 95% interval from a unit bootstrap. Interpretation, fixed in advance, using |ρ|: lower bound ≥ 0.7 → the metric largely restates skip rates; upper bound ≤ 0.3 → it measures something skip rates do not, whether added information or something orthogonal, which this test cannot separate; otherwise inconclusive. NESO's skip rates use the unit's own declarations (M1), so some correlation is built in.
-
-**Confounds.** Each threat to H3, and what is done about it:
-
-| Confound | Adjusted in the primary | Adjusted in a named robustness run (§6) | Left in the residual: likely effect |
+| Date | Rule | Seen before it was written | Alternative and its effect |
 |---|---|---|---|
-| Fixed unit traits: hardware, location, contracts held throughout | Unit fixed effects | — | — |
-| Fleet-wide shocks: balancing demand, prices, season | Week fixed effects | — | — |
-| Regional constraint exposure changing over time | — | GSP group × week fixed effects | Constraints within a GSP group; sign unknown |
-| Reserve and response contracts changing over time | — | Weekly contracted MW, where mapped (I13); reserve-free subsample | Unmapped contracts move declarations and acceptances together; likely overstates the effect |
-| MEL/MIL changes | — | Weekly mean MEL and MIL as controls. MEL is itself a declaration and may carry part of the effect, so this run is a sensitivity, not a correction | — |
-| Pricing strategy | — | Offer price relative to fleet median (O1) | Likely overstates the effect |
-| Protection horizon mismatch | — | H = 6 hours (M15) | — |
-| Steady reserve protection | Cancels in metric 2 by construction | — | Biases metric 4 low (O3) |
-| Over-declaration changing over time, alongside changes in coherence | — | Weekly median Q (metric 4) as a control, units with U | Units without U; likely overstates the effect, since higher declared availability invites dispatch |
+| 27 Oct | H2 kept as exploratory | Gate A1 preview: design 1 failed narrowly | H2 not run. Now deferred, so moot |
+| 30 Oct | Scored week = complete ISO week after the adoption week | Cohort sizes | Counting partial adoption weeks would add one short week per unit |
+| 30 Oct | Registered MW: GC, else \|DC\|, else maximum MEL | 33 of 163 units with GC = 0 | GC-only would drop 23 units from the sample; now used only for one screen (§4) |
+| 30 Oct | Secondary units reported separately | 25 of the GC = 0 units are type V | Pooling them would mix possible portfolios with single sites |
+| 30 Oct | B1610 from the latest settlement run | The API's `settlementRunType` parameter | A fixed early run would use less-revised meter data |
+| 30 Oct | Scope narrowed to this audit | U coverage (SSEN ECR, REPD, CM register) | The ranking and £ association, as in version 1 |
 
-**Treatment (H2):** first non-default MDO/MDB submission per unit, dated by delivery time (`timeFrom`), binned by ISO week. Values with |MWh| ≥ 9999 are NESO defaults, not submissions. This is when the control room stops applying the 30-minute rule to the unit, whatever the quality of its declarations.
+The Gate A1 design selection (design 2, 30 October) chose a design for the £ association, which is now deferred. It is kept as history; it does not shape this audit.
 
-**Sensitivity treatment (H2):** dynamic onset, the first day of the first 7-day window in which the unit's MDO ranges by at least 0.5 MWh on 4 or more days (`config/gate_a1.toml`, `[sensitivity]`). A unit that declares a static profile is treated from its first submission in the primary analysis; it is a poor declarer, which H3 measures, not an untreated unit. Gate A1 reports, without unit IDs, how many units began with static declarations and for how long.
+## 1. Claims
 
-**Adjustment set:** duration, node (or zone), commissioning date, time since adoption.
+| # | Claim | Tier | Needs U? | Covers |
+|---|---|---|---|---|
+| 1 | **Mass-balance coherence:** a unit's declarations change as its meter says its stored energy changed | Primary | No | All scored units |
+| 2 | **Lower-wall violations:** a unit declares less than the energy its metered history proves it held | Primary | No | All scored units |
+| 3 | **Over-declaration from non-delivery:** a unit fails to deliver energy that NESO instructed within its declared MDO | Secondary | No | Units where it is identified (§5.7) |
+| 4 | **Upper-wall violations:** a unit declares more than its tank could hold | Illustrative case series | Nameplate MWh | Units with a disclosed nameplate |
+| 5 | **Redeclaration latency:** how fast units update MDO/MDB after an instruction | Descriptive, fleet level | No | All units with BOAs |
 
-## 4. Estimation
+- **Complementary, not independent.** A unit whose declarations do not track its meter (Claim 1) is more likely to show non-delivery (Claim 3), since both follow from declarations out of step with the battery. No composite score is formed, and no ranking is published.
+- **Claims 2 and 3 are the two directions of one level test.** A unit can appear under both; that is informative, not contradictory.
+- **Claim 2 detects a provable subset of under-declaration.** A unit that under-declares and also under-uses its tank does not reveal the energy it holds, and will not be flagged.
 
-- H1: for each metric, OLS of the unit's mean over its scored weeks on the adjustment set (§3). The adjusted ranking orders units by residual. The lead table ranks by metric 2, with a qualification gate, because mass balance cannot see level errors: a unit cannot be placed in the top quartile if its median Q (metric 4) exceeds 1.05, which means over-declaring, or if more than 10% of its settlement periods fall below the lower wall, which means provably under-declaring. Units without U are ranked but marked "level not verified". The other metrics' rankings are published alongside. Rank uncertainty comes from the per-unit intervals (§3) and is published with the ranks, so near-ties are not read as differences. The raw ranking is published alongside; the adjusted ranking leads.
-- Design selection: by the ordered design hierarchy and triggers in `PROJECT.md` §5A (single source; not restated here). The selected design and its trigger statistics, as recorded in the PROJECT.md decision log at Gate A1: **design 2 (within-unit metric variation)**, official run 30 October 2026, config SHA-256 `ed7dcdc1…`, unchanged since commit 9f0ca5e. Design 1 not triggered: 7 estimable cohorts of at least 6 units, but the earliest (2026-W36) had 8.4 weeks of post-period against a required 8.8. Design 2 triggered: 13 units with at least 8.8 weeks of declarations, against a required 11; median within-unit CV 0.414, against 0.055. Design 3 not triggered: no grace-period end announced. 163 units adopted; the last cohort (2026-W44, 52 units) has no comparison group. The CV proxy is moved by PN protection as well as declaration quality (ASSUMPTIONS.md I15), so its margin over the threshold overstates variation in quality.
-- H2 (**exploratory**): staggered-adoption event study. Design 1's trigger was not met at Gate A1, so H2 cannot be the lead design or a secondary analysis (PROJECT.md §5A). It is pre-specified here so that it can be reported at all, and is reported whatever it shows.
-  - *Estimator:* Callaway–Sant'Anna, not-yet-treated controls, event window −4 to +8 weeks around each unit's adoption week (§3, primary treatment).
-  - *Cohorts:* ISO adoption weeks that meet Gate A1's per-cohort minimum, as recorded in the official Gate A1 report. The last cohort has no comparison group and is dropped. Cohorts below the minimum are excluded and counted.
-  - *Reporting:* all four pre-period coefficients and a joint pre-trend test. Event times reached by fewer than two cohorts are not reported. Cohorts with fewer than 8 post-weeks contribute to the event times they reach.
-  - *Limits:* no Holm adjustment, no £ conversion, and no use in H3's lead estimate. Every table and chart carries the label "exploratory". If its sign or size differs from H3's lead estimate, both are reported and the difference is discussed, not resolved in H2's favour.
-  - *Sensitivity:* dynamic onset as treatment (§3).
-- H3: weekly outcome on each declaration metric in turn, with unit and week fixed effects.
-  - **Outcomes:** *primary:* accepted BM energy per registered MW (§3), the declaration → acceptance channel. *Secondary:* BM premium per registered MW, Σ accepted volume × margin (§4 margin), which measures value. The two are linked by construction, since premium is volume weighted by margin; premium also carries the unit's own pricing choices, which unit fixed effects do not absorb when they change. Read together: volume and premium both up → declaring well pays; volume up, premium down → more volume at worse prices; volume flat, premium up → a pricing change, not a declaration effect.
-  - **Label, set by the procedure:** if the MDE for the lead metric (§5) is at most £5,000/MW/yr, H3 is reported as secondary; otherwise as exploratory, with the pre-written sentence. The label is decided before any coefficient is displayed.
-  - **Sample:** units with at least 4 scored weeks. This maximises the number of units; it does not by itself maximise precision, which with unit fixed effects depends on how much each unit's metric varies. The MDE (§5) is computed on this sample. *Robustness:* units with at least 8 scored weeks, with its own MDE; if its MDE is smaller, that is reported as a finding. At lock, the adoption weeks of the two samples are compared from the official Gate A1 table, since 4-week units are likely late adopters near the 5 November deadline; any difference is stated as a limitation before results are seen.
-  - **Interpretation, fixed in advance:** metric 2 cannot see a constant error in level, and unit fixed effects absorb any constant over-declaration. The lead estimate is therefore the association of more coherent declarations with acceptances, net of each unit's usual level. It does not exclude a unit that becomes more coherent and starts over-declaring at the same time; the weekly-Q robustness run (§6) addresses that for units with U.
-  - **Lead estimate:** metric 2, the mass-balance error ratio (absolute). Scaled so its coefficient reads as the change in outcome for a 10-percentage-point reduction in the ratio. Mass balance cannot see a constant error in level (§3), but unit fixed effects would absorb such an error anyway, so it does not bias H3; it matters for the ranking, which has its own gate (H1).
-  - **Degeneracy rule**, applied after lock, on the metric data alone, before any H3 coefficient is displayed: if the median within-unit standard deviation of the lead metric's weekly values is below 0.01, a tenth of the 10-point contrast, the contrast would extrapolate far beyond the data. The lead estimate then passes to the next metric in the order 4, 1, 3 that clears the same test. A metric cannot be chosen because it is more dispersed than another, only rejected because it barely varies.
-  - **Secondaries, each also in £ with the same 10-point contrast:** metrics 1, 3 and 4; the signed version of metric 2, to show any mechanical "declare more, accept more" component; and, where the effect differs by sign, over- and under-declaration reported separately rather than averaged.
-- **£/MW/yr definition** (for H3's association, not a measure of stakes):
-  - Numerator: the H3 coefficient for a 10-percentage-point reduction in the lead metric, as accepted MWh per MW per week, annualised (× 52), × margin.
-  - Margin (primary): the BM premium over wholesale in the same settlement period. Offers: accepted offer price − Market Index Price (MID). Bids: MID − accepted bid price. Both positive when the BM pays better than wholesale.
-  - Margin (pre-specified sensitivity, E5): a battery's alternative is to trade at another hour of the same day. Offers are valued against the day's highest MID; bids against the day's lowest. This gives a conservative premium.
-  - Comparison only, not a conversion: Gale et al. (2026) simulate about £12,000/MW/yr lost per 10% of time a battery is blocked from the BM. Their skip rate is a simulated share of blocked time, not NESO's volume-based rate nor this project's outcome (E1, E2a).
-  - Denominator: registered MW (GC), as for the outcome in §3. Not max MEL: MEL is a declaration. Per MWh usable reported as secondary.
-  - Caveat: the BM is pay-as-bid. Better declarations may change which offers are accepted and at what price, so volume × margin is a first-order approximation.
+**Deferred to version 2, each with its reason:**
 
-## 5. Inference
+| Item | Reason |
+|---|---|
+| £ association (old H3) and £/MW/yr estimate | Not identified from within-unit variation over one regime change (§0) |
+| Staggered event study (old H2) | Exploratory only, and depends on the deferred outcome |
+| Adjusted ranking and composite score | Needs U for the level gate; U is missing for most units |
+| Grace-period analysis (old H4) | Grace-period end not announced |
+| Gate A2 (stakes) | Supports none of Claims 1–5; adds unverified assumptions (ASSUMPTIONS.md R16b, R17, O5) |
+| Optimiser-level claims | Depends on the ranking; mapping unverified (I4) |
 
-Intervals: 95%, with standard errors clustered by unit. With fewer than 50 units, cluster-robust errors understate uncertainty, so H3's primary inference uses the wild cluster bootstrap (Webb weights, 9,999 replications, clustered by unit); conventional clustered errors are shown alongside. The £/MW/yr figure is always reported with its interval, never as a point estimate alone: the H3 interval scaled by the same contrast and mean margin.
+## 2. Data, and what was seen before lock
 
-**Minimum detectable effect.** Computed after lock and before any H3 coefficient is displayed, separately for the primary sample, the reserve-free subsample and the contracted-MW run. Method: 999 placebo runs, each shifting every unit's metric series in time by a random whole number of weeks, keeping its own weeks but breaking its link with the outcome. MDE = 2.8 × the standard deviation of the placebo coefficients (80% power, 5% two-sided), converted to £/MW/yr as above. The threshold is £5,000/MW/yr, Gate A2's low threshold (PROJECT.md §5A): a round-number convention, set on 22 October 2026 before any data were pulled, for the stakes below which the benchmark is not worth an owner's attention. It was tied to this label on 28 October 2026, before any MDE had been computed. If the MDE exceeds it, the result is reported with this sentence: "At this sample size the design cannot reliably detect effects smaller than £[MDE]/MW/yr, above the £5,000/MW/yr at which the result would change an owner's decision. The estimate is reported as an estimate only; a null result here is not evidence of no effect." A null in an underpowered subsample is reported against that subsample's own MDE.
+**Fleet.** BM units that submitted non-default MDO/MDB between 25 June and 29 October 2026, excluding pumped storage and hydro (ASSUMPTIONS.md M10): 163 units, from the official Gate A1 run of 30 October 2026.
 
- For Callaway–Sant'Anna, the estimator's multiplier bootstrap, clustered by unit. Multiple comparisons: any claim about the four declaration-quality metrics (H1, H3) uses Holm–Bonferroni adjustment across the four. H3's lead £/MW/yr estimate is a single pre-specified quantity and is not adjusted; secondaries are adjusted across the four metrics as above. Interval method validated by simulation before use (lesson from credit-impulse project: block bootstrap undercovers in short samples).
+**Scoring window.** From each unit's adoption to Sunday 15 November 2026. Units with at least 4 scored weeks (§3) are published in the flag table; 98 units meet that rule (`outputs/lock/lock_counts.json`). Units with fewer are listed as not scored, with the reason.
 
-## 6. Robustness (pre-specified)
+**Sources.**
 
-- Protection horizon H = 6 hours instead of the current settlement period plus three (M15)
-- Metric 2 computed only on settlement periods without BOAs (I12)
-- Offers and bids as separate outcomes
-- Excluding system-flagged acceptances
-- NESO Tier B accepted ÷ in-merit volume, reported descriptively only, with the M1 caveat stated
-- Adding the unit's offer price relative to the fleet median (from BOD) as a control, to probe the pricing threat (O1)
-- GSP group × week fixed effects (regional constraint exposure). Estimated on units in GSP groups with at least two scored units. The number of such units under each sample rule is counted at lock from the official Gate A1 table and the reference snapshot; if fewer than 10 units contribute, the run is reported as not estimable rather than dropped silently
-- Units with at least 8 scored weeks (sample robustness; §4)
-- Weekly contracted reserve and response MW as a control, where auction units map cleanly to BM units (I13)
-- Reserve-free subsample: units with no identified contract in the window
-- Weekly mean MEL and MIL as controls (sensitivity only; see §3)
-- Weekly median Q (metric 4) as a control in H3, on units with U (time-varying over-declaration; §3)
-- H3 excluding secondary BM units (type V), which may be aggregated (§3)
-- H3 on units whose registered MW comes from GC (M16)
-- Alternative usable-MWh assumptions (P4)
-- Dropping the first 2 weeks after each unit's adoption (learning period)
+| Data | Use | Claims |
+|---|---|---|
+| BMRS MDO, MDB (`/stream` endpoints) | Declarations | 1–5 |
+| BMRS B1610, latest settlement run at the scoring run, run type recorded per period | Metered export and import | 1–4 |
+| BMRS PN | Protected energy; deviations from PN | 1–3 |
+| BMRS BOALF | Accepted instructions and acceptance times | 3, 5 |
+| BMRS reference data, snapshot of 23 Oct 2026 (`bmunits__dl20261023T130744.json`, SHA-256 `9245d0cc…`) | Fleet, unit type, registered MW | All |
+| Elexon BOAV | Validation of delivered energy | 3 |
+| Disclosed nameplate MWh (§6) | Upper bound on U | 4 |
 
-## 7. What would change our conclusions
+**Seen before lock.** All MDO/MDB declarations, 25 June – 29 October 2026; the reference snapshot; for one settlement period, the list of units with B1610 rows (identifiers only, no values displayed); one day of MID prices, to confirm field names; the field names and stage values of NESO's In-Merit files; and the storage columns of SSEN's Embedded Capacity Register and NESO's Capacity Market register. **No PN, BOALF, BOD, BOAV or MELS data, no B1610 values and no NESO volumes were examined. No unit has been scored.**
 
-- Pre-trends in H2 → report as descriptive only.
-- Mass-balance residuals too large to interpret → drop metric 2; report why.
-- No design trigger met at Gate A1 → design note only (PROJECT.md §5A).
-- H3's MDE above £5,000/MW/yr → H3 reported as exploratory, with the pre-written sentence in §5.
+## 3. Common definitions
 
-## 8. Publication commitments
+**Scored week.** A complete ISO week (Monday to Sunday) after the unit's adoption week, within the scoring window, that passes the claim's screens. The adoption week never counts.
 
-- Results published whether strong, weak or null.
-- Ranking published raw and adjusted; adjusted leads.
-- Each lead party receives its own result and the method ≥ 10 working days before publication; replies published alongside (PROJECT.md §7a).
-- Scored snapshot: results come from one pinned scoring run (data manifests, code tag, output hashes). Lead parties see results from that run, and replies are published against it. Past declarations cannot change; what can change is data, through B1610 revisions, NESO reissues or a demonstrated error. Later data revisions are not re-scored, except to fix a demonstrated error, which restarts the reply clock.
+**Declarations.** MDO_t ≥ 0 and MDB_t ≤ 0 are the declarations in force at minute *t*: the latest submission for that minute (M9). MDO is a stock: the energy available for offer acceptances at that minute, net of energy protected for the PN, accepted BOAs and reserve and response contracts. NESO's guide: "MDO/MDB reflects the instantaneous energy volume available at a given minute" (M12, M17).
 
-## 9. Deviations log
+**Meter.** E⁺_h and E⁻_h are metered export and import in settlement period *h*, from B1610, in MWh.
+
+**Protected PN energy.** P^exp_t and P^imp_t are the export and import energy in the unit's PN from *t* to the end of the protection horizon *H* = current settlement period plus three (M15).
+
+**Efficiency.** η̂ = ΣE⁺ / ΣE⁻ over all the unit's complete weeks after its adoption week, before any screen. Units with η̂ outside [0.70, 0.98] are not scored on Claims 1–4, and are listed with that reason.
+
+**Two readings of MDO (M13).** *Branch A:* MDO is export energy at the meter. *Branch B:* MDO is stored energy, so deliverable export energy is √η̂ × MDO, and import headroom at the meter is |MDB| ÷ √η̂. Every result is computed under both branches. A flag is published only if it holds under both (§9).
+
+**Declared deliverable energy.** D^decl_t = MDO_t + P^exp_t (Branch A; under B, √η̂ × MDO_t + P^exp_t). This is the energy the unit says it could export if fully discharged, protection included.
+
+**Reconstruction ("tank walls").** Exporting *y* MWh lowers deliverable energy by *y*; importing *x* MWh raises it by η̂·*x*. Within week *w*, K_t = Σ_{h<t} (η̂·E⁻_h − E⁺_h), the cumulative change since the week began. The tank holds D_0 + K_t for an unknown starting level D_0 ≥ 0, and D_0 + K_t ≥ 0 at every *t*. So at every *t* it holds at least **L_t = K_t − min K**, the lower wall. The lower wall uses metered energy only, never declarations, and needs no U.
+
+**Registered MW.** GC if positive, else |DC|, else the unit's maximum MEL over the window (M16). Used only for the idle-week screen (§4).
+
+**Secondary units** (BMRS type V, registered by Virtual Lead Parties) may cover one site or several. They are scored, but reported in a separate table marked "secondary unit: may be aggregated" (R19, R20).
+
+**Sign and protection conventions.** Accepted energy and delivered energy are both measured as deviations from PN. *E*_available, MDO and D^decl are all net of protection. No ratio mixes the two conventions.
+
+## 4. Claims 1 and 2 (primary)
+
+**Claim 1: mass-balance coherence.** For each settlement period *h*: r_h = ΔD^decl_h − (η̂·E⁻_h − E⁺_h), with ΔD^decl_h taken from the start of *h* to the start of *h*+1. Following a PN, delivering a BOA, charging and resubmitting a PN all change both terms alike, so honest declarations give r_h ≈ 0.
+
+- **Weekly score:** the error ratio Σ_h |r_h| / Σ_h (E⁺_h + E⁻_h). *Secondary:* the signed ratio Σ_h r_h / Σ_h (E⁺_h + E⁻_h); positive means declarations rose faster than the physics allows.
+- **Screens.** A week with any settlement period missing B1610 is unscored. Weeks with throughput below registered MW × 1 hour are unscored as idle. Periods in which an identified reserve or response contract starts or ends are excluded (I13).
+- **What else enters r_h:** changes in unobserved reserve or response protection (O3); a unit protecting PN energy beyond *H* (sensitivity *H* = 6 hours); auxiliary load, which η̂ absorbs on average but not in timing (P3). None of these is an error by the unit, and all three push Claim 1 towards incoherence.
+- **Level-blind by construction (I14).** A constant error in level cancels out of r_h. Levels are tested by Claims 2–4.
+
+**Claim 2: lower-wall violations.** At the start of each settlement period, a violation occurs when D^decl_t < L_t − τ_w, where τ_w = 0.02 × (max K − min K) for the week, a tolerance for metering error. The unit has declared less than the energy its meter proves it held.
+
+- **Weekly score:** the share of settlement periods in violation.
+
+**Unit scores.** The median of the unit's scored weeks, with a 95% interval from resampling its days (1,000 draws).
+
+**Flag categories** (thresholds fixed here; sensitivity in §9):
+
+| Claim | Category | Rule on the 95% interval of the unit's score |
+|---|---|---|
+| 1 | Coherent | Upper bound ≤ 0.05 |
+| 1 | Incoherent | Lower bound ≥ 0.15 |
+| 1 | Indeterminate | Otherwise |
+| 2 | Provable under-declaration | Lower bound ≥ 0.05 |
+| 2 | None detected | Otherwise |
+
+**Reliability.** For Claims 1 and 2, each unit's score is computed separately on odd and even calendar days. The Spearman correlation of the two across units, stepped up by the Spearman–Brown formula, is the claim's reliability. If its 95% interval (unit bootstrap) lies wholly below 0.5, the claim's flags are reported as unreliable and not published per unit. If the interval straddles 0.5, flags are published with that stated.
+
+## 5. Claim 3 (secondary): over-declaration from non-delivery
+
+**The physics.** If NESO accepts an offer within a unit's declared MDO and the unit runs out of energy partway through, it delivers what it actually had: delivered = min(accepted, *E*_available). An honest unit delivers in full up to the MDO it declared. An over-declaring unit falls short once the instruction exceeds what it really held.
+
+**Instruction sizing.** NESO states that since GC0166 "MDO/MDB Data is used to calculate what BOA volume can be issued", and that it "will utilize these values to determine the volume of Offers or Bids that can be dispatched within the BM window" (M18). Instructions are therefore sized up to the declared MDO, which is the regime in which Claim 3 has power.
+
+### 5.1 Quantities, per instruction
+
+- **Accepted energy *A*:** over the instruction's settlement periods, the integral of (BOALF level − PN).
+- **Delivered energy *D*:** over the same periods, Σ (metered − PN), minus the unit's frequency-response baseline (§5.3).
+- **r = *A* ÷ MDO in force at the acceptance time.** Under Branch B, MDO is replaced by √η̂ × MDO.
+- **Delivery ratio ρ = *D* ÷ *A*.**
+
+Offers use MDO and export. Bids are mirrored with |MDB| and import, and reported separately.
+
+### 5.2 Screens
+
+- Only instructions whose settlement periods hold no other BOA for the unit, because B1610 is half-hourly.
+- Only instructions with *A* ≥ 1 MWh, where ρ is well defined.
+- **r > 1 is classified, not fitted.** Instructions sized to MDO cannot produce r > 1 unless MDO changed between issue and acceptance, which is a redeclaration-timing effect. Its frequency is reported per unit and compared with Claim 5.
+
+### 5.3 Frequency-response baseline
+
+Batteries delivering frequency response deviate from PN without any BOA. For each instruction, the baseline is the unit's median (metered − PN) in settlement periods without a BOA, in the same ISO week and at the same settlement period of the day, scaled to the instruction's duration.
+
+### 5.4 Two models, fitted per unit
+
+*E*_available is the energy actually deliverable at acceptance, net of protection. Over-declaration is either proportional or additive:
+
+- **Proportional:** *E*_available = (1 − *f*) × MDO, so ρ = min(1, (1 − *f*)/r). *f* is the fraction of declared MDO that was not deliverable.
+- **Additive:** *E*_available = MDO − Δ, so ρ = min(1, (MDO − Δ)/*A*). Δ is a constant over-declaration in MWh.
+
+Each model is fitted by least squares over a grid (*f* in [0, 0.9] in steps of 0.01; Δ from 0 to the unit's median MDO in steps of 0.1 MWh), with a 95% interval from resampling instructions within the unit (999 draws). The piecewise-linear breakpoint of ρ against r is reported alongside, as a check that the result is not an artefact of the functional form.
+
+### 5.5 Specification checks
+
+- **Slope check.** Beyond the fitted kink, log ρ against log r should fall with slope about −1. A unit whose slope lies outside [−1.5, −0.5] is reported as "model rejected", without an estimate.
+- **Separability.** The two models differ only if MDO varies across the unit's instructions. Where the interquartile range of MDO at acceptance is below 25% of its median, the models are reported as "not separately identified", and the flag rests on the proportional fit and the slope check alone.
+- **Transition width.** The spread of r over which ρ falls from 0.95 to 0.75, reported as a diagnostic. A wide transition suggests over-declaration varies between instructions.
+
+### 5.6 Placebo
+
+Where the lower wall proves the tank held at least the accepted energy (L_t ≥ *A* at acceptance), a shortfall cannot be over-declaration. It must come from frequency response, a ramp limit or a trip. These instructions form a **placebo set**, available for every unit, since the lower wall needs no U. Each unit's models are also fitted on its placebo set alone.
+
+### 5.7 Identification and flags
+
+**Identified:** at least 15 eligible instructions with r ≥ 0.5, and the slope check passes. **The identification rate**, identified ÷ scored units, is a first-class result, reported with Claim 3's findings.
+
+**Flagged as over-declaring** only if all four hold:
+
+1. The unit is identified.
+2. Both models' 95% intervals exclude zero; or, where they are not separately identified, the proportional fit's interval does.
+3. The placebo fit's interval for *f* includes zero.
+4. The flag holds under both M13 branches.
+
+Reported per unit: *f̂* and Δ̂ with intervals, the identification diagnostics, the placebo fit, and the frequency of r > 1.
+
+### 5.8 Selection and scope
+
+r approaches 1 only when the declared stock is small relative to what one instruction can draw: in practice, near-empty states. A single BOA delivers at most MEL × its duration, and most battery BOAs are short. How often a unit is near-empty depends on its own state-of-charge management, which may relate to declaration quality.
+
+- **Scope of the claim:** over-declaration that shows when the declared stock is close to what one instruction can draw. Not over-declaration in general.
+- **Selection check:** the Claim 1 scores of identified units are compared with those of all scored units. A difference is reported as evidence of selection.
+- **Reported by r:** *f̂* within bands of r, so a reader can see where the evidence comes from.
+
+### 5.9 Validation against BOAV
+
+Delivered energy *D* is compared with Elexon's settlement acceptance volumes (BOAV) for the same instructions, where available. The agreement is reported. *D* stays as defined whatever the comparison shows.
+
+### 5.10 Promotion to primary in version 2
+
+Claim 3 may be promoted only if all of these hold, judged on version 1's pinned run:
+
+1. The identification rate is at least 30% of scored units.
+2. No flagged unit shows a kink in its own placebo set, and the fleet's placebo shortfall rate (placebo instructions with ρ < 0.9) is at most 10%.
+3. Where Claims 3 and 4 can both be estimated for the same unit, their over-declaration estimates agree within their intervals for at least two-thirds of such units, with at least 3 units compared.
+4. Every Claim 3 band in the known-answer suite (§8) is met.
+
+Statistical significance alone never promotes Claim 3. Promotion does not depend on how many units are flagged, so it cannot reward finding over-declaration.
+
+## 6. Claim 4 (illustrative case series): upper-wall violations
+
+**Why nameplate.** Usable energy cannot exceed nameplate energy, so a disclosed nameplate *N* is an upper bound on U. The tank then holds at most *N* − (max K − K_t) at time *t*. A unit declaring more than that over-declares, provably.
+
+- **Violation:** D^decl_t > *N* − (max K − K_t) + 0.02 × *N*, at the start of a settlement period. Weekly score: the share of periods in violation, with the size of the excess in MWh.
+- **Physics-inconsistent week:** max K − min K > 1.02 × *N*. Reported, and the unit's other results are marked "check nameplate".
+
+**Search protocol, time-boxed to two working days.** For each scored unit: the owner's or developer's press releases and annual reports, and planning documents that state MWh. Matched by site name and GSP group. Each match records the source URL, its date and the matching evidence. Units are searched in descending order of registered MW; the order and the stopping point are reported.
+
+**Use.** Claim 4 validates Claim 3 on units where both can be estimated (§5.10, item 3). It is not a fleet result. Units that disclose a nameplate may differ from those that do not, in a direction that is unknown; the case series says so.
+
+## 7. Claim 5 (descriptive): redeclaration latency
+
+For each BOA, L = minutes from the BOALF acceptance time to the unit's first MDO or MDB submission with publishTime at or after acceptance (M14). Censored at the unit's next acceptance or 30 minutes, whichever comes first.
+
+- **Reported at fleet level:** the distribution of L, and the share of BOAs with L ≤ 1 minute, NESO's benchmark.
+- **Per unit:** only in each lead party's right-of-reply pack, not published, because publishTime may record BMRS publication rather than receipt (M14).
+- **Cross-check:** units that redeclare slowly should show more r > 1 instructions (§5.2). Agreement is reported; disagreement means one of the two measures something else.
+
+## 8. Known-answer tests
+
+Synthetic batteries with planted faults run in CI before any real unit is scored. Each must land in its band, or the build fails. Common settings: U = 100 MWh, η = 0.88, two cycles a day, PN-following with BOAs. Claim 3 runs under three instruction-sizing regimes: (i) sized to MDO; (ii) sized to MEL × duration; (iii) sized to PN deviation only.
+
+| Synthetic unit | Claim 1 | Claim 2 | Claim 3, regime (i) | Claim 3, regimes (ii), (iii) |
+|---|---|---|---|---|
+| Honest | Coherent | None detected | Not flagged | Not flagged |
+| Honest, with frequency-response noise | Coherent | None detected | Not flagged | Not flagged |
+| Honest, ramp-limited | Coherent | None detected | Not flagged | Not flagged |
+| Constant over-declaration, Δ = 10 MWh | Coherent (level-blind) | None detected | Flagged; Δ̂ in [7, 13] MWh | Detection rate reported |
+| Proportional over-declaration: declares 1.25 × available (*f* = 0.2) | Incoherent | None detected | Flagged; *f̂* in [0.15, 0.25] | Detection rate reported |
+| Static profile copied from maximum | Incoherent | None detected | Flagged, or not identified | Reported |
+| Redeclares 5 minutes after each BOA | Coherent or indeterminate | None detected | Not flagged; r > 1 frequency raised | Reported |
+| PN protection ignored | Incoherent | None detected | Reported | Reported |
+| Constant under-declaration, 20 MWh | Coherent (level-blind) | Provable under-declaration | Not flagged | Not flagged |
+
+Across 100 simulated runs of each, honest batteries are flagged by Claim 3 at most 5% of the time under any regime. Under regime (i), the two over-declarers are flagged at least 80% of the time. If the suite cannot meet these bands, Claim 3 is dropped from version 1, and the report says so.
+
+Bands are fixed here. The scoring code is written after lock, so a band or a definition may be revised only before the first real unit is scored. Each revision is logged in §12 with its date, the diff and a certification that no score for any real unit had been computed or seen. After the first real unit is scored, bands are frozen.
+
+## 9. Sensitivity
+
+Each published flag is recomputed under:
+
+- M13 Branch A and Branch B;
+- *H* = current period + 3, and *H* = 6 hours;
+- η̂ bounds [0.70, 0.98] and [0.65, 0.99];
+- Claim 1 thresholds at ±50% (0.025 and 0.075; 0.075 and 0.225); Claim 2 threshold at 0.025 and 0.10;
+- Claim 3's identification minimum at 10 and 25 instructions.
+
+A sensitivity table is published with the flags. **A flag that changes under either M13 branch or either *H* is published as "not robust", not as a finding.** Changes under the threshold variants are shown in the table.
+
+## 10. Scoring discipline
+
+- One pinned scoring run after lock: data manifests, code tag and output hashes recorded. Lead parties see results from that run, and replies are published against it.
+- Past declarations cannot change. What can change is data, through B1610 revisions, NESO reissues or a demonstrated error. Later revisions are not re-scored, except to fix a demonstrated error, which restarts the reply clock.
+- Claim 3 runs as a separate module from Claims 1 and 2. If Claim 3 fails its own tests, Claims 1 and 2 stand unchanged.
+
+## 11. Publication commitments
+
+- Results are published whether they show problems or not.
+- Per-unit flags are published only after legal review and right of reply (PROJECT.md §7a).
+- The claim attached to each unit is "its declarations are, or are not, physically consistent with its meter", not "this unit is a poor declarer". Flags are sorted by Claim 1 but not called a ranking.
+- The data-quality findings are published in their own right: in SSEN's November 2025 register, the storage-MWh field read "DATA NOT AVAILABLE" for all 28 connected battery sites; REPD records no storage MWh; the Capacity Market register gives minimum durations, without BM unit identifiers.
+
+## 12. Deviations log
 
 | Date | Deviation | Reason |
 |---|---|---|
