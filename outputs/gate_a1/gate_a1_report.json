@@ -1,0 +1,64 @@
+{
+  "config_sha256": "ed7dcdc11a88099e3e1ae587ae794ed0e1a1668b780cdc9de14fe0975c3c80dd",
+  "design1": {
+    "cohort_sizes": {
+      "2026-W26": 5,
+      "2026-W30": 1,
+      "2026-W32": 1,
+      "2026-W33": 3,
+      "2026-W35": 3,
+      "2026-W36": 15,
+      "2026-W37": 1,
+      "2026-W38": 14,
+      "2026-W39": 12,
+      "2026-W40": 9,
+      "2026-W41": 15,
+      "2026-W42": 19,
+      "2026-W43": 13,
+      "2026-W44": 52
+    },
+    "earliest_cohort_post_weeks": 8.4,
+    "estimable_cohorts_meeting_N": 7,
+    "last_cohort_dropped": "2026-W44",
+    "triggered": false
+  },
+  "design2": {
+    "median_within_unit_cv": 0.4139,
+    "triggered": true,
+    "units_with_M_weeks": 13
+  },
+  "design3": {
+    "grace_end_announced": false,
+    "triggered": false
+  },
+  "dynamic_onset_sensitivity": {
+    "adopted_units": 163,
+    "dynamic_onset_cohort_sizes": {
+      "2026-W26": 4,
+      "2026-W27": 1,
+      "2026-W30": 1,
+      "2026-W32": 1,
+      "2026-W33": 3,
+      "2026-W35": 2,
+      "2026-W36": 15,
+      "2026-W37": 1,
+      "2026-W38": 9,
+      "2026-W39": 14,
+      "2026-W40": 8,
+      "2026-W41": 15,
+      "2026-W42": 16,
+      "2026-W43": 9,
+      "2026-W44": 14
+    },
+    "never_dynamic_by_cutoff": 50,
+    "note": "Sensitivity and description only; design selection uses first non-default submission (M4a).",
+    "static_start_days_ge_7": 3,
+    "static_start_days_median": 0
+  },
+  "reference_sha256": "9245d0ccefb5f8de647cc07ea6db9758a4f6eb6bef4bc6c8acffc23c25ed798b",
+  "reference_snapshot": "data/raw/reference/bmunits__dl20261023T130744.json",
+  "schema_version": "1.0",
+  "selected": "design2",
+  "units_adopted": 163,
+  "units_seen": 163
+}

@@ -1,0 +1,10 @@
+{
+  "arrived": 254,
+  "exact_duplicates_removed": 69058,
+  "failed": [],
+  "latest_declarations": 1212482,
+  "records_received": 1828717,
+  "requested": 254,
+  "schema_version": "1.0",
+  "superseded_submissions": 547177
+}
