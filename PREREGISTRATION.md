@@ -36,7 +36,7 @@ Sources, endpoints and manifests: see `DATA_SOURCES.md`. Outcome data window: IS
 
 **Declaration-quality metrics.** Computed per unit per ISO week. A unit's score on each metric is the median of its scored weeks. A *scored week* is a complete ISO week (Monday to Sunday) after the unit's adoption week and within the outcome window, which passes that metric's screens below. The adoption week never counts, because it holds declarations for only part of the week.
 
-*Notation.* For unit *i*: MDO_t ≥ 0 and MDB_t ≤ 0 are the declarations in force at minute *t* (latest submission, M9), in MWh. E⁺_h and E⁻_h are metered export and import in settlement period *h* (B1610), in MWh. PN-protected energy: P^exp_t and P^imp_t are the export and import energy in the unit's PN from *t* to the end of the protection horizon *H* (M15). Declarations are net of PN, reserve and response protection (M12). MDO is read as export energy at the meter and |MDB| as import energy at the meter (M13).
+*Notation.* For unit *i*: MDO_t ≥ 0 and MDB_t ≤ 0 are the declarations in force at minute *t* (latest submission, M9), in MWh. E⁺_h and E⁻_h are metered export and import in settlement period *h* (B1610), in MWh, from the latest settlement run available at the pinned scoring run; the run type is recorded for each settlement period (M6). PN-protected energy: P^exp_t and P^imp_t are the export and import energy in the unit's PN from *t* to the end of the protection horizon *H* (M15). Declarations are net of PN, reserve and response protection (M12). MDO is read as export energy at the meter and |MDB| as import energy at the meter (M13).
 
 *Efficiency.* η̂ = ΣE⁺ / ΣE⁻ over the unit's scored weeks: export out over import in. The unit's start and end state of energy differ by at most U, so the error is at most U / ΣE⁻. Units with η̂ outside [0.70, 0.98] are flagged and not scored on metrics 1, 2 and 4.
 
@@ -142,6 +142,8 @@ Intervals: 95%, with standard errors clustered by unit. With fewer than 50 units
 - Reserve-free subsample: units with no identified contract in the window
 - Weekly mean MEL and MIL as controls (sensitivity only; see §3)
 - Weekly median Q (metric 4) as a control in H3, on units with U (time-varying over-declaration; §3)
+- H3 excluding secondary BM units (type V), which may be aggregated (§3)
+- H3 on units whose registered MW comes from GC (M16)
 - Alternative usable-MWh assumptions (P4)
 - Dropping the first 2 weeks after each unit's adoption (learning period)
 
