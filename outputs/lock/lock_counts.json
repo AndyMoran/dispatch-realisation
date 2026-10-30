@@ -1,0 +1,122 @@
+{
+  "adopted_but_excluded_fuel_in_this_snapshot": 0,
+  "adopted_units": 163,
+  "adoption_table_sha256": "9c617eca54810f3c4374c1d3354e2e0ba8190d9555765efc298adc88c84c20fd",
+  "default_valued_records_total": 6,
+  "in_reference_without_gc": 33,
+  "missing_from_reference": 1,
+  "missing_from_reference_by_adoption_week": {
+    "2026-W44": 1
+  },
+  "note": "Upper bounds: weeks may still fail metric screens once metered data are read.",
+  "reference_sha256": "9245d0ccefb5f8de647cc07ea6db9758a4f6eb6bef4bc6c8acffc23c25ed798b",
+  "reference_snapshot": "data/raw/reference/bmunits__dl20261023T130744.json",
+  "registered_mw_source": {
+    "dc": 4,
+    "gc": 129,
+    "mel_fallback": 30
+  },
+  "samples": {
+    "min_4_weeks": {
+      "by_adoption_week": {
+        "2026-W26": 5,
+        "2026-W30": 1,
+        "2026-W32": 1,
+        "2026-W33": 3,
+        "2026-W35": 3,
+        "2026-W36": 15,
+        "2026-W37": 1,
+        "2026-W38": 14,
+        "2026-W39": 12,
+        "2026-W40": 9,
+        "2026-W41": 15,
+        "2026-W42": 19
+      },
+      "by_unit_type": {
+        "E": 31,
+        "S": 22,
+        "T": 20,
+        "V": 25
+      },
+      "gsp_groups_with_2plus_units": 11,
+      "gsp_units_contributing": 77,
+      "gsp_week_fe_estimable": true,
+      "units": 98
+    },
+    "min_8_weeks": {
+      "by_adoption_week": {
+        "2026-W26": 5,
+        "2026-W30": 1,
+        "2026-W32": 1,
+        "2026-W33": 3,
+        "2026-W35": 3,
+        "2026-W36": 15,
+        "2026-W37": 1,
+        "2026-W38": 14
+      },
+      "by_unit_type": {
+        "E": 26,
+        "S": 7,
+        "T": 6,
+        "V": 4
+      },
+      "gsp_groups_with_2plus_units": 8,
+      "gsp_units_contributing": 34,
+      "gsp_week_fe_estimable": true,
+      "units": 43
+    }
+  },
+  "samples_gc_only": {
+    "min_4_weeks": {
+      "by_adoption_week": {
+        "2026-W26": 5,
+        "2026-W30": 1,
+        "2026-W32": 1,
+        "2026-W33": 1,
+        "2026-W35": 3,
+        "2026-W36": 15,
+        "2026-W37": 1,
+        "2026-W38": 12,
+        "2026-W39": 12,
+        "2026-W40": 8,
+        "2026-W41": 7,
+        "2026-W42": 9
+      },
+      "by_unit_type": {
+        "E": 31,
+        "S": 22,
+        "T": 18,
+        "V": 4
+      },
+      "gsp_groups_with_2plus_units": 10,
+      "gsp_units_contributing": 55,
+      "gsp_week_fe_estimable": true,
+      "units": 75
+    },
+    "min_8_weeks": {
+      "by_adoption_week": {
+        "2026-W26": 5,
+        "2026-W30": 1,
+        "2026-W32": 1,
+        "2026-W33": 1,
+        "2026-W35": 3,
+        "2026-W36": 15,
+        "2026-W37": 1,
+        "2026-W38": 12
+      },
+      "by_unit_type": {
+        "E": 26,
+        "S": 7,
+        "T": 4,
+        "V": 2
+      },
+      "gsp_groups_with_2plus_units": 8,
+      "gsp_units_contributing": 32,
+      "gsp_week_fe_estimable": true,
+      "units": 39
+    }
+  },
+  "schema_version": "1.0",
+  "units_with_any_default_record": 3,
+  "window_end": "2026-11-15"
+}

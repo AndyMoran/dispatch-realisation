@@ -8,7 +8,8 @@ fleet counts only, with no unit IDs:
 
 - H3 sample sizes under the 4- and 8-week rules, by adoption week (§4)
 - GSP group × week feasibility under each rule (§6)
-- units missing from the reference snapshot or lacking GC (M8)
+- registered-MW source per unit under the fallback chain (M16), with the
+  GC-only sample for the robustness run, and counts by BM unit type (R20)
 - default-valued declaration records (R13)
 
 Counts are upper bounds: a week can still fail a metric's screens (§3) once
@@ -52,30 +53,47 @@ def full_weeks_after(adoption_week: str, window_end: date = WINDOW_END) -> int:
     return 0 if first > last else (last - first).days // 7 + 1
 
 
+def mw_source(ref_row: dict | None) -> str:
+    """First positive source in the M16 chain; MEL is assumed until MELS is pulled."""
+    if ref_row is None:
+        return "mel_fallback"
+    if float(ref_row.get("generationCapacity") or 0) > 0:
+        return "gc"
+    if abs(float(ref_row.get("demandCapacity") or 0)) > 0:
+        return "dc"
+    return "mel_fallback"
+
+
+def _sample_stats(sample: list[dict], ref: dict) -> dict:
+    by_gsp = Counter(str((ref.get(r["bm_unit"]) or {}).get("gspGroupId") or "") for r in sample)
+    groups_ok = {g: n for g, n in by_gsp.items() if g and n >= GSP_MIN_UNITS_PER_GROUP}
+    contributing = sum(groups_ok.values())
+    return {
+        "units": len(sample),
+        "by_adoption_week": dict(sorted(Counter(r["cohort"] for r in sample).items())),
+        "by_unit_type": dict(sorted(Counter(
+            str((ref.get(r["bm_unit"]) or {}).get("bmUnitType")) for r in sample).items())),
+        "gsp_groups_with_2plus_units": len(groups_ok),
+        "gsp_units_contributing": contributing,
+        "gsp_week_fe_estimable": contributing >= GSP_MIN_CONTRIBUTING,
+    }
+
+
 def counts(adoption_rows: list[dict], reference_rows: list[dict]) -> dict:
     ref = {str(r["elexonBmUnit"]): r for r in reference_rows if r.get("elexonBmUnit")}
     adopted = [r for r in adoption_rows if r["status"] == "adopted"]
     missing = [r for r in adopted if r["bm_unit"] not in ref]
-    no_gc = [r for r in adopted if r["bm_unit"] in ref
-             and not float(ref[r["bm_unit"]].get("generationCapacity") or 0) > 0]
+    no_gc = [r for r in adopted if mw_source(ref.get(r["bm_unit"])) != "gc" and r["bm_unit"] in ref]
     fuel_now_excluded = [r for r in adopted if r["bm_unit"] in ref
                          and str(ref[r["bm_unit"]].get("fuelType")) in EXCLUDED_FUELS]
-    usable = [r for r in adopted if r["bm_unit"] in ref
-              and float(ref[r["bm_unit"]].get("generationCapacity") or 0) > 0]
+    source = Counter(mw_source(ref.get(r["bm_unit"])) for r in adopted)
 
-    rules = {}
+    rules, rules_gc = {}, {}
     for k in SAMPLE_RULES:
-        sample = [r for r in usable if full_weeks_after(r["cohort"]) >= k]
-        by_gsp = Counter(str(ref[r["bm_unit"]].get("gspGroupId") or "") for r in sample)
-        groups_ok = {g: n for g, n in by_gsp.items() if g and n >= GSP_MIN_UNITS_PER_GROUP}
-        contributing = sum(groups_ok.values())
-        rules[f"min_{k}_weeks"] = {
-            "units": len(sample),
-            "by_adoption_week": dict(sorted(Counter(r["cohort"] for r in sample).items())),
-            "gsp_groups_with_2plus_units": len(groups_ok),
-            "gsp_units_contributing": contributing,
-            "gsp_week_fe_estimable": contributing >= GSP_MIN_CONTRIBUTING,
-        }
+        eligible = [r for r in adopted if full_weeks_after(r["cohort"]) >= k]
+        rules[f"min_{k}_weeks"] = _sample_stats(eligible, ref)
+        rules_gc[f"min_{k}_weeks"] = _sample_stats(
+            [r for r in eligible if mw_source(ref.get(r["bm_unit"])) == "gc"], ref)
     return {
         "schema_version": SCHEMA_VERSION,
         "window_end": WINDOW_END.isoformat(),
@@ -87,7 +105,9 @@ def counts(adoption_rows: list[dict], reference_rows: list[dict]) -> dict:
         "adopted_but_excluded_fuel_in_this_snapshot": len(fuel_now_excluded),
         "default_valued_records_total": sum(int(r.get("n_default") or 0) for r in adoption_rows),
         "units_with_any_default_record": sum(int(r.get("n_default") or 0) > 0 for r in adoption_rows),
+        "registered_mw_source": dict(sorted(source.items())),
         "samples": rules,
+        "samples_gc_only": rules_gc,
         "note": "Upper bounds: weeks may still fail metric screens once metered data are read.",
     }
 

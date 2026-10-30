@@ -30,8 +30,19 @@ def test_counts_samples_gsp_and_gaps():
     assert out["adopted_units"] == 15 and out["missing_from_reference"] == 1
     assert out["in_reference_without_gc"] == 1
     assert out["default_valued_records_total"] == 3 and out["units_with_any_default_record"] == 1
+    # Fallback chain (M16): T_NOGC (GC 0, DC 0) and T_NEW (missing) use MEL; both counted.
+    assert out["registered_mw_source"] == {"gc": 13, "mel_fallback": 2}
     four, eight = out["samples"]["min_4_weeks"], out["samples"]["min_8_weeks"]
-    assert four["units"] == 12 and eight["units"] == 6
-    assert four["gsp_groups_with_2plus_units"] == 1 and four["gsp_units_contributing"] == 6
-    assert four["gsp_week_fe_estimable"] is False
+    assert four["units"] == 13 and eight["units"] == 7   # T_NOGC kept via fallback; T_NEW (W43) has 3 weeks
+    gc4 = out["samples_gc_only"]["min_4_weeks"]
+    assert gc4["units"] == 12 and gc4["gsp_units_contributing"] == 6
+    assert gc4["gsp_week_fe_estimable"] is False
+    assert four["by_unit_type"] == {"None": 13}
     assert "T_" not in json.dumps(out)              # no unit IDs in the output
+
+
+def test_dc_fallback_when_gc_zero():
+    from src.ingest.lock_counts import mw_source
+    assert mw_source({"generationCapacity": "0.000", "demandCapacity": "-20.0"}) == "dc"
+    assert mw_source({"generationCapacity": "0.000", "demandCapacity": "0.000"}) == "mel_fallback"
+    assert mw_source({"generationCapacity": "49.9", "demandCapacity": "-50"}) == "gc"
