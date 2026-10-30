@@ -10,7 +10,7 @@ Status: **Week 1 — pre-registration redrafted (version 2, 30 Oct 2026)**
 
 ## 1. Objective
 
-Produce a few finished, named, public artifacts, with minimal selling. The aim: people describe me as "the person who checks whether GB batteries' declarations are physically true".
+Produce a few finished, public artifacts, with minimal selling. The aim: people describe me as "the person who checks whether GB batteries' declarations are physically true".
 
 No service business. No siting engine. No LP counterfactual.
 
@@ -55,7 +55,7 @@ Energy balance before acceptance rates. If a declaration can't be reconciled wit
 
 - Every published number carries its uncertainty and its limits.
 - A null result is a valid result.
-- Named parties see their results first and their replies are published (§7a).
+- Lead parties see their own units' results privately; no unit is named in version 1 (§7a).
 
 ### 3.5 One source of truth
 
@@ -99,18 +99,19 @@ All documentation follows `WRITING.md` (Strunk and White; Zinsser): point first,
 **Claims.** Five, in three tiers: Claims 1–2 primary, Claim 3 secondary, Claim 4 an illustrative case series, Claim 5 descriptive. Definitions, screens, known-answer tests and the Claim 3 promotion rule: `PREREGISTRATION.md` (single source).
 
 **Outputs.**
-- A per-unit flag table, with intervals and a sensitivity table, sorted but not ranked. Units not scored are listed with the reason; secondary units are shown separately.
+- Fleet-level results for every claim, with a sensitivity table. Units not scored are counted with the reason; secondary units are shown separately.
+- A private pack per lead party: its units' flags with intervals, sorted but not ranked, and the method (§7a).
 - Known-answer and reliability results, so readers can see the tests measure what they claim.
 - Claim 3's identification rate and diagnostics.
 - The data-quality finding (RQ4).
 - Claims map: what each published number shows and doesn't show.
 - Methods paper (~3,000–5,000 words), one chart, open pipeline.
-- Right of reply and naming policy: see §7a.
+- Disclosure and naming policy: see §7a.
 
 **Gates.**
 - **Pre-registration lock:** before any unit is scored. Tagged `v1.0-lock`; Zenodo DOI.
 - **Known-answer gate:** the synthetic suite passes before any real unit is scored. If Claim 3's bands fail, Claim 3 is dropped from version 1.
-- **Reliability gate:** a claim whose split-half reliability lies wholly below 0.5 is not published per unit.
+- **Reliability gate:** a claim whose split-half reliability lies wholly below 0.5 is not reported per unit, privately or publicly.
 
 **History, kept for the record.** Version 1 (to 30 Oct 2026) aimed to rank units and estimate, in £/MW/yr, whether declaring well pays. Gate A1 (official run, 30 Oct 2026) selected design 2 for that estimate; Gate A2 was to measure stakes. Both belong to the deferred analysis, and neither shapes the audit. Their code and outputs stay in the repository: `src/ingest/gate_a1.py`, `src/ingest/gate_a2.py`, `outputs/gate_a1/`. The decision log (§11) records each step.
 
@@ -134,9 +135,9 @@ Supported the deferred £ analysis. Revisit with version 2.
 | 2 | 2 Nov | Lock pre-registration (Zenodo); synthetic suite and scoring code. 5 Nov compliance deadline | Draft | Draft | — |
 | 3 | 9 Nov | Known-answer gate; data pull (PN, B1610, BOALF); case-series search (2 days) | Publish | Publish | First 5 (with C; method ask) |
 | 4 | 16 Nov | Pinned scoring run (window closes 15 Nov); reliability gate | — | — | — |
-| 5 | 23 Nov | Flag table; right of reply sent (≥ 10 working days) | — | — | — |
-| 6 | 30 Nov | Corrections; legal review | — | — | — |
-| 7–8 | 7 Dec | Publish audit with replies attached | — | — | Second 5 (with A) |
+| 5 | 23 Nov | Fleet results; private packs sent to lead parties (≥ 10 working days before fleet publication) | — | — | — |
+| 6 | 30 Nov | Corrections from lead-party responses | — | — | — |
+| 7–8 | 7 Dec | Publish audit (fleet level), methods paper and pipeline | — | — | Second 5 (with A) |
 
 ## 7. Outreach (E)
 
@@ -149,13 +150,21 @@ Rules: one narrow ask; offer before asking; email the first author, not the last
 
 Ask before A publishes (Wks 1–6): "I'm auditing GB battery MDO/MDB declarations against metered physics and I'd value your reaction to the approach." After publication: "I've measured … and I'd value your reaction." Not a sale, not a job request.
 
-## 7a. Publication policy for named units
+## 7a. Disclosure policy for per-unit results
 
-- **Unit of publication:** BM Unit ID. Lead party shown for context only; lead party ≠ operator ≠ owner.
-- **Right of reply:** each lead party receives its unit's numbers and the full method at least 10 working days before publication.
-- **Errors:** a demonstrated data or method error is fixed before publication. If the fix changes results materially, the reply clock restarts. I adjudicate; every correction is logged publicly with its reason.
-- **Disputes that aren't errors:** publish with the lead party's reply attached. Do not withhold.
-- **Before publishing:** legal review of naming and framing. The BMRS and NESO licences permit a per-unit derived table (ASSUMPTIONS.md R10), but they grant copyright and database rights only; they do not clear naming units.
+**Version 1: private.** Per-unit results go only to the lead party, for its own units. Fleet-level results and the method are published. Reasons:
+- The claims establish physical coherence, not misconduct. Attached to a named company they read as the latter, and a published reply does not undo that.
+- M13 is unresolved and sits under the primary claims. A private disclosure on a branch that later moves can be corrected; a public one cannot.
+- The provisional physics (*H*, η̂ bounds, settlement-period resolution) is harmless at fleet level and contestable per named unit.
+- The owner gets the same diagnostic privately. Naming adds audience, not analysis.
+
+**Private packs:** BM Unit ID; flags, Claim 1 score and interval, lower-wall status, Claim 3 results where identified, latency; the full method. Sent at least 10 working days before fleet publication. Lead party ≠ operator ≠ owner.
+
+**Errors:** a demonstrated data or method error is fixed before fleet publication. If the fix changes fleet results materially, the clock restarts. I adjudicate; every correction is logged publicly with its reason, without naming the unit.
+
+**Version 2: named, only if all five hold** (PREREGISTRATION §11): (i) M13 resolved in writing; (ii) one clean pinned scoring run with no estimator changes; (iii) Claim 3's promotion outcome recorded; (iv) right of reply completed for every named unit, at least 10 working days; (v) legal review cleared. Disputes that aren't errors are then published with the reply attached.
+
+**Licences:** the BMRS and NESO licences permit a per-unit derived table (ASSUMPTIONS.md R10), but they grant copyright and database rights only; they do not clear naming units
 
 ## 8. Out of scope
 
@@ -176,14 +185,16 @@ Ask before A publishes (Wks 1–6): "I'm auditing GB battery MDO/MDB declaration
 | Claim 3 fires on frequency response or ramp limits | Per-unit baseline; U-free placebo set; ramp-limited synthetic battery |
 | Secondary units are portfolios | Reported separately, marked "may be aggregated" |
 | Tests don't measure what they claim | Known-answer suite with fixed bands; reliability gate |
-| Named parties dispute results | Right of reply; uncertainty and limits stated up front |
-| Naming parties: legal or reputational | §7a policy; legal review before publication; claim limited to physical consistency |
+| Lead parties dispute private results | Error-correction process before fleet publication; uncertainty and limits stated up front |
+| Naming units in version 2: legal or reputational | Five written conditions (§7a), including M13 resolved and legal review; claim limited to physical consistency |
+| Honest units fall short near empty (power derating) | Synthetic derating battery must not be flagged; placebo set (P6) |
 | BOD / NESO / B1610 vintages | Record download dates and hashes; one pinned scoring run |
 | Practice converges quickly | Publish fast; this is an artifact, not a business |
 
 ## 10. Definition of done
 
-- Published audit: per-unit flag table with intervals and sensitivity, known-answer and reliability results, and the data-quality finding.
+- Published audit: fleet-level results with sensitivity, known-answer and reliability results, and the data-quality finding.
+- Private packs sent to every lead party with a scored unit.
 - Published methods paper with open pipeline.
 - Published skip-day post and methods note.
 - 10–15 people have seen the work and some have replied.
@@ -246,3 +257,8 @@ Ask before A publishes (Wks 1–6): "I'm auditing GB battery MDO/MDB declaration
 | 2026-10-30 | Known-answer suite of 9 synthetic batteries, with fixed bands, must pass before any real unit is scored; bands may be revised only before then | Tests must be shown to measure what they claim before they touch real units |
 | 2026-10-30 | Lock moves from "before outcome data" to "before any unit is scored". One pinned scoring run; any estimator change needs a new lock | No outcome variable remains in version 1; scoring is the step that must not inform the method |
 | 2026-10-30 | **Claim 3 build decided by a pre-lock power bound, rule fixed before first run** (`src/ingest/power_bound.py`). A unit is potentially identifiable if ≥ 10% of its declaration-minutes after its adoption week (latest submission per minute, defaults excluded) satisfy 1 MWh ≤ MDO ≤ 2 × MW × 60 min. Build Claim 3 in version 1 if ≥ 30 of the 98 scored units are potentially identifiable; otherwise keep its specification, unbuilt, for version 2. MW per M16 (GC, else \|DC\|, marked indicative); units with neither count as not identifiable. T = 30/90, r ≈ 1, 5%/20% shares, MDB and the 98/73 split by unit type are reported, not deciding; if the result passes only because of secondary units, that is recorded here | Decides effort, not validity: Claim 3 stays secondary in either branch and its promotion rule is unchanged. The bound is a necessary condition; the identified set will be no larger than the potential set |
+| 2026-10-30 | **Power bound run (rule committed in f25f43a before the run): Claim 3 built in version 1.** 71 of 98 eligible units potentially identifiable (threshold 30); 67 of 73 non-secondary. Not dependent on secondary units: 21 of 25 have no MW and count as not identifiable. Result nearly flat across T = 30–90 and K = 1–2, so it rules out thinness by construction only. 3 eligible units have no non-default declarations after their adoption week | Pre-registered rule met. Decides effort only: Claim 3 stays secondary under its promotion rule (R26; `outputs/lock/power_bound.json`) |
+| 2026-10-30 | **Per-unit results private in version 1; named only in version 2, once five conditions hold:** M13 resolved in writing; a clean pinned run with no estimator changes; Claim 3's promotion outcome recorded; right of reply completed; legal review cleared. Legal review drops out of version 1 | The claims prove coherence, not misconduct; M13 is unresolved under the primary claims; owners get the same diagnostic privately; version 1 should be unattackable on process (§7a) |
+| 2026-10-30 | Framed as testing one hypothesis for battery skips, declaration quality, which NESO's root-cause review could not test because MDO/MDB were unpublished when it concluded. Coverage stated per channel; over-declaration named as the weakest-tested; prevalence, not association with skips | Places the audit on NESO's own list of causes and states what it settles and leaves open (R23) |
+| 2026-10-30 | No carbon or £ figure anywhere in version 1, including the motivation | An unverified figure is a lock risk; any figure would need the counterfactual cut in §8 |
+| 2026-10-30 | Synthetic battery #10 (honest, derates at low charge) added; §5 states that all scored instructions fall under GC0166 | Derating mimics over-declaration (P6); the 15- and 30-minute rules never govern scored data (R25) |

@@ -12,7 +12,9 @@ The electricity control room constantly buys small adjustments: a bit more power
 
 Since 2026, Grid Code modification **GC0166** has required batteries to declare what is in the tank, through two parameters: **Maximum Delivery Offer (MDO)** and **Maximum Delivery Bid (MDB)**. Elexon has published them per unit on BMRS since 25 June 2026, under BSC modification P499. The control room sizes its instructions from them. NESO's own trial found that submitted values overstated what batteries could deliver.
 
-So the question is simple: **are the declarations physically true?** A battery's meter records every MWh that goes in and out. If its declarations say the tank held more, or less, than the meter allows, the declarations are wrong. This project audits that, for every battery unit, from public data only, and publishes the result per unit with a right of reply.
+Yet the control room often skips cheaper batteries and runs gas instead. NESO's own review of why rated zonal allocation, frequency response and reserve services among the strongest causes. It finished in April 2026, before declarations were published, so it could not test them. This project tests that one hypothesis.
+
+So the question is simple: **are the declarations physically true?** A battery's meter records every MWh that goes in and out. If its declarations say the tank held more, or less, than the meter allows, the declarations are wrong. This project audits that, for every battery unit, from public data only. It publishes fleet-level results and the method, and sends each lead party its own units' results privately.
 
 ## In detail
 
@@ -24,7 +26,9 @@ Five claims, defined in [`PREREGISTRATION.md`](PREREGISTRATION.md):
 4. **Upper-wall violations (case series):** where a nameplate MWh is disclosed, a unit should never declare more than its tank could hold.
 5. **Redeclaration latency (fleet level):** how quickly units update their declarations after an instruction.
 
-The result is a **flag table**, not a ranking: for each unit, whether its declarations are physically consistent with its meter, with uncertainty and with each limit stated. Lead party is shown for context only; lead party, operator and owner are often different companies. Each lead party sees its results and the method at least 10 working days before publication.
+The result is a **flag table**, not a ranking: for each unit, whether its declarations are physically consistent with its meter, with uncertainty and with each limit stated. In this version the table goes privately to each lead party, for its own units; what is published is the fleet-level picture. Units may be named in a later version, but only once five written conditions are met (see [`PREREGISTRATION.md`](PREREGISTRATION.md) §11).
+
+The claims do not test every channel equally. Over-declaration, the one most tied to lost trust, is the one this version is least able to measure. Finding no violations is not evidence of compliance.
 
 A first finding came out of the design work: public registers do not record how much energy GB batteries hold. REPD records power only. In SSEN's Embedded Capacity Register the storage-MWh field read "DATA NOT AVAILABLE" for every connected battery site. That is why the audit uses tests that need no capacity figure.
 
@@ -36,6 +40,9 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 - Not a ranking. Units are flagged, with uncertainty, not placed in order.
 - Not a revenue estimate. Whether declaring well pays is deferred to a later version; this one could not identify it.
 - Not tied to a positive result. If declarations turn out to be physically consistent, that is the finding.
+- Not an explanation of skip rates. It tests one hypothesis, and cannot say how much each cause contributes.
+- Not an association between declaration quality and skips. It measures how common violations are, not whether worse declarers are skipped more.
+- Not a measure of how NESO perceives declarations, and not an estimate of the carbon or cost of skips.
 
 ## Repository layout (proposed)
 

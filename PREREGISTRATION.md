@@ -9,13 +9,17 @@ After lock, there is one pinned scoring run (§10). Any change to a definition o
 
 ---
 
-## 0. Why this version differs from the last
+## 0. Why it matters, and why this version differs from the last
 
+**Why it matters.** NESO's control room often skips cheaper batteries in favour of gas. NESO's own root-cause review of skip rates rated zonal allocation, mandatory frequency response and reserve services among the strongest causes. That review concluded in April 2026, before batteries' energy declarations (MDO/MDB) were first published, and its published outcomes do not include declaration quality (ASSUMPTIONS.md R23). This audit tests that one hypothesis: whether the declarations are physically consistent with each battery's meter. It cannot apportion skips among causes, and it makes no estimate of their cost or carbon.
+
+**Why this version differs.** 
 The study set out to rank battery units on declaration quality and to estimate, in £/MW/yr, whether declaring well pays. Version 2 drops both, and audits whether each unit's declarations are consistent with its own metered physics. Three findings forced the change; each is logged with its date in PROJECT.md §11.
 
 1. **The £ association could not be identified.** Its design compared each unit with itself over a few weeks of one regime change. That cannot exclude other changes over the same weeks, such as a new optimiser or reserve contract (ASSUMPTIONS.md I10). Reviewers on 28–30 October judged it a distraction from the measurement.
 2. **A usable-energy figure (U) is missing for most units.** REPD records no MWh. SSEN's Embedded Capacity Register has a storage-MWh column, but it reads "DATA NOT AVAILABLE" for all 28 connected battery sites (November 2025 register). The Capacity Market register gives a duration class, which is a minimum, so U ≥ capacity × class (P4a, R21, R22). Without U, a level comparison cannot be scored for most units, and an adjusted ranking cannot be built on it.
 3. **The tests that need no U catch under-declaration. The problem that motivates the study is over-declaration** (NESO's GC0166 proof of concept). Version 2 therefore adds Claim 3, which detects over-declaration from non-delivery, without U.
+4. **Per-unit results are disclosed privately in version 1.** The claims establish physical coherence, not misconduct; M13 is unresolved under the primary claims; and the owner gets the same diagnostic from a private pack. Named publication follows only under the conditions in §11.
 
 **Rules adapted after declaration statistics were seen.** Each used declaration or reference data only. Each is listed with what would have differed under the alternative:
 
@@ -27,6 +31,8 @@ The study set out to rank battery units on declaration quality and to estimate, 
 | 30 Oct | Secondary units reported separately | 25 of the GC = 0 units are type V | Pooling them would mix possible portfolios with single sites |
 | 30 Oct | B1610 from the latest settlement run | The API's `settlementRunType` parameter | A fixed early run would use less-revised meter data |
 | 30 Oct | Scope narrowed to this audit | U coverage (SSEN ECR, REPD, CM register) | The ranking and £ association, as in version 1 |
+| 30 Oct | Claim 3 built in version 1, by a power bound whose rule was committed before it ran (f25f43a) | MDO declarations and registered MW (§5.8) | Claim 3 specified but unbuilt, as in a slim version 1 |
+| 30 Oct | Per-unit results private in version 1 | No data | Named publication after right of reply and legal review |
 
 The Gate A1 design selection (design 2, 30 October) chose a design for the £ association, which is now deferred. It is kept as history; it does not shape this audit.
 
@@ -44,6 +50,18 @@ The Gate A1 design selection (design 2, 30 October) chose a design for the £ as
 - **Claims 2 and 3 are the two directions of one level test.** A unit can appear under both; that is informative, not contradictory.
 - **Claim 2 detects a provable subset of under-declaration.** A unit that under-declares and also under-uses its tank does not reveal the energy it holds, and will not be flagged.
 
+**How each claim bears on skips.** Each claim tests one way declarations could make batteries less usable to the control room. They are not tested equally well.
+
+| Channel | Claim | How well this version tests it |
+|---|---|---|
+| Noise: declarations don't track the battery | 1 | Every scored unit |
+| Under-declaration: the battery looks emptier than it is | 2 | The provable subset only |
+| Over-declaration: the battery can't deliver what it declared | 3 | Weakest. This is the channel most tied to lost trust, and the one this version is least able to quantify. Its identification rate is reported as a result |
+
+**What the audit can conclude.** Where it finds violations, the declarations are physically wrong. Where it finds none, there is no evidence of incoherence in the channels it can see. That is not evidence of compliance: the over-declaration channel stays open wherever Claim 3 lacks power.
+
+**What it cannot conclude.** It measures how common violations are, not whether units with worse declarations are skipped more often; that association is deferred. It is silent on how NESO perceives declarations. Dispatch length limits Claim 3's power (§5.8); it does not confound it.
+
 **Deferred to version 2, each with its reason:**
 
 | Item | Reason |
@@ -54,12 +72,14 @@ The Gate A1 design selection (design 2, 30 October) chose a design for the £ as
 | Grace-period analysis (old H4) | Grace-period end not announced |
 | Gate A2 (stakes) | Supports none of Claims 1–5; adds unverified assumptions (ASSUMPTIONS.md R16b, R17, O5) |
 | Optimiser-level claims | Depends on the ranking; mapping unverified (I4) |
+| Named per-unit publication | Conditional on the five conditions in §11 |
+| Association between declaration quality and skip rates | Joins to outcomes; needs the deferred identification strategy |
 
 ## 2. Data, and what was seen before lock
 
 **Fleet.** BM units that submitted non-default MDO/MDB between 25 June and 29 October 2026, excluding pumped storage and hydro (ASSUMPTIONS.md M10): 163 units, from the official Gate A1 run of 30 October 2026.
 
-**Scoring window.** From each unit's adoption to Sunday 15 November 2026. Units with at least 4 scored weeks (§3) are published in the flag table; 98 units meet that rule (`outputs/lock/lock_counts.json`). Units with fewer are listed as not scored, with the reason.
+**Scoring window.** From each unit's adoption to Sunday 15 November 2026. Units with at least 4 scored weeks (§3) are eligible; 98 units meet that rule (`outputs/lock/lock_counts.json`). An eligible unit can still fail a claim's screens and is then listed as not scored, with the reason. Three eligible units submitted no non-default declarations after their adoption week (`outputs/lock/power_bound.json`), so they cannot be scored; a unit reverting to default values is reported as a data-quality finding. Units with fewer than 4 scored weeks are listed as not scored.
 
 **Sources.**
 
@@ -73,7 +93,7 @@ The Gate A1 design selection (design 2, 30 October) chose a design for the £ as
 | Elexon BOAV | Validation of delivered energy | 3 |
 | Disclosed nameplate MWh (§6) | Upper bound on U | 4 |
 
-**Seen before lock.** All MDO/MDB declarations, 25 June – 29 October 2026; the reference snapshot; for one settlement period, the list of units with B1610 rows (identifiers only, no values displayed); one day of MID prices, to confirm field names; the field names and stage values of NESO's In-Merit files; and the storage columns of SSEN's Embedded Capacity Register and NESO's Capacity Market register. **No PN, BOALF, BOD, BOAV or MELS data, no B1610 values and no NESO volumes were examined. No unit has been scored.**
+**Seen before lock.** All MDO/MDB declarations, 25 June – 29 October 2026; the reference snapshot; for one settlement period, the list of units with B1610 rows (identifiers only, no values displayed); one day of MID prices, to confirm field names; the field names and stage values of NESO's In-Merit files; and the storage columns of SSEN's Embedded Capacity Register and NESO's Capacity Market register. The Claim 3 power bound (§5.8) was computed from the declarations and the reference snapshot, after its decision rule was committed. **No PN, BOALF, BOD, BOAV or MELS data, no B1610 values and no NESO volumes were examined. No unit has been scored.**
 
 ## 3. Common definitions
 
@@ -124,13 +144,15 @@ The Gate A1 design selection (design 2, 30 October) chose a design for the £ as
 | 2 | Provable under-declaration | Lower bound ≥ 0.05 |
 | 2 | None detected | Otherwise |
 
-**Reliability.** For Claims 1 and 2, each unit's score is computed separately on odd and even calendar days. The Spearman correlation of the two across units, stepped up by the Spearman–Brown formula, is the claim's reliability. If its 95% interval (unit bootstrap) lies wholly below 0.5, the claim's flags are reported as unreliable and not published per unit. If the interval straddles 0.5, flags are published with that stated.
+**Reliability.** For Claims 1 and 2, each unit's score is computed separately on odd and even calendar days. The Spearman correlation of the two across units, stepped up by the Spearman–Brown formula, is the claim's reliability. If its 95% interval (unit bootstrap) lies wholly below 0.5, the claim's flags are reported as unreliable and not given per unit, in private packs or later. If the interval straddles 0.5, flags are given with that stated.
 
 ## 5. Claim 3 (secondary): over-declaration from non-delivery
 
 **The physics.** If NESO accepts an offer within a unit's declared MDO and the unit runs out of energy partway through, it delivers what it actually had: delivered = min(accepted, *E*_available). An honest unit delivers in full up to the MDO it declared. An over-declaring unit falls short once the instruction exceeds what it really held.
 
 **Instruction sizing.** NESO states that since GC0166 "MDO/MDB Data is used to calculate what BOA volume can be issued", and that it "will utilize these values to determine the volume of Offers or Bids that can be dispatched within the BM window" (M18). Instructions are therefore sized up to the declared MDO, which is the regime in which Claim 3 has power.
+
+**Regime.** Every instruction Claim 3 scores falls after the unit's adoption week, so under GC0166 for that unit. Instructions under the 15- or 30-minute rule are never scored, because the unit then had no MDO to test against (ASSUMPTIONS.md R25).
 
 ### 5.1 Quantities, per instruction
 
@@ -183,9 +205,19 @@ Where the lower wall proves the tank held at least the accepted energy (L_t ≥ 
 
 Reported per unit: *f̂* and Δ̂ with intervals, the identification diagnostics, the placebo fit, and the frequency of r > 1.
 
-### 5.8 Selection and scope
+### 5.8 Power, selection and scope
 
-r approaches 1 only when the declared stock is small relative to what one instruction can draw: in practice, near-empty states. A single BOA delivers at most MEL × its duration, and most battery BOAs are short. How often a unit is near-empty depends on its own state-of-charge management, which may relate to declaration quality.
+r approaches 1 only when the declared stock is small relative to what one instruction can draw: in practice, near-empty states. How often a unit is near-empty depends on its own state-of-charge management, which may relate to declaration quality.
+
+**Power bound, computed before lock** (`src/ingest/power_bound.py`; rule committed in f25f43a before the first run). A unit is *potentially identifiable* if at least 10% of its declaration-minutes after its adoption week satisfy 1 MWh ≤ MDO ≤ 2 × MW × 60 min, so that a one-hour full-power instruction could reach r ≥ 0.5. Claim 3 is built in version 1 if at least 30 of the 98 eligible units are potentially identifiable. **Result: 71 of 98; 67 of 73 non-secondary units** (ASSUMPTIONS.md R26).
+
+- The bound is a necessary-condition screen on effort, not a test of validity. It bounds the r that instructions could reach, not the r they reached. The realised distribution is a scoring-run output and can be worse, if NESO rarely issues instructions near a small MDO. Since NESO sizes instructions from MDO (M18), it should track the bound where the bound is met. The identified set can be no larger than the potential set.
+- The result barely varies across T = 30–90 minutes and K = 1–2. It rules out a Claim 3 that is thin by construction; it says little about how thin it will be in practice.
+- 21 of 25 secondary units have no registered MW and counted as not identifiable. Claim 3's evidence on secondary units will be thin.
+
+**Power derating near empty.** Batteries usually cannot deliver full power at low state of charge (P6). An honest unit can then fall short for want of power, not energy, which mimics the kink. The placebo set (§5.6) catches this only where the lower wall is tight near empty, so the known-answer suite includes a derating battery (§8).
+
+**Composition of the identified set.** Reported beside the identification rate: by duration proxy (median MDO + |MDB| ÷ registered MW), by unit type, and by Claim 1 score against all scored units. Short-duration units and deeply depleted states are expected to dominate. This skew and the selection concern below are the same phenomenon seen from two sides (I16).
 
 - **Scope of the claim:** over-declaration that shows when the declared stock is close to what one instruction can draw. Not over-declaration in general.
 - **Selection check:** the Claim 1 scores of identified units are compared with those of all scored units. A difference is reported as evidence of selection.
@@ -222,7 +254,7 @@ Statistical significance alone never promotes Claim 3. Promotion does not depend
 For each BOA, L = minutes from the BOALF acceptance time to the unit's first MDO or MDB submission with publishTime at or after acceptance (M14). Censored at the unit's next acceptance or 30 minutes, whichever comes first.
 
 - **Reported at fleet level:** the distribution of L, and the share of BOAs with L ≤ 1 minute, NESO's benchmark.
-- **Per unit:** only in each lead party's right-of-reply pack, not published, because publishTime may record BMRS publication rather than receipt (M14).
+- **Per unit:** only in each lead party's private pack, and not published in version 2 either, because publishTime may record BMRS publication rather than receipt (M14).
 - **Cross-check:** units that redeclare slowly should show more r > 1 instructions (§5.2). Agreement is reported; disagreement means one of the two measures something else.
 
 ## 8. Known-answer tests
@@ -240,8 +272,9 @@ Synthetic batteries with planted faults run in CI before any real unit is scored
 | Redeclares 5 minutes after each BOA | Coherent or indeterminate | None detected | Not flagged; r > 1 frequency raised | Reported |
 | PN protection ignored | Incoherent | None detected | Reported | Reported |
 | Constant under-declaration, 20 MWh | Coherent (level-blind) | Provable under-declaration | Not flagged | Not flagged |
+| Honest, power derates linearly to 50% below 20% state of charge | Coherent | None detected | Not flagged | Not flagged |
 
-Across 100 simulated runs of each, honest batteries are flagged by Claim 3 at most 5% of the time under any regime. Under regime (i), the two over-declarers are flagged at least 80% of the time. If the suite cannot meet these bands, Claim 3 is dropped from version 1, and the report says so.
+Across 100 simulated runs of each, the four honest batteries are flagged by Claim 3 at most 5% of the time under any regime. Under regime (i), the two over-declarers are flagged at least 80% of the time. If the suite cannot meet these bands, Claim 3 is dropped from version 1, and the report says so.
 
 Bands are fixed here. The scoring code is written after lock, so a band or a definition may be revised only before the first real unit is scored. Each revision is logged in §12 with its date, the diff and a certification that no score for any real unit had been computed or seen. After the first real unit is scored, bands are frozen.
 
@@ -259,15 +292,17 @@ A sensitivity table is published with the flags. **A flag that changes under eit
 
 ## 10. Scoring discipline
 
-- One pinned scoring run after lock: data manifests, code tag and output hashes recorded. Lead parties see results from that run, and replies are published against it.
+- One pinned scoring run after lock: data manifests, code tag and output hashes recorded. Lead parties receive results from that run, and their responses are recorded against it.
 - Past declarations cannot change. What can change is data, through B1610 revisions, NESO reissues or a demonstrated error. Later revisions are not re-scored, except to fix a demonstrated error, which restarts the reply clock.
 - Claim 3 runs as a separate module from Claims 1 and 2. If Claim 3 fails its own tests, Claims 1 and 2 stand unchanged.
 
 ## 11. Publication commitments
 
 - Results are published whether they show problems or not.
-- Per-unit flags are published only after legal review and right of reply (PROJECT.md §7a).
-- The claim attached to each unit is "its declarations are, or are not, physically consistent with its meter", not "this unit is a poor declarer". Flags are sorted by Claim 1 but not called a ranking.
+- **Published openly in version 1:** fleet-level results for every claim, the known-answer and reliability results, Claim 3's identification rate and diagnostics, the sensitivity table at fleet level, the method and the open pipeline, so any operator can run the checks on its own units.
+- **Disclosed privately in version 1:** each lead party receives, for its own units only, the flags, Claim 1 score and interval, lower-wall status, Claim 3 results where identified, latency, and the method. No unit is named publicly in version 1.
+- **Named publication, in version 2 only, requires all five:** (i) M13 resolved in writing; (ii) one clean pinned scoring run with no estimator changes; (iii) Claim 3's promotion outcome recorded (§5.10); (iv) right of reply completed for every named unit, with at least 10 working days; (v) legal review cleared. Until all five hold, per-unit results go to the lead party only.
+- The claim attached to each unit, privately or publicly, is "its declarations are, or are not, physically consistent with its meter", not "this unit is a poor declarer". Flags are sorted by Claim 1 but not called a ranking.
 - The data-quality findings are published in their own right: in SSEN's November 2025 register, the storage-MWh field read "DATA NOT AVAILABLE" for all 28 connected battery sites; REPD records no storage MWh; the Capacity Market register gives minimum durations, without BM unit identifiers.
 
 ## 12. Deviations log
