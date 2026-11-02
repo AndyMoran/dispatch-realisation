@@ -1,0 +1,32 @@
+{
+  "auction_units_with_several_participants": 69,
+  "draft_sha256": "ee03e98b7fa6cc1c3eb40d2e58dacd2f43c359c76672d8c357e236dfc28111d7",
+  "eligible_lead_parties": 26,
+  "eligible_lead_parties_not_checked": 13,
+  "hand_file_sha256": {
+    "alias.csv": "3201584989e8b982edb4e30086932127ea96f5b63155945011a31339bd8974c3",
+    "auto_matches.csv": "fa98bf6250d4f03f71822ac6e3dfbbfbd32c1c5db76a6e05c191918507cfa096",
+    "lead_party_check.csv": "7602963a6344ff182bee28eb55968128bde2408e0ea14af7e97c771ae2e6aa40",
+    "links.csv": "271792756656e74da0a110f892785f364e64300ac6dfa39d6d8a9ac261366562",
+    "spot_check.csv": "c7429b812bc9fc8e927af828baf4155d1c179460a5db6d30e7994f136e722d68"
+  },
+  "in_scope_auction_units": 252,
+  "in_scope_rows": 368,
+  "matched": 5,
+  "not_fleet": 0,
+  "participants_undetermined": 16,
+  "run_utc": "2026-11-02T12:03:59.038306+00:00",
+  "schema_version": "1.0",
+  "spot_check": {
+    "auto_rule_kept": false,
+    "max_wrong": 3,
+    "outcomes": {
+      "confirmed": 6,
+      "unverifiable": 24
+    },
+    "rows": 30,
+    "wrong_or_unverifiable": 24
+  },
+  "unmatched": 247,
+  "unmatched_without_participant": 0
+}
