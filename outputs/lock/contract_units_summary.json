@@ -3,17 +3,43 @@
     "eac": 577,
     "sffr": 38
   },
-  "battery_technology": 355,
-  "fleet_bm_units": 244,
+  "auction_units_by_technology": {
+    "Batteries": 350,
+    "Batteries;None": 3,
+    "Batteries;Other": 1,
+    "Bio Fuel": 1,
+    "Biomass": 1,
+    "CCGT": 7,
+    "CHP": 1,
+    "Diesel": 25,
+    "Diesel;None": 1,
+    "Gas Reciprocating Engines": 138,
+    "Load Response": 22,
+    "Multi Fuel type": 3,
+    "Non-Pump Storage Hydro": 1,
+    "None": 1,
+    "OCGT": 48,
+    "Other": 9,
+    "Solar": 1,
+    "Wind": 2
+  },
+  "auto_rule": {
+    "min_margin": 0.2,
+    "min_score": 0.5
+  },
+  "eligible_bm_units": 98,
+  "fleet_bm_units": 163,
+  "in_scope": 369,
+  "in_scope_auto_rule": 173,
+  "in_scope_auto_rule_and_eligible": 110,
+  "in_scope_participants": 38,
+  "in_scope_top_candidate_eligible": 218,
   "reference_name_fields": [
     "bmUnitName",
-    "bmUnitType",
     "elexonBmUnit",
     "nationalGridBmUnit"
   ],
   "reference_party_field": "leadPartyName",
   "registered_participants": 59,
-  "technology_not_given": 1,
-  "window_start": "2026-06-22",
-  "with_any_candidate_scoring_0.5_or_more": 220
+  "window_start": "2026-06-22"
 }

@@ -140,8 +140,8 @@ AUTO_MIN_SCORE, AUTO_MIN_MARGIN = 0.5, 0.2
 
 def in_scope(techs: set[str]) -> bool:
     """Battery, or technology the results do not identify (PREREGISTRATION §4)."""
-    return any("batter" in t.lower() or "storage" in t.lower()
-               or t.strip().lower() in UNIDENTIFIED_TECH for t in techs)
+    # Battery by the "Batter" stem only: "Non-Pump Storage Hydro" is identified, not battery.
+    return any("batter" in t.lower() or t.strip().lower() in UNIDENTIFIED_TECH for t in techs)
 
 
 def auto_match(c: list[tuple[float, str]]) -> bool:

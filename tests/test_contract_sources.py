@@ -32,5 +32,6 @@ def test_scope_and_auto_rule():
     from src.ingest.contract_sources import auto_match, in_scope
     assert in_scope({"Batteries"}) and in_scope({"None"}) and in_scope({"Multi Fuel type"})
     assert not in_scope({"OCGT"}) and not in_scope({"Load Response"})
+    assert not in_scope({"Non-Pump Storage Hydro"}) and in_scope({"Diesel", "None"})
     assert auto_match([(0.8, "A"), (0.5, "B")]) and not auto_match([(0.8, "A"), (0.7, "B")])
     assert not auto_match([(0.4, "A")]) and not auto_match([])
