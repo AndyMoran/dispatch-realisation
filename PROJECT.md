@@ -10,7 +10,9 @@ Status: **Week 1 — pre-registration revision 2 drafted; lock 5–6 Nov 2026 af
 
 ## 1. Objective
 
-Produce a few finished, public artifacts, with minimal selling. The aim: people describe me as "the person who checks whether GB batteries' declarations are physically true".
+Produce a few finished, public artifacts, with minimal selling. The aim: people describe me as "the person who checks whether GB batteries' declarations are physically true", and who showed what published data let anyone check.
+
+**Lead question (from 2 Nov 2026):** can GB battery declarations be audited from public data? The answer, the two gaps, and the claims that survive them are the paper's headline. Outputs: a Zenodo paper and README in the structural register; a LinkedIn post that opens with the provocation and links to the paper; a cover note to NESO's markets team and Ofgem, sent with the paper, naming the two asks.
 
 No service business. No siting engine. No LP counterfactual.
 
@@ -270,3 +272,6 @@ Ask before A publishes (Wks 1–6): "I'm auditing GB battery MDO/MDB declaration
 | 2026-11-02 | Product list: EAC (DC, DM, DR, QR, SR, BR) and Static FFR in scope; STOR out (procurement ceased, delivery to 31 Mar 2026); mandatory frequency response out (no results by unit) | Discovery run, 2 Nov 2026; NESO STOR page |
 | 2026-11-02 | Precheck exposed a code fault before any coverage count: an auction unit listed under several participants (69 of 252) kept only one. Fixed so every participant is kept; the fix can only block more weeks | Found by the pre-coverage report's row and unit counts (368 rows, 252 units); no coverage figure existed when it was fixed |
 | 2026-11-02 | **Contract coverage (single run): 0 of 98 eligible units have a contract-free week. Claim 2's hard flag has no members in version 1**; Claim 2 is reported as a fleet-level violation share labelled "possibly reflecting reserve or response protection"; primary findings rest mainly on Claim 1 | Pre-registered rule (§4) and the consequence accepted earlier the same day. The zero measures what public data can certify, and is reported as a data-quality finding (R27) |
+| 2026-11-02 | **Reframed (option B):** lead question "Can GB battery declarations be audited from public data? Partly." Two gaps as the headline: no per-unit MWh register; auction results not keyed by BM unit. Policy asks in PREREGISTRATION §11 | Contract coverage 0 of 98 (R27) means unit-level verdicts are mostly ambiguous; the transparency gaps are the defensible contribution. Nothing scored, so the reframe precedes any result |
+| 2026-11-02 | Claim 1 read one-sidedly: "coherent" is a finding, "not shown coherent" may reflect unobserved reserve protection. The two periods either side of every EFA block boundary are excluded for every unit (response contracts). Two known-answer batteries test this, each with a pre-registered withdrawal if it misses its 95% band | Unobserved contract changes add absolute residuals, so they can only push away from "coherent" in expectation; the exclusion removes response-contract steps; the failure branch makes the gate binding |
+| 2026-11-02 | Lock date flexible: Thursday 5 Nov is self-imposed; the hard limit is before scoring in the week of 16 Nov | Allows the reframe to be done properly |

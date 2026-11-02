@@ -1,6 +1,10 @@
-# Dispatch Realisation of GB Batteries
+# Can GB Battery Declarations Be Audited From Public Data?
 
-Do GB battery storage units tell the control room the truth about how much energy they hold? This project checks each unit's declarations against its own meter.
+*Partly — and the two gaps that stop the rest.* (Repository: Dispatch Realisation of GB Batteries.)
+
+NESO can see which batteries hold contracts that lawfully lower their declarations. Nobody outside NESO can. So the declarations the control room now relies on cannot be checked independently from published data.
+
+This project checks each GB battery's declarations against its own meter, and reports both what can be checked and what the published data stop anyone checking.
 
 **Status:** pre-registration drafted (October 2026); nothing has been scored. Nothing here is a result yet.
 
@@ -16,6 +20,8 @@ Yet the control room often skips cheaper batteries and runs gas instead. NESO's 
 
 So the question is simple: **are the declarations physically true?** A battery's meter records every MWh that goes in and out. If its declarations say the tank held more, or less, than the meter allows, the declarations are wrong. This project audits that, for every battery unit, from public data only. It publishes fleet-level results and the method, and sends each lead party its own units' results privately.
 
+The answer so far is "partly". GB's published data serve settlement first and audit second. Two gaps stop a complete audit: no register records how much energy each battery holds, and NESO's auction results do not say which BM unit holds each contract. Both are cheap to close.
+
 ## In detail
 
 Five claims, defined in [`PREREGISTRATION.md`](PREREGISTRATION.md):
@@ -28,7 +34,7 @@ Five claims, defined in [`PREREGISTRATION.md`](PREREGISTRATION.md):
 
 The result is a **flag table**, not a ranking: for each unit, whether its declarations are physically consistent with its meter, with uncertainty and with each limit stated. In this version the table goes privately to each lead party, for its own units; what is published is the fleet-level picture. Units may be named in a later version, but only once five written conditions are met (see [`PREREGISTRATION.md`](PREREGISTRATION.md) §11).
 
-The claims do not test every channel equally. Over-declaration, the one most tied to lost trust, is the one this version is least able to measure. Finding no violations is not evidence of compliance.
+The claims do not test every channel equally. A unit shown coherent has declarations that track its meter; a unit not shown coherent may have bad declarations or contracts we cannot see. Claim 3, non-delivery, is the test least affected by unseen contracts. Finding no violations is not evidence of compliance.
 
 A first finding came out of the design work: public registers do not record how much energy GB batteries hold. REPD records power only. In SSEN's Embedded Capacity Register the storage-MWh field read "DATA NOT AVAILABLE" for every connected battery site. That is why the audit uses tests that need no capacity figure. A second followed: NESO's reserve and response auction results do not identify BM units, so no battery's week could be certified free of contracts that lawfully lower its declarations. The audit therefore cannot call any unit's under-declaration provable in this version.
 

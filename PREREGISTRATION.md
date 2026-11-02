@@ -1,4 +1,6 @@
-# Pre-registration — A Physics Audit of GB Battery MDO/MDB Declarations
+# Pre-registration — Can GB Battery Declarations Be Audited From Public Data?
+
+*A physics audit of MDO/MDB declarations, and the two gaps that stop a complete one.*
 
 **Status: DRAFT — not locked.**
 Revision 2 of this pre-registration: scope narrowed on 30 October 2026 (§0). The audit it governs is release version 1; the locking commit is tagged `v1.0-lock`, and Zenodo archives the tagged release with a DOI and timestamp. The tag identifies the commit, since a commit cannot contain its own hash. Lock: 5 November 2026 (6 November if the contract-coverage mapping overruns) — after `outputs/lock/contract_coverage.json` exists, and before any unit is scored. On lock, this status line is set to LOCKED.
@@ -12,6 +14,8 @@ After lock, there is one pinned scoring run (§10). Any change to a definition o
 ## 0. Why it matters, and why this revision differs from the last
 
 **Why it matters.** NESO's control room often skips cheaper batteries in favour of gas. NESO's own root-cause review of skip rates rated zonal allocation, mandatory frequency response and reserve services among the strongest causes. That review concluded in April 2026, before batteries' energy declarations (MDO/MDB) were first published, and its published outcomes do not include declaration quality (ASSUMPTIONS.md R23). This audit tests that one hypothesis: whether the declarations are physically consistent with each battery's meter. It cannot apportion skips among causes, and it makes no estimate of their cost or carbon.
+
+**The question this revision answers.** Can GB battery declarations be audited from published data? Partly. GB's published data serve settlement first and audit second, and two gaps stop a complete, reproducible audit: no register records battery energy capacity (MWh) per BM unit, and NESO's reserve and response auction results are not keyed by BM unit, so the contracts that lawfully lower a battery's declarations cannot be seen from outside NESO (ASSUMPTIONS.md P4a, R27). Both gaps are cheap to close (§11). Within them, the audit reports what can be checked: one-sided coherence (Claim 1), non-delivery (Claim 3), the upper wall where a nameplate is disclosed (Claim 4) and latency (Claim 5).
 
 **Why this revision differs.** The study set out to rank battery units on declaration quality and to estimate, in £/MW/yr, whether declaring well pays. Revision 2 drops both, and audits whether each unit's declarations are consistent with its own metered physics. Three findings forced the change, and one disclosure decision shaped it; each is logged with its date in PROJECT.md §11.
 
@@ -33,6 +37,7 @@ After lock, there is one pinned scoring run (§10). Any change to a definition o
 | 30 Oct | Scope narrowed to this audit | U coverage (SSEN ECR, REPD, CM register) | The ranking and £ association, as in version 1 |
 | 30 Oct | Claim 3 built in version 1, by a power bound whose rule was committed before it ran (f25f43a) | MDO declarations and registered MW (§5.8) | Claim 3 specified but unbuilt, as in a slim version 1 |
 | 30 Oct | Per-unit results private in version 1 | No data | Named publication after right of reply and legal review |
+| 2 Nov | Claim 1 read one-sidedly, with response-contract boundary periods excluded (§4); question reframed (§0) | Contract coverage: 0 of 98 eligible units with a contract-free week (R27) | Claim 1 scored as first written, with unobserved contract changes inside every verdict |
 
 The Gate A1 design selection (design 2, 30 October) chose a design for the £ association, which is now deferred. It is kept as history; it does not shape this audit.
 
@@ -54,11 +59,11 @@ The Gate A1 design selection (design 2, 30 October) chose a design for the £ as
 
 | Channel | Claim | How well this version tests it |
 |---|---|---|
-| Noise: declarations don't track the battery | 1 | Every scored unit |
+| Noise: declarations don't track the battery | 1 | One-sided: "coherent" is a finding; "not shown coherent" may reflect unobserved reserve protection (§4) |
 | Under-declaration: the battery looks emptier than it is | 2 | Not provable for any unit in version 1: no unit-week could be certified free of reserve or response contracts from public data (§4). Reported as a fleet-level share, possibly reflecting protection |
 | Over-declaration: the battery can't deliver what it declared | 3 | Weakest. This is the channel most tied to lost trust, and the one this version is least able to quantify. Its identification rate is reported as a result |
 
-**What the audit can conclude.** Where it finds violations, the declarations are physically wrong. Where it finds none, there is no evidence of incoherence in the channels it can see. That is not evidence of compliance: the over-declaration channel stays open wherever Claim 3 lacks power.
+**What the audit can conclude.** A unit shown coherent (Claim 1) has declarations that track its meter. A unit flagged by Claim 3 failed to deliver energy it had declared. Where Claim 1 does not show coherence, the cause may be declaration error or unobserved reserve protection, and the audit cannot tell which (§4). Finding no violation is not evidence of compliance.
 
 **What it cannot conclude.** It measures how common violations are, not whether units with worse declarations are skipped more often; that association is deferred. It is silent on how NESO perceives declarations. Dispatch length limits Claim 3's power (§5.8); it does not confound it.
 
@@ -129,8 +134,9 @@ The Gate A1 design selection (design 2, 30 October) chose a design for the £ as
 **Claim 1: mass-balance coherence.** For each settlement period *h*: r_h = ΔD^decl_h − (η̂·E⁻_h − E⁺_h), with ΔD^decl_h taken from the start of *h* to the start of *h*+1. With B^exp included, following a PN, accepting and delivering a BOA, charging and resubmitting a PN all change both terms alike, so honest declarations give r_h ≈ 0.
 
 - **Weekly score:** the error ratio Σ_h |r_h| / Σ_h (E⁺_h + E⁻_h). *Signed ratio:* Σ_h r_h / Σ_h (E⁺_h + E⁻_h); positive means declarations rose faster than the physics allows.
-- **Screens.** A week with any settlement period missing B1610 is unscored. Weeks with throughput below registered MW × 1 hour are unscored as idle; for units with no registered MW, §3's 1 MWh floor applies. Periods in which a mapped reserve or response contract starts, ends or changes volume are excluded (I13; mapped as under Claim 2 below).
-- **What else enters r_h:** changes in unobserved reserve or response protection (O3); a unit protecting PN energy beyond *H* (sensitivity *H* = 6 hours); auxiliary load, which η̂ absorbs on average but not in timing (P3). None of these is an error by the unit, and all three push Claim 1 towards incoherence.
+- **Screens.** A week with any settlement period missing B1610 is unscored. Weeks with throughput below registered MW × 1 hour are unscored as idle; for units with no registered MW, §3's 1 MWh floor applies. Periods in which a mapped reserve or response contract starts, ends or changes volume are excluded (I13; mapped as under Claim 2 below). **Response-contract boundaries:** because almost no contract could be mapped (R27), the two settlement periods either side of every EFA block boundary (23:00, 03:00, 07:00, 11:00, 15:00 and 19:00 UK time, the delivery starts of Dynamic Containment, Moderation and Regulation in NESO's results) are excluded for every unit: 12 of 48 periods a day. The share of periods excluded is reported. This removes response-contract changes; reserve products, awarded in half-hourly windows, can change at any period and are not removed.
+- **What else enters r_h:** changes in unobserved reserve or response protection (O3); a unit protecting PN energy beyond *H* (sensitivity *H* = 6 hours); auxiliary load, which η̂ absorbs on average but not in timing (P3). None of these is an error by the unit, and all three push Claim 1 away from "coherent".
+- **Reading Claim 1: one-sided.** An unobserved contract change moves MDO with no metered energy flow, so it adds a step to that period's residual r_h. The score sums absolute residuals, so such a step raises it unless it happens to cancel a genuine declaration error in the same period; averaged over periods, added noise independent of the error cannot lower the expected score (E|e + n| ≥ |e|). Unobserved changes therefore push units away from "coherent", and a "coherent" verdict survives them. The reading is one-sided with respect to reserve contracts; response-contract changes are removed by the boundary exclusion above. Two known-answer batteries test this before any real unit is scored (§8). If either fails its band, the one-sided reading is withdrawn: Claim 1 is reported as ambiguous in both directions, and the paper rests on Claim 3, Claims 4–5 and the two data gaps. If both pass, the reading stands, and both rates are reported.
 - **Level-blind by construction (I14).** A constant error in level cancels out of r_h. Levels are tested by Claims 2–4.
 
 **Claim 2: lower-wall violations.** At the start of each settlement period, a violation occurs when D^decl_t < L_t − τ_w, where τ_w = 0.02 × (max K − min K) for the week, a tolerance for metering error. The unit has declared less than the energy its meter proves it held.
@@ -153,7 +159,7 @@ The Gate A1 design selection (design 2, 30 October) chose a design for the £ as
 | Claim | Category | Rule on the 95% interval of the unit's score |
 |---|---|---|
 | 1 | Coherent | Upper bound ≤ 0.05 |
-| 1 | Incoherent | Lower bound ≥ 0.15 |
+| 1 | Not shown coherent | Lower bound ≥ 0.15 |
 | 1 | Indeterminate | Otherwise |
 | 2 | Provable under-declaration | Lower bound ≥ 0.05 |
 | 2 | None detected | Otherwise |
@@ -284,15 +290,24 @@ Synthetic batteries with planted faults run in CI before any real unit is scored
 | Honest, with frequency-response noise | Coherent | None detected | Not flagged | Not flagged |
 | Honest, ramp-limited | Coherent | None detected | Not flagged | Not flagged |
 | Constant over-declaration, Δ = 10 MWh | Coherent (level-blind) | None detected | Flagged; Δ̂ in [7, 13] MWh | Detection rate reported |
-| Proportional over-declaration: declares 1.25 × available (*f* = 0.2) | Incoherent | None detected | Flagged; *f̂* in [0.15, 0.25] | Detection rate reported |
-| Static profile copied from maximum | Incoherent | None detected | Flagged, or not identified | Reported |
+| Proportional over-declaration: declares 1.25 × available (*f* = 0.2) | Not shown coherent | None detected | Flagged; *f̂* in [0.15, 0.25] | Detection rate reported |
+| Static profile copied from maximum | Not shown coherent | None detected | Flagged, or not identified | Reported |
 | Redeclares 5 minutes after each BOA | Coherent or indeterminate | None detected | Not flagged; r > 1 not raised | Reported |
 | Honest, redeclares 25 minutes after each BOA (slow) | Coherent or indeterminate | None detected | Detection rate reported; expected high; not a pass/fail band | Reported |
-| PN protection ignored | Incoherent | None detected | Reported | Reported |
+| PN protection ignored | Not shown coherent | None detected | Reported | Reported |
 | Constant under-declaration, 20 MWh | Coherent (level-blind) | Provable under-declaration | Not flagged | Not flagged |
 | Honest, power derates linearly to 50% below 20% state of charge | Coherent | None detected | Not flagged | Not flagged |
 
 Across 100 simulated runs of each, the four plain honest batteries are flagged by Claim 3 at most 5% of the time under any regime. Under regime (i), the two over-declarers are flagged at least 80% of the time. The slow redeclarer's row is a detection-rate report, not a pass/fail band: it is flagged only through consecutive BOAs in adjacent periods inside its 25-minute lag, so the rate depends on how often the simulation issues BOAs. Its declarations really were stale, so being flagged is the correct outcome, not a cost, and it does not enter the four-battery band. If the suite cannot meet these bands, Claim 3 is dropped from version 1, and the report says so.
+
+Two batteries test Claim 1's one-sided reading (§4), with the same common settings:
+
+| Synthetic unit | Claim 1 band | If the band is missed |
+|---|---|---|
+| Honest, holding Dynamic Containment whose volume changes at EFA block boundaries | "Coherent" in at least 95% of 100 runs | The boundary exclusion is insufficient; the one-sided reading is withdrawn (§4) |
+| Proportional over-declarer (*f* = 0.2), with reserve-style protection changes at random half-hours | "Not shown coherent" in at least 95% of 100 runs | Cancellation is not negligible; the one-sided reading is withdrawn (§4) |
+
+Unlike the other bands, missing these does not fail the build: it triggers the pre-registered withdrawal, which is reported.
 
 Two tests exercise Claim 2's contract screens: a unit-week containing mapped contract time is excluded from the hard flag and reported as contract-exposed with its violation share; and an auction-results file that is empty or unreadable forces every week to contract status unknown, demoting the hard flag to the case-series form (§4). The honest batteries' BOAs include instructions spanning settlement-period boundaries.
 
@@ -307,7 +322,8 @@ Each published flag is recomputed under:
 - η̂ bounds [0.70, 0.98] and [0.65, 0.99];
 - Claim 1 thresholds at ±50% (0.025 and 0.075; 0.075 and 0.225); Claim 2 threshold at 0.025 and 0.10;
 - Claim 3's identification minimum at 10 and 25 instructions;
-- Claim 2 with protection add-back, where the auction results give protection volumes rather than dates only.
+- Claim 2 with protection add-back, where the auction results give protection volumes rather than dates only;
+- Claim 1 without the response-contract boundary exclusion.
 
 A sensitivity table is published with the flags. **A flag that changes under either M13 branch or either *H* is published as "not robust", not as a finding.** Changes under the threshold variants are shown in the table.
 
@@ -326,6 +342,7 @@ A sensitivity table is published with the flags. **A flag that changes under eit
 - **Disclosed privately in version 1:** each lead party receives, for its own units only, the flags, Claim 1 score and interval, lower-wall status including contract-exposed and unknown-status shares (§4), Claim 3 results where identified, latency, and the method. No unit is named publicly in version 1.
 - **Named publication, in version 2 only, requires all five:** (i) M13 resolved in writing; (ii) one clean pinned scoring run with no estimator changes; (iii) Claim 3's promotion outcome recorded (§5.10); (iv) right of reply completed for every named unit, with at least 10 working days; (v) legal review cleared. Until all five hold, per-unit results go to the lead party only.
 - The claim attached to each unit, privately or publicly, is "its declarations are, or are not, physically consistent with its meter", not "this unit is a poor declarer". Flags are sorted by Claim 1 but not called a ranking.
+- **Two asks, each cheap to meet.** (a) NESO publishes its reserve and response auction results with the BM unit ID of each auction unit, so the contracts that lawfully lower a declaration can be seen. (b) A register that already records battery sites records storage energy (MWh) per BM unit, so declarations can be checked against capacity. Either would let an outside party run the parts of this audit that version 1 cannot.
 - The data-quality findings are published in their own right: in SSEN's November 2025 register, the storage-MWh field read "DATA NOT AVAILABLE" for all 28 connected battery sites; REPD records no storage MWh; the Capacity Market register gives minimum durations, without BM unit identifiers; and NESO's response and reserve auction results identify units by auction unit and participant, not BM unit, so no fleet unit-week could be certified free of contracts (§4).
 
 ## 12. Deviations log
