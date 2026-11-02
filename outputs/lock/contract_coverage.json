@@ -1,0 +1,16 @@
+{
+  "contract_free_weeks_distribution": {
+    "0": 98
+  },
+  "eligible_units": 98,
+  "hard_flag": "case series",
+  "note": "Upper bounds: the B1610 screen is applied only at scoring.",
+  "precheck_sha256": "705e1cfef98a3e455cdec089fe11fc2eec53dd200404e09c5e620301e67ec438",
+  "results_loaded": true,
+  "run_utc": "2026-11-02T12:17:03.107434+00:00",
+  "schema_version": "1.0",
+  "threshold_units": 30,
+  "units_with_2plus_by_type": {},
+  "units_with_2plus_contract_free_weeks": 0,
+  "weeks_counted_before": "2026-11-02"
+}
