@@ -30,7 +30,7 @@ The result is a **flag table**, not a ranking: for each unit, whether its declar
 
 The claims do not test every channel equally. Over-declaration, the one most tied to lost trust, is the one this version is least able to measure. Finding no violations is not evidence of compliance.
 
-A first finding came out of the design work: public registers do not record how much energy GB batteries hold. REPD records power only. In SSEN's Embedded Capacity Register the storage-MWh field read "DATA NOT AVAILABLE" for every connected battery site. That is why the audit uses tests that need no capacity figure.
+A first finding came out of the design work: public registers do not record how much energy GB batteries hold. REPD records power only. In SSEN's Embedded Capacity Register the storage-MWh field read "DATA NOT AVAILABLE" for every connected battery site. That is why the audit uses tests that need no capacity figure. A second followed: NESO's reserve and response auction results do not identify BM units, so no battery's week could be certified free of contracts that lawfully lower its declarations. The audit therefore cannot call any unit's under-declaration provable in this version.
 
 See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMPTIONS.md) for the assumptions ledger, and [`DATA_SOURCES.md`](DATA_SOURCES.md) for datasets and vintage policy.
 
