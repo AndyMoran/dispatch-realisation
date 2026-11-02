@@ -37,7 +37,8 @@ Methodology: NESO / LCP Delta skip rate methodology (v2.0, May 2025).
 | Dataset | Use | Note |
 |---|---|---|
 | Response-Reserve Results By Unit (EAC) | Contracted MW per auction unit, product and delivery window: Claim 1 and 2 contract screens (I13) | `auctionUnit` is not a BM unit ID; alias table committed before coverage is counted |
-| Balancing Reserve and STOR results | Same use, for products outside EAC | Dataset names to be confirmed by `contract_sources.py discover` |
+| Static Firm Frequency Response Auction Results | Same use, for Static FFR | `Unit` is not a BM unit ID; resource `76bc5d39…` |
+| STOR Day Ahead Auction Results | Not used | NESO ceased STOR procurement with delivery on 31 Mar 2026, before the window |
 
 ## Asset metadata
 

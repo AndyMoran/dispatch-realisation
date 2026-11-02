@@ -21,6 +21,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -114,7 +115,174 @@ def discover() -> dict:
     return out
 
 
+# ------------------------------------------------------------------ stage 2
+
+# Results-by-unit resources for the window, chosen from the stage 1 discovery
+# (outputs/lock/contract_sources_discovery.json, 2 Nov 2026). STOR is absent: NESO
+# ceased STOR procurement with delivery on 31 Mar 2026, before the window.
+RESOURCES = {
+    "eac": {"id": "a63ab354-7e68-44c2-ad96-c6f920c30e85",
+            "name": "NESO Response-Reserve Results By Unit",
+            "unit": "auctionUnit", "party": "registeredAuctionParticipant",
+            "tech": "technologyType", "place": "postCode",
+            "product": "auctionProduct", "service": "serviceType",
+            "start": "deliveryStart", "end": "deliveryEnd", "qty": "executedQuantity"},
+    "sffr": {"id": "76bc5d39-c39f-490b-984e-58eb8ff296ef",
+             "name": "Static Firm Frequency Response Auction Results",
+             "unit": "Unit", "party": "Provider", "tech": "Technology Type",
+             "place": "Location", "product": "Service", "service": "Status",
+             "start": "Delivery Start", "end": "Delivery End", "qty": "Accepted Volume"},
+}
+WINDOW_START = "2026-06-22"          # Monday of 2026-W26, the earliest adoption week
+STOP = {"battery", "bess", "storage", "energy", "ltd", "limited", "power", "solar",
+        "the", "and", "of", "plc", "uk", "site", "unit", "park", "project"}
+
+
+def _check_resource(key: str) -> dict:
+    spec = RESOURCES[key]
+    name = (_get("resource_show", id=spec["id"]).get("name") or "").strip()
+    if name != spec["name"]:
+        raise RuntimeError(f"{key}: resource {spec['id']} is now named {name!r}, "
+                           f"expected {spec['name']!r}. Re-run discover and update RESOURCES.")
+    return spec
+
+
+def _sql(sql: str) -> list[dict]:
+    return _get("datastore_search_sql", sql=sql)["records"]
+
+
+def categories() -> dict:
+    """Category values with row counts in the window: products, services, technologies.
+
+    No auction units or volumes. Decides which products count and how
+    technology is labelled, before the counting rule is written.
+    """
+    out = {}
+    for key in RESOURCES:
+        spec = _check_resource(key)
+        q = lambda col: _sql(  # noqa: E731
+            f'SELECT "{col}" AS v, COUNT(*) AS n, MIN("{spec["start"]}") AS lo, '
+            f'MAX("{spec["start"]}") AS hi FROM "{spec["id"]}" '
+            f'WHERE "{spec["start"]}" >= \'{WINDOW_START}\' GROUP BY 1 ORDER BY 2 DESC')
+        out[key] = {col: q(spec[col]) for col in ("service", "product", "tech")}
+    _write("contract_categories.json", out)
+    for key, cols in out.items():
+        for col, rows in cols.items():
+            print(f"\n{key} / {RESOURCES[key][col]}")
+            for r in rows:
+                print(f"  {r['n']:>9}  {r['v']}   [{r['lo']} .. {r['hi']}]")
+    return out
+
+
+def tokens(s: str | None) -> set[str]:
+    words = re.findall(r"[a-z0-9]+", (s or "").lower())
+    return {w for w in words if w not in STOP and len(w) > 1}
+
+
+def similarity(a: str | None, b: str | None) -> float:
+    ta, tb = tokens(a), tokens(b)
+    return len(ta & tb) / len(ta | tb) if ta and tb else 0.0
+
+
+def candidates(auction: dict, bm_units: list[dict], name_fields: list[str],
+               party_field: str | None, k: int = 3) -> list[tuple[float, str]]:
+    """Top-k fleet BM units by name similarity, plus a bonus when the parties overlap."""
+    scored = []
+    for b in bm_units:
+        s = max((similarity(auction["unit"], b.get(f)) for f in name_fields), default=0.0)
+        if party_field and similarity(auction["party"], b.get(party_field)) > 0:
+            s += 0.25
+        if s > 0:
+            scored.append((round(s, 3), str(b["elexonBmUnit"])))
+    return sorted(scored, reverse=True)[:k]
+
+
+def units() -> dict:
+    """List auction units with awards in the window and draft fleet BM unit candidates.
+
+    Writes the full list to data/interim/contract/ (gitignored: it names units).
+    Prints counts only. The draft is for adjudication: each row is decided as a
+    fleet BM unit, "not_fleet" (with evidence) or "unmappable", and the result is
+    committed as config/contract_alias.csv before any coverage count is computed.
+    """
+    import csv
+    snaps = sorted((ROOT / "data" / "raw" / "reference").glob("bmunits__dl*.json"))
+    adoption = ROOT / "outputs" / "gate_a1" / "adoption_dates.csv"
+    if not snaps or not adoption.exists():
+        raise SystemExit("Need a reference snapshot and outputs/gate_a1/adoption_dates.csv.")
+    payload = json.loads(snaps[-1].read_bytes())
+    ref = payload.get("data", payload) if isinstance(payload, dict) else payload
+    with open(adoption) as f:
+        fleet = {r["bm_unit"] for r in csv.DictReader(f) if r["status"] == "adopted"}
+    bm_units = [r for r in ref if str(r.get("elexonBmUnit")) in fleet]
+    fields = sorted({k for r in ref for k in r})
+    name_fields = [f for f in fields if re.search(r"name|bmunit", f, re.I)
+                   and not re.search(r"party|gsp", f, re.I)]
+    party_field = next((f for f in fields if f.lower() == "leadpartyname"), None)
+
+    rows = []
+    for key in RESOURCES:
+        spec = _check_resource(key)
+        recs = _sql(
+            f'SELECT "{spec["party"]}" AS party, "{spec["unit"]}" AS unit, '
+            f'"{spec["tech"]}" AS tech, "{spec["place"]}" AS place, '
+            f'"{spec["product"]}" AS product, COUNT(*) AS n, '
+            f'MIN("{spec["start"]}") AS first, MAX("{spec["end"]}") AS last '
+            f'FROM "{spec["id"]}" WHERE "{spec["start"]}" >= \'{WINDOW_START}\' '
+            f'GROUP BY 1, 2, 3, 4, 5')
+        merged: dict[tuple, dict] = {}
+        for r in recs:
+            m = merged.setdefault((r["party"], r["unit"]), {
+                "source": key, "party": r["party"], "unit": r["unit"], "tech": set(),
+                "place": set(), "products": set(), "rows": 0, "first": r["first"],
+                "last": r["last"]})
+            m["tech"].add(str(r["tech"])); m["place"].add(str(r["place"]))
+            m["products"].add(str(r["product"])); m["rows"] += int(r["n"])
+            m["first"] = min(m["first"], r["first"]); m["last"] = max(m["last"], r["last"])
+        rows += merged.values()
+
+    dest = ROOT / "data" / "interim" / "contract" / "alias_draft.csv"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    with open(dest, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["source", "registered_participant", "auction_unit", "technology",
+                    "location", "products", "award_rows", "first_delivery", "last_delivery",
+                    "candidate_1", "score_1", "candidate_2", "score_2", "candidate_3", "score_3",
+                    "decision", "bm_unit", "evidence"])
+        for r in sorted(rows, key=lambda r: (r["source"], str(r["party"]), str(r["unit"]))):
+            c = candidates(r, bm_units, name_fields, party_field)
+            c += [("", "")] * (3 - len(c))
+            w.writerow([r["source"], r["party"], r["unit"], ";".join(sorted(r["tech"])),
+                        ";".join(sorted(r["place"])), ";".join(sorted(r["products"])),
+                        r["rows"], r["first"], r["last"],
+                        c[0][1], c[0][0], c[1][1], c[1][0], c[2][1], c[2][0], "", "", ""])
+    battery = [r for r in rows if any("batter" in t.lower() or "storage" in t.lower()
+                                      for t in r["tech"])]
+    unknown = [r for r in rows if all(t.strip().lower() in ("", "none", "null", "unknown")
+                                      for t in r["tech"])]
+    summary = {"window_start": WINDOW_START, "reference_name_fields": name_fields,
+               "reference_party_field": party_field, "fleet_bm_units": len(bm_units),
+               "auction_units": dict(Counter(r["source"] for r in rows)),
+               "battery_technology": len(battery), "technology_not_given": len(unknown),
+               "registered_participants": len({r["party"] for r in rows}),
+               "with_any_candidate_scoring_0.5_or_more": sum(
+                   1 for r in battery + unknown
+                   if (candidates(r, bm_units, name_fields, party_field) or [(0, "")])[0][0] >= 0.5)}
+    _write("contract_units_summary.json", summary)
+    print(json.dumps(summary, indent=2))
+    print(f"\nDraft for adjudication (gitignored): {dest.relative_to(ROOT)}")
+    return summary
+
+
+def _write(name: str, obj) -> None:
+    dest = ROOT / "outputs" / "lock" / name
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(json.dumps(obj, indent=2, sort_keys=True, default=str))
+
+
 if __name__ == "__main__":
-    if (sys.argv[1:] or [""])[0] != "discover":
-        sys.exit("usage: python -m src.ingest.contract_sources discover")
-    discover()
+    cmd = (sys.argv[1:] or [""])[0]
+    commands = {"discover": discover, "categories": categories, "units": units}
+    if cmd not in commands:
+        sys.exit("usage: python -m src.ingest.contract_sources [discover|categories|units]")
+    commands[cmd]()
