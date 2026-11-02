@@ -82,7 +82,7 @@ def draw_sample(auto_rows: list[dict], k: int = SAMPLE_SIZE, seed: int = SEED) -
 
 
 def associated(unit: str, lead: dict[str, str], matched: dict[tuple, str],
-               party_of: dict[tuple, str], links: dict[str, set[str]],
+               party_of: dict[tuple, set[str]], links: dict[str, set[str]],
                extra: dict[str, set[str]], checked_leads: set[str]) -> set[str] | None:
     """Participants associated with a fleet unit; None means 'every participant'.
 
@@ -96,7 +96,7 @@ def associated(unit: str, lead: dict[str, str], matched: dict[tuple, str],
     out = set()
     for key, bm in matched.items():
         if bm == unit or (lp and lead.get(bm) == lp):
-            out.add(party_of[key])
+            out |= party_of[key]
     out |= {p for p, leads in links.items() if lp in leads}
     out |= extra.get(lp, set())
     return out
@@ -242,7 +242,13 @@ def _hand() -> dict:
 def _resolve(h: dict, draft: list[dict]) -> dict:
     kept, n_bad = auto_rule_kept(h["spot"])
     scope = {(r["source"], r["auction_unit"]): r for r in draft if r["scope"]}
-    party_of = {k: r["registered_participant"] for k, r in scope.items()}
+    # One auction unit can appear under several participants (spelling variants, or a
+    # change of optimiser in the window); every one of them is kept.
+    party_of: dict[tuple, set[str]] = defaultdict(set)
+    for r in draft:
+        if r["scope"]:
+            party_of[(r["source"], r["auction_unit"])].add(r["registered_participant"].strip())
+    party_of = {k: {p for p in v if p} for k, v in party_of.items()}
     matched = {}
     if kept:
         matched = {(r["source"], r["auction_unit"]): r["bm_unit"] for r in h["auto"]}
@@ -262,7 +268,7 @@ def _resolve(h: dict, draft: list[dict]) -> dict:
     seen = {r["registered_participant"] for r in h["links"]}
     undetermined = {r["registered_participant"] for r in h["links"]
                     if r["status"] in ("", "undetermined")}
-    undetermined |= {party_of[k] for k in scope if party_of[k] and party_of[k] not in seen}
+    undetermined |= {p for k in scope for p in party_of[k] if p not in seen}
     links = {r["registered_participant"]: set(filter(None, r["lead_parties"].split(";")))
              for r in h["links"] if r["status"] == "linked"}
     checked = {r["lead_party"] for r in h["leads"] if r["checked"].strip().lower() == "yes"}
@@ -282,7 +288,9 @@ def precheck() -> dict:
            "spot_check": {"rows": len(h["spot"]), "wrong_or_unverifiable": x["n_bad"],
                           "max_wrong": MAX_WRONG, "auto_rule_kept": x["kept"],
                           "outcomes": dict(Counter(r["outcome"] for r in h["spot"]))},
+           "in_scope_rows": sum(1 for r in draft if r["scope"]),
            "in_scope_auction_units": len(x["party_of"]),
+           "auction_units_with_several_participants": sum(1 for v in x["party_of"].values() if len(v) > 1),
            "matched": len(x["matched"]), "not_fleet": len(x["removed"]),
            "unmatched": len(x["unmatched"]),
            "unmatched_without_participant": sum(1 for k in x["unmatched"] if not x["party_of"][k]),
@@ -344,8 +352,11 @@ def coverage() -> dict:
     orphan: set[date] = set()
     if awards is not None:
         for k in x["unmatched"]:
-            p = x["party_of"][k]
-            (unmatched_by_party[p] if p else orphan).update(awards.get(k, set()))
+            parties = x["party_of"][k]
+            for p in parties:
+                unmatched_by_party[p].update(awards.get(k, set()))
+            if not parties:
+                orphan.update(awards.get(k, set()))
     rows, clean_counts = [], {}
     for u in sorted(eligible):
         weeks = iso_weeks(week_start(cohort[u]) + timedelta(days=7), end)

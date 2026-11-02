@@ -23,7 +23,7 @@ def test_sample_is_seeded_and_order_free():
 def test_association_rules_a_b_c_without_chaining():
     lead = {"X": "LP1", "Y": "LP1", "Z": "LP2"}
     matched = {("eac", "a1"): "X", ("eac", "a2"): "Z"}
-    party_of = {("eac", "a1"): "P1", ("eac", "a2"): "P2", ("eac", "u9"): "P9"}
+    party_of = {("eac", "a1"): {"P1"}, ("eac", "a2"): {"P2"}, ("eac", "u9"): {"P9"}}
     links = {"P3": {"LP1"}}
     extra = {"LP1": {"P4"}}
     got = associated("Y", lead, matched, party_of, links, extra, {"LP1", "LP2"})
@@ -43,3 +43,10 @@ def test_clean_weeks_blocks_conservatively():
 def test_iso_weeks_complete_only():
     assert iso_weeks(W[0], W[3]) == W[:3]
     assert iso_weeks(W[0], W[0] + timedelta(days=6)) == []
+
+
+def test_every_participant_of_an_auction_unit_is_kept():
+    lead = {"X": "LP1"}
+    matched = {("eac", "a1"): "X"}
+    party_of = {("eac", "a1"): {"EDF ENERGY CUSTOMERS LIMITED", "EDF Energy Customers Ltd"}}
+    assert associated("X", lead, matched, party_of, {}, {}, {"LP1"}) == party_of[("eac", "a1")]
