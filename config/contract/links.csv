@@ -1,0 +1,39 @@
+registered_participant,in_scope_units,auto_matched_units,lead_parties_via_auto_matches,status,lead_parties,evidence
+ANESCO LIMITED,7,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+ARENKO CLEANTECH LIMITED,7,7,Arenko Cleantech Limited;BGI Trading Limited,linked,Arenko Cleantech Limited;BGI Trading Limited,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+BP GAS MARKETING LIMITED,4,2,BP Gas Marketing Limited,linked,BP Gas Marketing Limited,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+BP Gas Marketing Limited,4,2,BP Gas Marketing Limited,linked,BP Gas Marketing Limited,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+Broxburn Energy Storage Limited,1,1,ENGIE Power Limited,linked,ENGIE Power Limited,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+CATHKIN ENERGY STORAGE LIMITED,1,1,ENGIE Power Limited,linked,ENGIE Power Limited,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+CENTRICA BUSINESS SOLUTIONS UK OPTIMISATION LIMITED,4,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+CONRAD ENERGY (TRADING) LIMITED,8,3,Conrad Energy (Trading) Ltd;KXP Immingham Ltd,linked,Conrad Energy (Trading) Ltd;KXP Immingham Ltd,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+Centrica Business Solutions UK Optimisation Limited,4,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+Danske Commodities A/S,2,2,Danske Commodities A/S,linked,Danske Commodities A/S,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+E.ON UK HEAT LIMITED,2,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+ECOTRICITY (SMART GRID) LIMITED,1,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+EDF ENERGY CUSTOMERS LIMITED,53,25,BESS Holdco 2 Limited;EDF Energy Customers Limited;EDF Energy Limited;HD888CAP Ltd;Pivoted Power LLP,linked,BESS Holdco 2 Limited;EDF Energy Customers Limited;EDF Energy Limited;HD888CAP Ltd;Pivoted Power LLP,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+EDF Energy Customers Limited,49,22,BESS Holdco 2 Limited;EDF Energy Customers Limited;EDF Energy Limited;Pivoted Power LLP,linked,BESS Holdco 2 Limited;EDF Energy Customers Limited;EDF Energy Limited;Pivoted Power LLP,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+EDF Energy Customers Ltd,54,29,BESS Holdco 2 Limited;EDF Energy Customers Limited;EDF Energy Limited;HD888CAP Ltd;Pivoted Power LLP;Welbar Energy Storage Limited,linked,BESS Holdco 2 Limited;EDF Energy Customers Limited;EDF Energy Limited;HD888CAP Ltd;Pivoted Power LLP;Welbar Energy Storage Limited,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+EQUINICITY LTD,3,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+Engie Power Limited,2,0,,linked,ENGIE Power Limited,Same company: participant name matches BMRS lead party (reference snapshot 23 Oct 2026)
+Flexitricity Limited,16,13,Flexitricity Limited,linked,Flexitricity Limited,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+GORE STREET ENERGY TRADING LIMITED,13,5,EPG Energy Limited,linked,EPG Energy Limited,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+GRIDBEYOND LIMITED,3,1,Hartree Partners Supply UK,linked,Hartree Partners Supply UK,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+HABITAT ENERGY LIMITED,33,22,HD143OCK Ltd;HD144WHI Ltd;HD777FRY Ltd;Habitat Energy Limited;Lakeside Energy Storage Ltd,linked,HD143OCK Ltd;HD144WHI Ltd;HD777FRY Ltd;Habitat Energy Limited;Lakeside Energy Storage Ltd,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+J Aron & Company,2,1,BGI Trading Limited,linked,BGI Trading Limited,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+LIMEJUMP ENERGY LIMITED,10,3,Limejump Energy Limited,linked,Limejump Energy Limited,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+Levelise Limited,7,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+OCTOPUS ENERGY TRADING LIMITED,2,0,,linked,Octopus Energy Trading Limited;Octopus Energy Limited,"Same company and its parent, both BMRS lead parties in the fleet (reference snapshot 23 Oct 2026); parent linked to stay on the safe side"
+Peak Gen Power Limited,1,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+SCOTTISHPOWER RENEWABLES (UK) LIMITED,2,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+SSE ENERGY SUPPLY LIMITED,8,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+SSE Energy Supply Limited,3,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+Scottish Power Renewables (UK) Limited,2,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+Statkraft Markets GmbH,23,13,Dollymans Storage Limited;Statkraft Markets Gmbh,linked,Dollymans Storage Limited;Statkraft Markets Gmbh,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+TESLA MOTORS LIMITED,17,13,BGI Trading Limited;Tesla Motors Limited,linked,BGI Trading Limited;Tesla Motors Limited,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+TTEP UK&I INVESTMENTS LTD,1,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+UK POWER RESERVE LIMITED,8,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+Uniper UK Limited,2,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
+VIRMATI ENERGY LTD,4,4,FIELD GERRARDS CROSS LTD;Field Newport Ltd;Field Oldham Ltd;Field Whitebirk Ltd,linked,FIELD GERRARDS CROSS LTD;Field Newport Ltd;Field Oldham Ltd;Field Whitebirk Ltd,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+Virmati Energy Ltd,4,4,FIELD GERRARDS CROSS LTD;Field Newport Ltd;Field Oldham Ltd;Field Whitebirk Ltd,linked,FIELD GERRARDS CROSS LTD;Field Newport Ltd;Field Oldham Ltd;Field Whitebirk Ltd,"Conservative link from auto-match hints (2 Nov 2026); the auto-rule failed as a matching rule, but a wrong link only removes clean weeks"
+Yuso,1,0,,undetermined,,No fleet lead party identified; treated as associated with every fleet unit
