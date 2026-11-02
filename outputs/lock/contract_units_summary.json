@@ -1,0 +1,19 @@
+{
+  "auction_units": {
+    "eac": 577,
+    "sffr": 38
+  },
+  "battery_technology": 355,
+  "fleet_bm_units": 244,
+  "reference_name_fields": [
+    "bmUnitName",
+    "bmUnitType",
+    "elexonBmUnit",
+    "nationalGridBmUnit"
+  ],
+  "reference_party_field": "leadPartyName",
+  "registered_participants": 59,
+  "technology_not_given": 1,
+  "window_start": "2026-06-22",
+  "with_any_candidate_scoring_0.5_or_more": 220
+}

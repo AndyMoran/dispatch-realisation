@@ -26,3 +26,11 @@ def test_candidates_rank_by_name_then_party():
                    ["bmUnitName", "elexonBmUnit"], "leadPartyName")
     assert c[0][1] == "T_PILLW-1" and c[0][0] > c[1][0]
     assert all(b != "T_NONE-1" for _, b in c)
+
+
+def test_scope_and_auto_rule():
+    from src.ingest.contract_sources import auto_match, in_scope
+    assert in_scope({"Batteries"}) and in_scope({"None"}) and in_scope({"Multi Fuel type"})
+    assert not in_scope({"OCGT"}) and not in_scope({"Load Response"})
+    assert auto_match([(0.8, "A"), (0.5, "B")]) and not auto_match([(0.8, "A"), (0.7, "B")])
+    assert not auto_match([(0.4, "A")]) and not auto_match([])

@@ -134,6 +134,23 @@ RESOURCES = {
              "start": "Delivery Start", "end": "Delivery End", "qty": "Accepted Volume"},
 }
 WINDOW_START = "2026-06-22"          # Monday of 2026-W26, the earliest adoption week
+UNIDENTIFIED_TECH = {"", "none", "null", "unknown", "other", "multi fuel type"}
+AUTO_MIN_SCORE, AUTO_MIN_MARGIN = 0.5, 0.2
+
+
+def in_scope(techs: set[str]) -> bool:
+    """Battery, or technology the results do not identify (PREREGISTRATION §4)."""
+    return any("batter" in t.lower() or "storage" in t.lower()
+               or t.strip().lower() in UNIDENTIFIED_TECH for t in techs)
+
+
+def auto_match(c: list[tuple[float, str]]) -> bool:
+    """Proposed rule, for adjudication only: a clear, unique best candidate."""
+    s1 = c[0][0] if c else 0.0
+    s2 = c[1][0] if len(c) > 1 else 0.0
+    return s1 >= AUTO_MIN_SCORE and s1 - s2 >= AUTO_MIN_MARGIN
+
+
 STOP = {"battery", "bess", "storage", "energy", "ltd", "limited", "power", "solar",
         "the", "and", "of", "plc", "uk", "site", "unit", "park", "project"}
 
@@ -214,10 +231,16 @@ def units() -> dict:
     ref = payload.get("data", payload) if isinstance(payload, dict) else payload
     with open(adoption) as f:
         fleet = {r["bm_unit"] for r in csv.DictReader(f) if r["status"] == "adopted"}
-    bm_units = [r for r in ref if str(r.get("elexonBmUnit")) in fleet]
+    # The snapshot can hold several records per unit; keep one per elexonBmUnit.
+    bm_units = list({str(r["elexonBmUnit"]): r for r in ref
+                     if str(r.get("elexonBmUnit")) in fleet}.values())
+    from src.ingest.lock_counts import full_weeks_after
+    with open(adoption) as f:
+        eligible = {r["bm_unit"] for r in csv.DictReader(f)
+                    if r["status"] == "adopted" and full_weeks_after(r["cohort"]) >= 4}
     fields = sorted({k for r in ref for k in r})
     name_fields = [f for f in fields if re.search(r"name|bmunit", f, re.I)
-                   and not re.search(r"party|gsp", f, re.I)]
+                   and not re.search(r"party|gsp|type", f, re.I)]
     party_field = next((f for f in fields if f.lower() == "leadpartyname"), None)
 
     rows = []
@@ -248,26 +271,32 @@ def units() -> dict:
         w.writerow(["source", "registered_participant", "auction_unit", "technology",
                     "location", "products", "award_rows", "first_delivery", "last_delivery",
                     "candidate_1", "score_1", "candidate_2", "score_2", "candidate_3", "score_3",
+                    "in_scope", "candidate_1_eligible", "auto_rule",
                     "decision", "bm_unit", "evidence"])
         for r in sorted(rows, key=lambda r: (r["source"], str(r["party"]), str(r["unit"]))):
             c = candidates(r, bm_units, name_fields, party_field)
+            r["scope"], r["auto"] = in_scope(r["tech"]), auto_match(c)
+            r["elig"] = bool(c) and c[0][1] in eligible
             c += [("", "")] * (3 - len(c))
             w.writerow([r["source"], r["party"], r["unit"], ";".join(sorted(r["tech"])),
                         ";".join(sorted(r["place"])), ";".join(sorted(r["products"])),
                         r["rows"], r["first"], r["last"],
-                        c[0][1], c[0][0], c[1][1], c[1][0], c[2][1], c[2][0], "", "", ""])
-    battery = [r for r in rows if any("batter" in t.lower() or "storage" in t.lower()
-                                      for t in r["tech"])]
-    unknown = [r for r in rows if all(t.strip().lower() in ("", "none", "null", "unknown")
-                                      for t in r["tech"])]
+                        c[0][1], c[0][0], c[1][1], c[1][0], c[2][1], c[2][0],
+                        r["scope"], r["elig"], r["auto"], "", "", ""])
+    scope = [r for r in rows if r["scope"]]
+    tech = Counter(";".join(sorted(r["tech"])) for r in rows)
     summary = {"window_start": WINDOW_START, "reference_name_fields": name_fields,
                "reference_party_field": party_field, "fleet_bm_units": len(bm_units),
+               "eligible_bm_units": len(eligible),
                "auction_units": dict(Counter(r["source"] for r in rows)),
-               "battery_technology": len(battery), "technology_not_given": len(unknown),
+               "auction_units_by_technology": dict(tech.most_common()),
                "registered_participants": len({r["party"] for r in rows}),
-               "with_any_candidate_scoring_0.5_or_more": sum(
-                   1 for r in battery + unknown
-                   if (candidates(r, bm_units, name_fields, party_field) or [(0, "")])[0][0] >= 0.5)}
+               "in_scope": len(scope),
+               "in_scope_participants": len({r["party"] for r in scope}),
+               "in_scope_auto_rule": sum(r["auto"] for r in scope),
+               "in_scope_top_candidate_eligible": sum(r["elig"] for r in scope),
+               "in_scope_auto_rule_and_eligible": sum(r["auto"] and r["elig"] for r in scope),
+               "auto_rule": {"min_score": AUTO_MIN_SCORE, "min_margin": AUTO_MIN_MARGIN}}
     _write("contract_units_summary.json", summary)
     print(json.dumps(summary, indent=2))
     print(f"\nDraft for adjudication (gitignored): {dest.relative_to(ROOT)}")
