@@ -6,7 +6,7 @@ NESO can see which batteries hold contracts that lawfully lower their declaratio
 
 This project checks each GB battery's declarations against its own meter, and reports both what can be checked and what the published data stop anyone checking.
 
-**Status:** pre-registration revision 2 ready to lock (November 2026); nothing has been scored. Nothing here is a result yet.
+**Status:** pre-registration locked on 18 November 2026 ([DOI](https://doi.org/10.5281/zenodo.24343931)); nothing has been scored. Nothing here is a result yet.
 
 ---
 
@@ -20,7 +20,7 @@ Yet the control room often skips cheaper batteries and runs gas instead. NESO's 
 
 So the question is simple: **are the declarations physically true?** A battery's meter records every MWh that goes in and out. If its declarations say the tank held more, or less, than the meter allows, the declarations are wrong. This project audits that, for every battery unit, from public data only. It publishes fleet-level results and the method, and sends each lead party its own units' results privately.
 
-The answer so far is "partly". GB's published data serve settlement first and audit second. Two gaps stop a complete audit: no register records how much energy each battery holds, and NESO's auction results do not say which BM unit holds each contract. Neither needs new measurement; the second also needs sites keyed to BM units.
+The answer so far is "partly". GB's published data serve settlement first and audit second. Two gaps stop a complete audit: no register records how much energy each battery holds, and NESO's auction results do not say which BM unit holds each contract. Neither needs new measurement: the auction mapping needs publishing; the energy register needs an existing field filled and sites keyed to BM units.
 
 ## In detail
 
@@ -60,8 +60,10 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 ├── ASSUMPTIONS.md          assumptions ledger
 ├── DATA_SOURCES.md         datasets, endpoints, vintage policy
 ├── PREREGISTRATION.md      locked before any unit is scored
-├── PIPELINE_RULES.md       how the code is built
+├── PIPELINE_RULES.md       what the pipeline must do
+├── CODING.md               how the code is written
 ├── WRITING.md              documentation standard
+├── config/                 thresholds and settings, each with its source
 ├── data/
 │   ├── raw/                as downloaded; never edited (gitignored)
 │   ├── interim/            (gitignored)

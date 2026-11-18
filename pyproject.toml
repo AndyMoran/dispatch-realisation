@@ -11,7 +11,10 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "mypy>=2.4.1",
     "pytest>=8",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.17.5",
 ]
 
 [tool.uv]
@@ -20,3 +23,34 @@ package = false   # src/ is run in place, not installed
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
+addopts = "-W error"
+
+# CODING.md §7. Files that produced frozen lock outputs are exempt and listed one by
+# one, so that new files in the same folders are still checked.
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+extend-exclude = [
+    "src/ingest/contract_coverage.py",
+    "src/ingest/contract_sources.py",
+    "src/ingest/gate_a1.py",
+    "src/ingest/gate_a2.py",
+    "src/ingest/lock_counts.py",
+    "src/ingest/power_bound.py",
+    "src/ingest/reference.py",
+    "tests/test_contract_coverage.py",
+    "tests/test_contract_sources.py",
+    "tests/test_gate_a1.py",
+    "tests/test_gate_a2.py",
+    "tests/test_lock_counts.py",
+    "tests/test_power_bound.py",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S307", "S102"]   # S307 eval, S102 exec
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+# Packages join this list as they are created (CODING.md §7).
+files = []
