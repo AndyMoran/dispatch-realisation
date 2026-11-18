@@ -7,7 +7,8 @@
 # noise, ramp, contract changes and the frequency input.
 #
 # Fixed on 18 Nov 2026, before the suite first ran and before any frequency file was
-# read (PROJECT.md §11). tests/test_synthetic_settings.py pins this file's SHA-256.
+# read (PROJECT.md §11); [bands] added the same day, before any band was computed.
+# tests/test_synthetic_settings.py pins this file's SHA-256.
 # A change before the first real unit is scored needs a decision-log row; after it,
 # none is allowed (§8).
 schema_version = "1.0"
@@ -46,6 +47,14 @@ scored_weeks = 4
 [runs.long]
 adoption_week_start = "2026-06-01"
 scored_weeks = 20
+
+[bands]
+# A battery passes a band when, in each run length and each matched pair (declared
+# and scored under the same M13 branch), at least this share of its runs lands in
+# an allowed outcome. A run left unscored counts as a miss unless its band allows
+# that outcome. Fixed 18 Nov 2026, before any band was computed (PROJECT.md §11);
+# the same share §8 gives the two one-sided-reading batteries.
+min_share = 0.95
 
 [boa]
 mean_per_day = 4.0           # Poisson count per UTC day

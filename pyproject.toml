@@ -67,6 +67,8 @@ files = [
     "tests/test_synthetic_settings.py",
     "tests/test_frequency.py",
     "tests/test_battery.py",
+    "tests/test_unit_scoring.py",
+    "tests/test_bands.py",
 ]
 
 # Coverage floor for new packages (CODING.md §7); CI runs pytest with --cov.

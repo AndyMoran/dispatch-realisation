@@ -16,7 +16,7 @@ from src.synthetic.settings import (
 # and before any frequency file was read (PROJECT.md §11). Change it only with a
 # decision-log row, and never after the first real unit is scored (§8).
 SYNTHETIC_TOML_SHA256 = (
-    "2e2d50699c9f1e309f4ee6f38b3ff825bffd248f5b84a9b754d5b3c3df3e8bc1"
+    "8acc530922ccabba7caee8285c748a127fcf6a439857f428cfb78586083c28ff"
 )
 
 

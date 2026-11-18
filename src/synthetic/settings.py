@@ -103,6 +103,7 @@ class SyntheticSettings:
     """Every setting in config/synthetic.toml, checked."""
 
     battery: BatterySettings
+    band_min_share: float
     master_seed: int
     lengths: tuple[RunLength, ...]
     boa_mean_per_day: float
@@ -129,6 +130,7 @@ def load_synthetic_settings(path: Path = SYNTHETIC_TOML) -> SyntheticSettings:
     runs = _table(raw, "runs")
     settings = SyntheticSettings(
         battery=_battery(_table(raw, "battery")),
+        band_min_share=_share(_table(raw, "bands"), "min_share"),
         master_seed=_int(runs, "master_seed", minimum=0),
         lengths=_lengths(runs),
         boa_mean_per_day=_float(_table(raw, "boa"), "mean_per_day", positive=True),

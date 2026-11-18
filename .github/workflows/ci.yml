@@ -22,3 +22,18 @@ jobs:
         run: uv run mypy
       - name: Run tests, with coverage of new packages (CODING.md §7)
         run: uv run pytest -q --cov --cov-report=term
+
+  # Known-answer bands for Claims 1–2 (PREREGISTRATION §8). A missed build band
+  # fails the job. Once results are committed, a rerun must reproduce them exactly.
+  known-answer:
+    needs: test
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Install locked dependencies
+        run: uv sync --locked
+      - name: Run the Claims 1–2 bands (PREREGISTRATION §8)
+        run: uv run python -m src.synthetic.bands
+      - name: Check committed results reproduce
+        run: git diff --exit-code -- outputs/known_answer/claims12.json

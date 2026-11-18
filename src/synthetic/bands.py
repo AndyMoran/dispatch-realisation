@@ -1,0 +1,260 @@
+"""Known-answer bands for Claims 1 and 2 (PREREGISTRATION §8).
+
+Each battery runs `known_answer.runs` times at each run length. Each run is
+declared under Branch A and under Branch B, and each declaration is scored under
+both branches. The matched pairs (A/A, B/B) are the bands; the cross pairs are
+reported as diagnostics of what an unresolved M13 costs (PROJECT.md §11).
+
+A matched cell passes when at least `bands.min_share` of its runs land in an
+allowed outcome. An outcome is a flag category, or "not scored: <reason>".
+
+Band kinds:
+- build: a miss fails the build (§8).
+- withdrawal: a miss withdraws Claim 1's one-sided reading (§4, §8); the build
+  does not fail.
+- report: no band; counts are reported.
+
+Contract status: a battery that holds no response contract has every week
+contract-free. A battery that holds one has its contracts known, so none of its
+weeks is contract-free, and Claim 2's hard flag is not scored for it, as for any
+unit with contract time (§4).
+
+Usage:
+    uv run python -m src.synthetic.bands              # all bands, writes outputs
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import math
+import os
+import sys
+from collections import Counter
+from collections.abc import Sequence
+from concurrent.futures import ProcessPoolExecutor
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Literal
+
+from src.claims.scoring import unit_score
+from src.claims.unit import (
+    TOO_FEW_CONTRACT_FREE,
+    load_claim_settings,
+    score_unit,
+    week_starts,
+)
+from src.model.params import load_params
+from src.physics.declared import Branch
+from src.synthetic import battery as bt
+from src.synthetic.settings import SYNTHETIC_TOML, load_synthetic_settings
+
+ROOT = Path(__file__).resolve().parents[2]
+OUTPUT = ROOT / "outputs" / "known_answer" / "claims12.json"
+SCHEMA_VERSION = "1.0"
+BRANCHES: tuple[Branch, Branch] = ("A", "B")
+NOT_SCORED = "not scored: "
+
+Kind = Literal["build", "withdrawal", "report"]
+
+
+@dataclass(frozen=True)
+class Band:
+    """One battery's Claims 1–2 rows of the §8 tables."""
+
+    scenario: bt.Scenario
+    claim1: frozenset[str]
+    claim1_kind: Kind
+    claim2: frozenset[str]
+    claim2_kind: Kind
+
+
+NO_HARD_FLAG = NOT_SCORED + TOO_FEW_CONTRACT_FREE
+
+HONEST_BANDS = (
+    Band(
+        bt.HONEST,
+        frozenset({"coherent"}),
+        "build",
+        frozenset({"none detected"}),
+        "build",
+    ),
+    # §8 "Honest, with frequency-response noise": holds DC throughout, so its
+    # weeks carry contract time and the hard flag cannot be raised (§4).
+    Band(
+        bt.HONEST_FR,
+        frozenset({"coherent"}),
+        "build",
+        frozenset({NO_HARD_FLAG}),
+        "build",
+    ),
+    # §8 one-sided-reading battery: "Coherent" in at least 95% of runs.
+    Band(
+        bt.HONEST_DC_EFA, frozenset({"coherent"}), "withdrawal", frozenset(), "report"
+    ),
+)
+
+
+@dataclass(frozen=True)
+class RunOutcome:
+    """One run's outcomes, by (declared branch, scored branch)."""
+
+    claim1: dict[tuple[Branch, Branch], str]
+    claim2: dict[tuple[Branch, Branch], str]
+    violation_share: dict[tuple[Branch, Branch], float | None]
+    curtailed_minutes: int
+
+
+def outcome_label(category: str | None, reason: str | None) -> str:
+    """Return a flag category, or "not scored: <reason>"."""
+    if category is not None:
+        return category
+    return NOT_SCORED + (reason or "unknown")
+
+
+def run_once(band_index: int, length_index: int, run_index: int) -> RunOutcome:
+    """Simulate one run of a battery and score it under all four branch pairs."""
+    settings = load_synthetic_settings()
+    band = HONEST_BANDS[band_index]
+    length = settings.lengths[length_index]
+    rng = bt.run_rng(settings.master_seed, band.scenario.name, length_index, run_index)
+    sim = bt.simulate(
+        band.scenario,
+        length,
+        settings,
+        bt.load_physics(),
+        bt.load_dc_energy(settings),
+        rng,
+    )
+    claims = load_claim_settings()
+    weeks = week_starts(length.adoption_week_start, length.end)
+    free: frozenset[datetime] = (
+        frozenset(weeks) if band.scenario.dc == "none" else frozenset()
+    )
+    c1: dict[tuple[Branch, Branch], str] = {}
+    c2: dict[tuple[Branch, Branch], str] = {}
+    share: dict[tuple[Branch, Branch], float | None] = {}
+    for declared in BRANCHES:
+        unit = bt.unit_inputs(sim, declared, settings.honest_lag_min)
+        for scored in BRANCHES:
+            r = score_unit(
+                unit, length.adoption_week_start, length.end, claims, scored, free
+            )
+            c1[(declared, scored)] = outcome_label(r.claim1_category, r.claim1_reason)
+            c2[(declared, scored)] = outcome_label(r.claim2_category, r.claim2_reason)
+            share[(declared, scored)] = unit_score(r.claim2_weeks)
+    return RunOutcome(c1, c2, share, sim.curtailed_minutes)
+
+
+def required_runs(runs: int, min_share: float) -> int:
+    """Return the fewest in-band runs that pass: ⌈min_share × runs⌉."""
+    return math.ceil(min_share * runs - 1e-9)
+
+
+def summarise(
+    bands: Sequence[Band], outcomes: dict[tuple[int, int], list[RunOutcome]], runs: int
+) -> dict[str, object]:
+    """Return the suite's cells, pass marks and overall verdicts."""
+    settings = load_synthetic_settings()
+    need = required_runs(runs, settings.band_min_share)
+    cells: list[dict[str, object]] = []
+    build_ok, one_sided_ok = True, True
+    for (b, li), results in sorted(outcomes.items()):
+        band = bands[b]
+        for claim, allowed, kind in (
+            ("claim1", band.claim1, band.claim1_kind),
+            ("claim2", band.claim2, band.claim2_kind),
+        ):
+            for declared in BRANCHES:
+                for scored in BRANCHES:
+                    labels = [
+                        (r.claim1 if claim == "claim1" else r.claim2)[
+                            (declared, scored)
+                        ]
+                        for r in results
+                    ]
+                    counts = Counter(labels)
+                    matched = declared == scored
+                    hits = sum(counts[a] for a in allowed)
+                    passed = None
+                    if matched and kind != "report":
+                        passed = hits >= need
+                        if kind == "build":
+                            build_ok = build_ok and passed
+                        else:
+                            one_sided_ok = one_sided_ok and passed
+                    cells.append(
+                        {
+                            "battery": band.scenario.name,
+                            "length": settings.lengths[li].name,
+                            "declared": declared,
+                            "scored": scored,
+                            "claim": claim,
+                            "kind": kind if matched else "cross-pair diagnostic",
+                            "allowed": sorted(allowed),
+                            "counts": dict(sorted(counts.items())),
+                            "in_band": hits if allowed else None,
+                            "required": need if matched and kind != "report" else None,
+                            "passed": passed,
+                        }
+                    )
+        curtailed = [r.curtailed_minutes for r in results]
+        cells.append(
+            {
+                "battery": band.scenario.name,
+                "length": settings.lengths[li].name,
+                "runs_with_curtailment": sum(1 for c in curtailed if c),
+                "max_curtailed_minutes": max(curtailed),
+            }
+        )
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "runs": runs,
+        "min_share": settings.band_min_share,
+        "required_in_band": need,
+        "settings_sha256": hashlib.sha256(SYNTHETIC_TOML.read_bytes()).hexdigest(),
+        "cells": cells,
+        "build_bands_passed": build_ok,
+        "one_sided_reading_stands": one_sided_ok,
+    }
+
+
+def run_suite(
+    bands: Sequence[Band], runs: int, workers: int | None = None
+) -> dict[str, object]:
+    """Run every band's battery `runs` times at each length; return the summary."""
+    settings = load_synthetic_settings()
+    jobs = [
+        (b, li, r)
+        for b in range(len(bands))
+        for li in range(len(settings.lengths))
+        for r in range(runs)
+    ]
+    with ProcessPoolExecutor(max_workers=workers or os.cpu_count()) as pool:
+        results = list(pool.map(run_once, *zip(*jobs, strict=True)))
+    outcomes: dict[tuple[int, int], list[RunOutcome]] = {}
+    for (b, li, _), result in zip(jobs, results, strict=True):
+        outcomes.setdefault((b, li), []).append(result)
+    return summarise(bands, outcomes, runs)
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """Run the Claims 1–2 bands, write the summary, return 1 if a build band fails."""
+    parser = argparse.ArgumentParser(description="Claims 1–2 known-answer bands")
+    parser.add_argument("--output", type=Path, default=OUTPUT)
+    args = parser.parse_args(argv)
+    runs = load_params().integer("known_answer.runs")
+    summary = run_suite(HONEST_BANDS, runs)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    tmp = args.output.with_suffix(".tmp")
+    tmp.write_text(
+        json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    os.replace(tmp, args.output)
+    return 0 if summary["build_bands_passed"] else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

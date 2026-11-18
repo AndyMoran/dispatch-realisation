@@ -264,3 +264,42 @@ def test_scoring_settings_load_and_refuse_bad_values(tmp_path: Path) -> None:
         path.write_text(broken, encoding="utf-8")
         with pytest.raises(ValueError):
             load_scoring_settings(path)
+
+
+def test_declared_series_windowing_changes_nothing() -> None:
+    """Passing only nearby segments gives the same D^decl, bit for bit, as passing
+    every segment, on a synthetic unit with instructions spanning period ends."""
+    from src.claims.screens import week_boundaries
+    from src.physics.declared import declared_at, declared_deliverable_mwh
+    from src.physics.protection import boa_export_mwh, pn_protected_mwh
+    from src.synthetic import battery as bt
+    from src.synthetic.settings import RunLength, load_synthetic_settings
+
+    settings = load_synthetic_settings()
+    length = RunLength("test", datetime(2026, 6, 1, tzinfo=UTC), 1)
+    sim = bt.simulate(
+        bt.HONEST_DC_EFA,
+        length,
+        settings,
+        bt.load_physics(),
+        bt.load_dc_energy(settings),
+        bt.run_rng(1, "windowing", 0, 0),
+    )
+    unit = bt.unit_inputs(sim, "A", 1)
+    edges = week_boundaries(length.first_scored_week)
+    # Period starts, and seven minutes in, where segments begin before t.
+    times = sorted([*edges, *(t + timedelta(minutes=7) for t in edges[:-1])])
+    for hours in (None, 6.0):
+        fast = declared_series(unit, times, 0.88, "A", 3, hours, 9999.0, length.end)
+        mdo = declared_at(unit.submissions, "MDO", times, 9999.0, length.end)
+        checked = 0
+        for t, m, f in zip(times, mdo, fast, strict=True):
+            if m is None:  # the run's end: no record in force
+                assert f is None
+                continue
+            end = protection_end(t, 3, hours)
+            p_exp, _ = pn_protected_mwh(unit.pn, t, end)
+            b_exp = boa_export_mwh(unit.boas, unit.pn, t, end)
+            assert f == declared_deliverable_mwh(m, p_exp, b_exp, 0.88, "A")
+            checked += 1
+        assert checked == 2 * 336
