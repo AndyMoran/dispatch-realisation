@@ -24,8 +24,10 @@ def sub(dataset: t.Dataset = "MDO", value: float = 50.0, minute: int = 0) -> Sub
         dataset=dataset,
         time_from=T0 + timedelta(minutes=minute),
         time_to=T0 + timedelta(minutes=minute + 1),
-        value_mwh=value,
+        level_from_mwh=value,
+        level_to_mwh=None,
         publish_time=T0 + timedelta(minutes=minute),
+        serial=minute,
     )
 
 
@@ -126,7 +128,7 @@ def test_times_must_be_utc(when: datetime) -> None:
     with pytest.raises(InvalidRecord):
         MeterPeriod(when, 1.0, "SF")
     with pytest.raises(InvalidRecord):
-        Submission("MDO", when, None, 1.0, T0)
+        Submission("MDO", when, None, 1.0, None, T0, 1)
 
 
 @pytest.mark.parametrize(("dataset", "value"), [("MDO", -1.0), ("MDB", 1.0)])
@@ -137,9 +139,11 @@ def test_declaration_signs(dataset: t.Dataset, value: float) -> None:
 
 def test_malformed_records_are_rejected() -> None:
     with pytest.raises(InvalidRecord, match="not after"):
-        Submission("MDO", T0, T0, 1.0, T0)
+        Submission("MDO", T0, T0, 1.0, None, T0, 1)
     with pytest.raises(InvalidRecord, match="finite"):
-        Submission("MDO", T0, None, float("nan"), T0)
+        Submission("MDO", T0, None, float("nan"), None, T0, 1)
+    with pytest.raises(InvalidRecord, match="below zero"):
+        Submission("MDO", T0, None, 5.0, -1.0, T0, 1)
     with pytest.raises(InvalidRecord, match="boundary"):
         MeterPeriod(T0 + timedelta(minutes=15), 1.0, "SF")
     with pytest.raises(InvalidRecord, match="run_type"):

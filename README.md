@@ -52,7 +52,7 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 
 ## Repository layout
 
-`src/model/` holds the input types shared by real and synthetic data. `src/physics/`, `src/claims/`, `src/claim3/` and `src/synthetic/` are planned and not yet built.
+`src/model/` holds the input types shared by real and synthetic data, and `src/physics/` the §3 physics. `src/claims/`, `src/claim3/` and `src/synthetic/` are planned and not yet built.
 
 ```
 ├── README.md

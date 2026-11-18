@@ -42,17 +42,23 @@ def require_finite(value: float, name: str) -> None:
 
 @dataclass(frozen=True)
 class Submission:
-    """One MDO or MDB submission as BMRS publishes it (PREREGISTRATION §3).
+    """One MDO or MDB record as BMRS publishes it (PREREGISTRATION §3; M9).
 
-    MDO is declared export energy, at least zero; MDB is declared import energy,
-    at most zero. `time_to` is absent when the API gives none (power_bound.py).
+    BMRS fields: timeFrom, timeTo, levelFrom, levelTo, publishTime, serialNumber.
+    The value moves in a straight line from `level_from_mwh` to `level_to_mwh`
+    over the record; without `level_to_mwh` it is constant. `time_to` is absent
+    when the API gives none. A submission is all records sharing `publish_time`
+    and `serial`. MDO is declared export energy, at least zero; MDB is declared
+    import energy, at most zero.
     """
 
     dataset: Dataset
     time_from: datetime
     time_to: datetime | None
-    value_mwh: float
+    level_from_mwh: float
+    level_to_mwh: float | None
     publish_time: datetime
+    serial: int
 
     def __post_init__(self) -> None:
         require_utc(self.time_from, "time_from")
@@ -61,11 +67,15 @@ class Submission:
             require_utc(self.time_to, "time_to")
             if self.time_to <= self.time_from:
                 raise InvalidRecord(f"{self.dataset}: time_to not after time_from")
-        require_finite(self.value_mwh, "value_mwh")
-        if self.dataset == "MDO" and self.value_mwh < 0:
-            raise InvalidRecord(f"MDO below zero: {self.value_mwh}")
-        if self.dataset == "MDB" and self.value_mwh > 0:
-            raise InvalidRecord(f"MDB above zero: {self.value_mwh}")
+        levels = [self.level_from_mwh]
+        if self.level_to_mwh is not None:
+            levels.append(self.level_to_mwh)
+        for level in levels:
+            require_finite(level, "level_mwh")
+            if self.dataset == "MDO" and level < 0:
+                raise InvalidRecord(f"MDO below zero: {level}")
+            if self.dataset == "MDB" and level > 0:
+                raise InvalidRecord(f"MDB above zero: {level}")
 
 
 @dataclass(frozen=True)
@@ -188,7 +198,7 @@ def build_unit_inputs(
         submissions=tuple(
             sorted(
                 submissions,
-                key=lambda s: (s.publish_time, s.dataset, s.time_from, s.value_mwh),
+                key=lambda s: (s.publish_time, s.serial, s.dataset, s.time_from),
             )
         ),
         meter=tuple(sorted(meter, key=lambda m: m.period_start)),
