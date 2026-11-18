@@ -52,7 +52,7 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 
 ## Repository layout
 
-`src/model/` holds the input types shared by real and synthetic data, `src/physics/` the §3 physics, and `src/claims/` Claims 1 and 2 with their scoring. `src/synthetic/` holds the settings and frequency input for the known-answer batteries; the batteries themselves and `src/claim3/` are not yet built.
+`src/model/` holds the input types shared by real and synthetic data, `src/physics/` the §3 physics, and `src/claims/` Claims 1 and 2 with their scoring. `src/synthetic/` holds the known-answer batteries: their settings, frequency input and the honest batteries so far. The planted faults, the band runner and `src/claim3/` are not yet built.
 
 ```
 ├── README.md
