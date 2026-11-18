@@ -1,0 +1,24 @@
+# Run settings for scoring that the pre-registration does not fix.
+#
+# Fixed on 18 Nov 2026, before the known-answer suite or any scoring ran
+# (PROJECT.md §11). Changing a value after the suite has run needs a decision-log
+# row giving the reason; changing one after the pinned scoring run needs a new lock.
+schema_version = "1.0"
+
+# Every unit's resampling starts from a fresh generator seeded with this value, so a
+# unit's interval does not depend on processing order or on which other units are
+# scored. Draws are therefore correlated across units: never combine per-unit bounds
+# into a fleet interval. The value is arbitrary; it is the date it was fixed.
+master_seed = 20261118
+
+# Draws for the reliability interval (unit bootstrap, PREREGISTRATION §4). The
+# pre-registration fixes 1,000 draws for unit scores but gives no number here;
+# the same number is used.
+reliability_draws = 1000
+
+# MDO and MDB records at or beyond this magnitude are NESO defaults, not
+# declarations (ASSUMPTIONS R13; same value as config/gate_a1.toml).
+default_abs_mwh = 9999.0
+
+# Settlement runs accepted as "SF or later" (PREREGISTRATION §3; ASSUMPTIONS M25).
+sf_or_later_runs = ["SF", "R1", "R2", "R3", "RF", "DF"]
