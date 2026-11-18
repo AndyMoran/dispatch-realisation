@@ -1,0 +1,372 @@
+# Thresholds for the audit, mirrored from PREREGISTRATION.md (locked, v1.0-lock).
+#
+# PREREGISTRATION.md is the source; this file is a copy the code can read.
+# Each entry gives:
+#   value    the number the code uses
+#   section  where the locked text defines it
+#   text     the figure exactly as the locked text prints it ("5%", "1,000", "three")
+#   quote    a phrase from that section containing the figure and saying what it means
+# src/model/params.py refuses an entry whose value does not equal its text.
+# tests/test_claims_params.py checks every quote against the locked text.
+# Change an entry only with a new lock (PREREGISTRATION §8, §12).
+schema_version = "1.0"
+
+# ---------------------------------------------------------------- §2–§3 definitions
+
+[eligibility.min_scored_weeks]
+value = 4
+section = "2"
+text = "4"
+quote = "Units with at least 4 scored weeks"
+
+[efficiency.eta_min]
+value = 0.70
+section = "3"
+text = "0.70"
+quote = "Units with η̂ outside [0.70, 0.98]"
+
+[efficiency.eta_max]
+value = 0.98
+section = "3"
+text = "0.98"
+quote = "Units with η̂ outside [0.70, 0.98]"
+
+[protection.horizon_extra_periods]
+value = 3
+section = "3"
+text = "three"
+quote = "*H* = current settlement period plus three"
+
+[screens.idle_floor_mwh]
+value = 1.0
+section = "3"
+text = "1"
+quote = "the idle screen uses a 1 MWh throughput floor"
+
+# ---------------------------------------------------------------- §4 Claims 1 and 2
+
+[screens.idle_hours]
+value = 1.0
+section = "4"
+text = "1"
+quote = "Weeks with throughput below registered MW × 1 hour"
+
+[screens.efa_boundary_hours]
+value = [23, 3, 7, 11, 15, 19]
+section = "4"
+text = ["23:00", "03:00", "07:00", "11:00", "15:00", "19:00"]
+quote = "(23:00, 03:00, 07:00, 11:00, 15:00 and 19:00 UK time"
+
+[screens.efa_excluded_periods_per_day]
+value = 12
+section = "4"
+text = "12"
+quote = "12 of 48 periods a day"
+
+[claim1.coherent_upper]
+value = 0.05
+section = "4"
+text = "0.05"
+quote = "Coherent | Upper bound ≤ 0.05"
+
+[claim1.not_coherent_lower]
+value = 0.15
+section = "4"
+text = "0.15"
+quote = "Not shown coherent | Lower bound ≥ 0.15"
+
+[claim2.tau_fraction]
+value = 0.02
+section = "4"
+text = "0.02"
+quote = "τ_w = 0.02 × (max K − min K)"
+
+[claim2.provable_lower]
+value = 0.05
+section = "4"
+text = "0.05"
+quote = "Provable under-declaration | Lower bound ≥ 0.05"
+
+[claim2.min_contract_free_weeks]
+value = 2
+section = "4"
+text = "2"
+quote = "Units with fewer than 2 contract-free scored weeks"
+
+[scoring.interval]
+value = 0.95
+section = "4"
+text = "95%"
+quote = "with a 95% interval from resampling its days (1,000 draws)"
+
+[scoring.draws]
+value = 1000
+section = "4"
+text = "1,000"
+quote = "with a 95% interval from resampling its days (1,000 draws)"
+
+[scoring.reliability_floor]
+value = 0.5
+section = "4"
+text = "0.5"
+quote = "lies wholly below 0.5"
+
+# ---------------------------------------------------------------- §5 Claim 3
+
+[claim3.min_accepted_mwh]
+value = 1.0
+section = "5.2"
+text = "1"
+quote = "Only instructions with *A* ≥ 1 MWh"
+
+[claim3.f_grid_max]
+value = 0.9
+section = "5.4"
+text = "0.9"
+quote = "*f* in [0, 0.9] in steps of 0.01"
+
+[claim3.f_grid_step]
+value = 0.01
+section = "5.4"
+text = "0.01"
+quote = "*f* in [0, 0.9] in steps of 0.01"
+
+[claim3.delta_grid_step_mwh]
+value = 0.1
+section = "5.4"
+text = "0.1"
+quote = "in steps of 0.1 MWh"
+
+[claim3.draws]
+value = 1000
+section = "5.4"
+text = "1,000"
+quote = "resampling instructions within the unit (1,000 draws)"
+
+[claim3.slope_min]
+value = -1.5
+section = "5.5"
+text = "−1.5"
+quote = "outside [−1.5, −0.5]"
+
+[claim3.slope_max]
+value = -0.5
+section = "5.5"
+text = "−0.5"
+quote = "outside [−1.5, −0.5]"
+
+[claim3.separability_iqr_fraction]
+value = 0.25
+section = "5.5"
+text = "25%"
+quote = "below 25% of its median"
+
+[claim3.transition_upper]
+value = 0.95
+section = "5.5"
+text = "0.95"
+quote = "ρ falls from 0.95 to 0.75"
+
+[claim3.transition_lower]
+value = 0.75
+section = "5.5"
+text = "0.75"
+quote = "ρ falls from 0.95 to 0.75"
+
+[claim3.min_instructions]
+value = 15
+section = "5.7"
+text = "15"
+quote = "at least 15 eligible instructions with r ≥ 0.5"
+
+[claim3.min_r]
+value = 0.5
+section = "5.7"
+text = "0.5"
+quote = "at least 15 eligible instructions with r ≥ 0.5"
+
+[claim3.promotion_identification_rate]
+value = 0.30
+section = "5.10"
+text = "30%"
+quote = "The identification rate is at least 30% of scored units"
+
+[claim3.placebo_shortfall_rho]
+value = 0.9
+section = "5.10"
+text = "0.9"
+quote = "placebo instructions with ρ < 0.9"
+
+[claim3.placebo_shortfall_max]
+value = 0.10
+section = "5.10"
+text = "10%"
+quote = "is at most 10%"
+
+[claim3.promotion_min_units_compared]
+value = 3
+section = "5.10"
+text = "3"
+quote = "with at least 3 units compared"
+
+# ---------------------------------------------------------------- §6–§7 Claims 4 and 5
+
+[claim4.nameplate_tolerance]
+value = 0.02
+section = "6"
+text = "0.02"
+quote = "+ 0.02 × *N*"
+
+[claim4.inconsistent_factor]
+value = 1.02
+section = "6"
+text = "1.02"
+quote = "max K − min K > 1.02 × *N*"
+
+[claim5.censor_min]
+value = 30
+section = "7"
+text = "30"
+quote = "Censored at the unit's next acceptance or 30 minutes"
+
+[claim5.benchmark_min]
+value = 1
+section = "7"
+text = "1"
+quote = "the share of BOAs with L ≤ 1 minute"
+
+# ---------------------------------------------------------------- §8 known-answer suite
+
+[known_answer.capacity_mwh]
+value = 100.0
+section = "8"
+text = "100"
+quote = "U = 100 MWh"
+
+[known_answer.eta]
+value = 0.88
+section = "8"
+text = "0.88"
+quote = "η = 0.88"
+
+[known_answer.cycles_per_day]
+value = 2
+section = "8"
+text = "two"
+quote = "two cycles a day"
+
+[known_answer.runs]
+value = 100
+section = "8"
+text = "100"
+quote = "Across 100 simulated runs of each"
+
+[known_answer.honest_flag_max]
+value = 0.05
+section = "8"
+text = "5%"
+quote = "flagged by Claim 3 at most 5% of the time"
+
+[known_answer.overdeclarer_flag_min]
+value = 0.80
+section = "8"
+text = "80%"
+quote = "flagged at least 80% of the time"
+
+[known_answer.planted_delta_mwh]
+value = 10.0
+section = "8"
+text = "10"
+quote = "Constant over-declaration, Δ = 10 MWh"
+
+[known_answer.delta_band_mwh]
+value = [7.0, 13.0]
+section = "8"
+text = ["7", "13"]
+quote = "Δ̂ in [7, 13] MWh"
+
+[known_answer.planted_f]
+value = 0.2
+section = "8"
+text = "0.2"
+quote = "declares 1.25 × available (*f* = 0.2)"
+
+[known_answer.f_band]
+value = [0.15, 0.25]
+section = "8"
+text = ["0.15", "0.25"]
+quote = "*f̂* in [0.15, 0.25]"
+
+[known_answer.under_declaration_mwh]
+value = 20.0
+section = "8"
+text = "20"
+quote = "Constant under-declaration, 20 MWh"
+
+[known_answer.redeclare_fast_min]
+value = 5
+section = "8"
+text = "5"
+quote = "Redeclares 5 minutes after each BOA"
+
+[known_answer.redeclare_slow_min]
+value = 25
+section = "8"
+text = "25"
+quote = "redeclares 25 minutes after each BOA (slow)"
+
+[known_answer.derate_to_fraction]
+value = 0.5
+section = "8"
+text = "50%"
+quote = "derates linearly to 50% below 20% state of charge"
+
+[known_answer.derate_below_soc]
+value = 0.2
+section = "8"
+text = "20%"
+quote = "derates linearly to 50% below 20% state of charge"
+
+[known_answer.one_sided_rate]
+value = 0.95
+section = "8"
+text = "95%"
+quote = "in at least 95% of 100 runs"
+
+# ---------------------------------------------------------------- §9 sensitivity
+
+[sensitivity.eta_bounds_alt]
+value = [0.65, 0.99]
+section = "9"
+text = ["0.65", "0.99"]
+quote = "[0.65, 0.99]"
+
+[sensitivity.horizon_alt_hours]
+value = 6.0
+section = "9"
+text = "6"
+quote = "*H* = 6 hours"
+
+[sensitivity.claim1_coherent_alt]
+value = [0.025, 0.075]
+section = "9"
+text = ["0.025", "0.075"]
+quote = "(0.025 and 0.075; 0.075 and 0.225)"
+
+[sensitivity.claim1_not_coherent_alt]
+value = [0.075, 0.225]
+section = "9"
+text = ["0.075", "0.225"]
+quote = "(0.025 and 0.075; 0.075 and 0.225)"
+
+[sensitivity.claim2_provable_alt]
+value = [0.025, 0.10]
+section = "9"
+text = ["0.025", "0.10"]
+quote = "Claim 2 threshold at 0.025 and 0.10"
+
+[sensitivity.claim3_min_instructions_alt]
+value = [10, 25]
+section = "9"
+text = ["10", "25"]
+quote = "identification minimum at 10 and 25 instructions"

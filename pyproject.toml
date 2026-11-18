@@ -25,7 +25,7 @@ pythonpath = ["."]
 testpaths = ["tests"]
 addopts = "-W error"
 
-# CODING.md §7. Files that produced frozen lock outputs are exempt and listed one by
+# CODING.md §8. Files that produced frozen lock outputs are exempt and listed one by
 # one, so that new files in the same folders are still checked.
 [tool.ruff]
 line-length = 88
@@ -52,5 +52,14 @@ select = ["E", "F", "W", "I", "B", "UP", "S307", "S102"]   # S307 eval, S102 exe
 [tool.mypy]
 strict = true
 python_version = "3.12"
-# Packages join this list as they are created (CODING.md §7).
-files = []
+# Packages join this list as they are created (CODING.md §8).
+files = ["src/model", "tests/test_model_types.py", "tests/test_claims_params.py"]
+
+# Coverage floor for new packages (CODING.md §7); CI runs pytest with --cov.
+[tool.coverage.run]
+source = ["src/model"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true

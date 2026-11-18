@@ -52,7 +52,7 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 
 ## Repository layout
 
-`src/physics/`, `src/claims/` and `src/synthetic/` are planned and not yet built.
+`src/model/` holds the input types shared by real and synthetic data. `src/physics/`, `src/claims/`, `src/claim3/` and `src/synthetic/` are planned and not yet built.
 
 ```
 ├── README.md
@@ -69,6 +69,7 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 │   ├── interim/            (gitignored)
 │   └── manifests/          download dates + hashes (committed)
 ├── src/
+│   ├── model/              input types shared by real and synthetic data; thresholds
 │   ├── ingest/             BMRS, NESO pulls
 │   ├── physics/            energy balance, SoC reconstruction
 │   ├── claims/             Claims 1–5 (Claim 3 a separate module)

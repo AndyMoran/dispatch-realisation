@@ -14,9 +14,11 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - name: Install locked dependencies
         run: uv sync --locked
-      - name: Check formatting (CODING.md §7)
+      - name: Check formatting (CODING.md §8)
         run: uv run ruff format --check .
-      - name: Lint (CODING.md §7)
+      - name: Lint (CODING.md §8)
         run: uv run ruff check .
-      - name: Run tests
-        run: uv run pytest -q
+      - name: Type check (CODING.md §8)
+        run: uv run mypy
+      - name: Run tests, with coverage of new packages (CODING.md §7)
+        run: uv run pytest -q --cov --cov-report=term
