@@ -20,7 +20,7 @@ Yet the control room often skips cheaper batteries and runs gas instead. NESO's 
 
 So the question is simple: **are the declarations physically true?** A battery's meter records every MWh that goes in and out. If its declarations say the tank held more, or less, than the meter allows, the declarations are wrong. This project audits that, for every battery unit, from public data only. It publishes fleet-level results and the method, and sends each lead party its own units' results privately.
 
-The answer so far is "partly". GB's published data serve settlement first and audit second. Two gaps stop a complete audit: no register records how much energy each battery holds, and NESO's auction results do not say which BM unit holds each contract. Both are cheap to close.
+The answer so far is "partly". GB's published data serve settlement first and audit second. Two gaps stop a complete audit: no register records how much energy each battery holds, and NESO's auction results do not say which BM unit holds each contract. Neither needs new measurement; the second also needs sites keyed to BM units.
 
 ## In detail
 
