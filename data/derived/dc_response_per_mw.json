@@ -1,0 +1,52 @@
+{
+  "curve_source": "NESO Response Services Service Terms v6, effective 2026-07-31, Schedule 2",
+  "derived_file": "data/derived/dc_response_per_mw.csv",
+  "derived_sha256": "493b9c05d385824ecaf9c2726bfeeabaaa875998a7f8eb7b0978a88cf20446f6",
+  "duplicates_dropped": 0,
+  "held_slots": 0,
+  "invalid_values": 0,
+  "missing_slots_by_day": {},
+  "periods": 7056,
+  "rows_outside_span": 518400,
+  "schema_version": "1.0",
+  "script_sha256": "8ccb8d07dccf5c5ffc593afdb6adbb88ea76bd245422071e476fffb8c490f81a",
+  "settings_sha256": "2e2d50699c9f1e309f4ee6f38b3ff825bffd248f5b84a9b754d5b3c3df3e8bc1",
+  "slots": 12700800,
+  "sources": [
+    {
+      "file": "fnew-2026-6.csv",
+      "raw_file": "data/raw/frequency/fnew-2026-6__dl20261118T204449.csv",
+      "sha256": "400105c258a73532cd212c9d55d95df16434a28ce01379168be7bd49554326c9",
+      "url": "https://api.neso.energy/dataset/cb1cc925-ecd8-4406-b021-3a3f368196e1/resource/dc7c5468-08a1-4586-bcdd-77ced39a5067/download/fnew-2026-6.csv"
+    },
+    {
+      "file": "fnew-2026-7.csv",
+      "raw_file": "data/raw/frequency/fnew-2026-7__dl20261118T204508.csv",
+      "sha256": "1ca3e9e995c32928b475a2914a2dea1b1ddc738d39942f579931d38aec3b3964",
+      "url": "https://api.neso.energy/dataset/cb1cc925-ecd8-4406-b021-3a3f368196e1/resource/027227d0-7c70-4497-bdc4-a80cff7726f8/download/fnew-2026-7.csv"
+    },
+    {
+      "file": "fnew-2026-8.csv",
+      "raw_file": "data/raw/frequency/fnew-2026-8__dl20261118T204526.csv",
+      "sha256": "510b37fd12bf932d4771b83bec63fbdb8e0e2bdca79408d54532909b6f517c8a",
+      "url": "https://api.neso.energy/dataset/cb1cc925-ecd8-4406-b021-3a3f368196e1/resource/758fa76d-b645-4532-a532-ab49335ee4c3/download/fnew-2026-8.csv"
+    },
+    {
+      "file": "fnew-2026-9.csv",
+      "raw_file": "data/raw/frequency/fnew-2026-9__dl20261118T204545.csv",
+      "sha256": "7a897109ffd90740f074be46840cbc642729996f266afd8d0b20352740f9ebde",
+      "url": "https://api.neso.energy/dataset/cb1cc925-ecd8-4406-b021-3a3f368196e1/resource/3d14640d-89e1-43bd-bf91-93d623493bc9/download/fnew-2026-9.csv"
+    },
+    {
+      "file": "fnew-2026-10.csv",
+      "raw_file": "data/raw/frequency/fnew-2026-10__dl20261118T204604.csv",
+      "sha256": "f38d9a52ec04de55ebda61f4644e3279fb51716a70131d9487fc3f6c4e29e131",
+      "url": "https://api.neso.energy/dataset/cb1cc925-ecd8-4406-b021-3a3f368196e1/resource/4175d58a-0247-46e2-8d4d-f32210f61887/download/fnew-2026-10.csv"
+    }
+  ],
+  "span_utc": [
+    "2026-06-01",
+    "2026-10-25"
+  ],
+  "zeroed_slots": 0
+}
