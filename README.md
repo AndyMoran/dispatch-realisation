@@ -6,7 +6,7 @@ NESO can see which batteries hold contracts that lawfully lower their declaratio
 
 This project checks each GB battery's declarations against its own meter, and reports both what can be checked and what the published data stop anyone checking.
 
-**Status:** pre-registration locked on 18 November 2026 ([DOI](https://doi.org/10.5281/zenodo.24343931)); nothing has been scored. Nothing here is a result yet.
+**Status:** pre-registration locked on 18 November 2026 ([DOI](https://doi.org/10.5281/zenodo.24343931)), with one deviation recorded before scoring ([DOI](https://doi.org/10.5281/zenodo.24354704)); nothing has been scored. Nothing here is a result yet.
 
 ---
 
@@ -98,7 +98,12 @@ Neither Elexon nor NESO endorses this project. Scores, flags and estimates here 
 
 ## Citation
 
-Pre-registration lock, version 1: Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24343931 (tag `v1.0-lock`, commit 4395934). Citation metadata: [`CITATION.cff`](CITATION.cff).
+Cite the latest lock. Each is archived on Zenodo:
+
+- Deviation 1 (nested resampling of unit-score intervals; `PREREGISTRATION.md` §12): Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24354704 (tag `v1.0.1-lock`, commit c933d76).
+- Pre-registration lock, version 1: https://doi.org/10.5281/zenodo.24343931 (tag `v1.0-lock`, commit 4395934).
+
+Citation metadata: [`CITATION.cff`](CITATION.cff). Its licence field names the code licence only, because Zenodo cannot read a list of licences from it; the text licence is stated above.
 
 ## AI use statement
 
