@@ -18,7 +18,9 @@ read (PROJECT.md §11, 18 Nov 2026):
 - Exact duplicate rows are dropped and counted. Duplicates that differ stop the
   reduction.
 - A header other than the expected one, a row without two fields, or a timestamp
-  that is not a whole second in GMT also stops it.
+  that is not a whole second in GMT also stops it. A bare date (as the August to
+  October 2026 files write each midnight) reads as 00:00:00 only where midnight
+  belongs: between 23:59:59 and 00:00:01, with no explicit midnight row that day.
 
 Delivered response is idealised: exactly what the curve asks for, second by second
 (ASSUMPTIONS P8).
@@ -166,13 +168,17 @@ def parse_timestamps(texts: Sequence[str]) -> NDArray[np.int64]:
     """Return whole seconds since the epoch for GMT timestamps; stop on any other.
 
     Accepted: "YYYY-MM-DD HH:MM:SS" or with "T", an optional all-zero fraction, and
-    an optional "Z" or "+00:00". Anything else breaks the GMT whole-second rule.
+    an optional "Z" or "+00:00". A bare "YYYY-MM-DD" reads as 00:00:00 that day;
+    read_rows checks that it sits where midnight belongs (PROJECT.md §11, 18 Nov).
+    Anything else breaks the GMT whole-second rule.
     """
     cleaned = []
     for text in texts:
         t = text.strip().replace("T", " ")
         for suffix in ("Z", "+00:00"):
             t = t.removesuffix(suffix)
+        if is_date_only(t):
+            t += " 00:00:00"
         stamp, dot, fraction = t.partition(".")
         if dot and (not fraction.isdigit() or fraction.strip("0")):
             raise FrequencyFormatError(f"not a whole second in GMT: {text!r}")
@@ -184,6 +190,37 @@ def parse_timestamps(texts: Sequence[str]) -> NDArray[np.int64]:
     except ValueError as err:
         raise FrequencyFormatError(f"unreadable timestamp: {err}") from err
     return stamps.astype(np.int64)
+
+
+def is_date_only(text: str) -> bool:
+    """Return whether a timestamp is a bare date, YYYY-MM-DD, with no time."""
+    t = text.strip()
+    return len(t) == 10 and t[4] == "-" and t[7] == "-" and t.replace("-", "").isdigit()
+
+
+def check_midnights(
+    stamps: Sequence[str], seconds: NDArray[np.int64], name: str
+) -> None:
+    """Stop unless every bare-date row sits exactly where its midnight belongs.
+
+    PROJECT.md §11, 18 Nov 2026: a bare date reads as 00:00:00 GMT only if the row
+    before it, if any, is 23:59:59 the day before, the row after it, if any, is
+    00:00:01 that day, and the file has no explicit 00:00:00 row for that day.
+    """
+    bare = np.array([is_date_only(t) for t in stamps], dtype=bool)
+    if not bare.any():
+        return
+    midnight = seconds % 86400 == 0
+    explicit_days = set((seconds[midnight & ~bare] // 86400).tolist())
+    for i in np.flatnonzero(bare).tolist():
+        s = int(seconds[i])
+        before_ok = i == 0 or int(seconds[i - 1]) == s - 1
+        after_ok = i == len(stamps) - 1 or int(seconds[i + 1]) == s + 1
+        if not (before_ok and after_ok) or s // 86400 in explicit_days:
+            raise FrequencyFormatError(
+                f"{name} line {i + 2}: bare date {stamps[i]!r} is not where its "
+                "midnight belongs"
+            )
 
 
 def parse_value(text: str) -> float:
@@ -207,8 +244,10 @@ def read_rows(lines: Iterable[str], header: tuple[str, str], name: str) -> Readi
             raise FrequencyFormatError(f"{name} line {line_no}: {len(row)} fields")
         stamps.append(row[0])
         texts.append(row[1].strip())
+    seconds = parse_timestamps(stamps)
+    check_midnights(stamps, seconds, name)
     return Readings(
-        seconds=parse_timestamps(stamps),
+        seconds=seconds,
         text=np.array(texts, dtype=np.str_),
         hz=np.array([parse_value(t) for t in texts], dtype=np.float64),
     )

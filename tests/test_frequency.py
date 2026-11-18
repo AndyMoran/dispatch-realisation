@@ -122,6 +122,48 @@ def test_other_timestamps_stop(text: str) -> None:
         fq.parse_timestamps([text])
 
 
+def test_bare_date_reads_as_midnight() -> None:
+    """August–October 2026 files write each midnight as a bare date."""
+    assert fq.parse_timestamps(["2026-06-01"])[0] == T0
+
+
+def body(*stamps: str) -> io.StringIO:
+    return io.StringIO("dtm,f\n" + "".join(f"{t},50.0\n" for t in stamps))
+
+
+def test_bare_date_between_its_neighbours_accepted() -> None:
+    r = fq.read_rows(
+        body(
+            "2026-05-31 23:59:58",
+            "2026-05-31 23:59:59",
+            "2026-06-01",
+            "2026-06-01 00:00:01",
+        ),
+        ("dtm", "f"),
+        "x",
+    )
+    assert list(r.seconds - T0) == [-2, -1, 0, 1]
+
+
+def test_bare_date_at_file_start_accepted() -> None:
+    r = fq.read_rows(body("2026-06-01", "2026-06-01 00:00:01"), ("dtm", "f"), "x")
+    assert list(r.seconds - T0) == [0, 1]
+
+
+@pytest.mark.parametrize(
+    "stamps",
+    [
+        ("2026-05-31 23:59:58", "2026-06-01", "2026-06-01 00:00:01"),  # gap before
+        ("2026-05-31 23:59:59", "2026-06-01", "2026-06-01 00:00:02"),  # gap after
+        ("2026-06-01 00:00:05", "2026-06-01", "2026-06-01 00:00:06"),  # out of place
+        ("2026-06-01", "2026-06-01 00:00:01", "2026-06-01 00:00:00"),  # explicit too
+    ],
+)
+def test_bare_date_out_of_place_stops(stamps: tuple[str, ...]) -> None:
+    with pytest.raises(fq.FrequencyFormatError, match="midnight belongs"):
+        fq.read_rows(body(*stamps), ("dtm", "f"), "x")
+
+
 def test_read_rows_keeps_text_and_value() -> None:
     r = fq.read_rows(
         io.StringIO("dtm,f\n2026-06-01 00:00:00,49.95\n2026-06-01 00:00:01,\n"),
