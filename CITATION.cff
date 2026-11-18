@@ -1,20 +1,30 @@
 cff-version: 1.2.0
 message: "If you use this work, please cite it as below."
 type: software
-title: "Dispatch Realisation of GB Batteries"
+title: "Can GB Battery Declarations Be Audited From Public Data? (Dispatch Realisation of GB Batteries)"
 abstract: >-
-  A public benchmark of how well GB battery BM units declare their available
-  energy under Grid Code GC0166 (MDO/MDB), with a declaration-attributable
-  £/MW/yr estimate. Pre-registered; open pipeline.
+  A physics audit of GB battery MDO/MDB declarations under Grid Code GC0166,
+  from public data only. Each BM unit's declarations are checked against its
+  own metered energy (B1610). Version 1 locks the pre-registration before any
+  unit is scored; per-unit results go privately to lead parties, and fleet-level
+  results, the method and the pipeline are published.
 authors:
   - family-names: Moran
     given-names: Andy
     affiliation: Heaviside Analytics
+    orcid: "https://orcid.org/0009-0004-2194-8084"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24343931
+    description: "Pre-registration lock, version 1 (tag v1.0-lock)"
 repository-code: "https://github.com/AndyMoran/dispatch-realisation"
-license: MIT
+license:
+  - MIT
+  - CC-BY-4.0
 keywords:
   - battery storage
   - balancing mechanism
   - GC0166
-  - skip rates
+  - MDO/MDB
+  - pre-registration
   - Great Britain

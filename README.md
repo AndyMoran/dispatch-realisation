@@ -94,7 +94,7 @@ Neither Elexon nor NESO endorses this project. Scores, flags and estimates here 
 
 ## Citation
 
-*To follow (Zenodo DOI on first release).*
+Pre-registration lock, version 1: Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24343931 (tag `v1.0-lock`, commit 4395934). Citation metadata: [`CITATION.cff`](CITATION.cff).
 
 ## AI use statement
 
