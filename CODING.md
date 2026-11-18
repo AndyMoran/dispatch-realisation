@@ -124,6 +124,7 @@ mpl.rcParams.update(
 
 - **Must:** messages take the form `type: short description`, where type is one of `feat`, `fix`, `data`, `docs`, `test`, `refactor` or `chore`. Example: `feat: Claim 1 weekly error ratio (PREREGISTRATION §4)`.
 - **Must:** commits are authored "Andy Moran" <andrewgmoran@proton.me>, with no AI co-author or session trailer lines. AI help is disclosed in the README's AI use statement.
+- **Must:** stage files by name (`git add <file>`), never with `git add -A` or `git add .`, so nothing enters a commit unreviewed.
 - **Must not:** commit secrets, raw data, or per-unit outputs before right of reply.
 
 ## Exceptions
