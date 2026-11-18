@@ -1,0 +1,127 @@
+# Settings for the synthetic batteries of the known-answer suite (PREREGISTRATION §8).
+#
+# §8 fixes the bands and the common settings it prints: U = 100 MWh, η = 0.88, two
+# cycles a day, 100 runs, the planted faults and the redeclaration lags. Those live in
+# config/claims.toml, pinned to the locked text, and are not repeated here. This file
+# fixes what §8 leaves open: power, daily pattern, calendars, seeds, instructions,
+# noise, ramp, contract changes and the frequency input.
+#
+# Fixed on 18 Nov 2026, before the suite first ran and before any frequency file was
+# read (PROJECT.md §11). tests/test_synthetic_settings.py pins this file's SHA-256.
+# A change before the first real unit is scored needs a decision-log row; after it,
+# none is allowed (§8).
+schema_version = "1.0"
+
+[battery]
+power_mw = 50.0              # a 2-hour battery at U = 100 MWh
+# Each day has two charge and two discharge windows. A charge window takes stored
+# energy up to soc_high_share × U, a discharge window down to soc_low_share × U, at
+# constant power over the window, capped at power_mw. Targets, not fixed volumes, so
+# energy moved by instructions or frequency response is recovered at the next
+# window: the honest battery's only recovery (no Vrec trades; ASSUMPTIONS P9).
+soc_low_share = 0.15
+soc_high_share = 0.85
+window_h = 3.0
+# Window starts, hours after 00:00 UTC.
+charge_start_hours_utc = [0.0, 11.0]
+discharge_start_hours_utc = [5.0, 16.0]
+# Stored energy at the start of each run: uniform in this range, × U, per run.
+initial_soc_share = [0.30, 0.70]
+
+[runs]
+# One generator per (battery, length, run): numpy SeedSequence(master_seed,
+# spawn_key = (first 8 bytes of SHA-256 of the battery name as an integer, length
+# index, run index)). Results do not depend on run order. Separate from the scoring
+# seed in config/scoring.toml.
+master_seed = 20261119
+# Each length is one unscored adoption week, then its scored weeks (ISO weeks, UTC).
+# Both end on Sunday 25 Oct 2026, the 25-hour UK day, and use frequency files
+# June–October 2026, the latest published when this was fixed.
+lengths = ["short", "long"]
+
+[runs.short]
+adoption_week_start = "2026-09-21"
+scored_weeks = 4
+
+[runs.long]
+adoption_week_start = "2026-06-01"
+scored_weeks = 20
+
+[boa]
+mean_per_day = 4.0           # Poisson count per UTC day
+duration_min = [30, 90]      # whole minutes, uniform
+offer_share = 0.5            # the rest are bids
+# Start minute uniform over the day. The suite checks that at least this share of
+# instructions crosses a settlement-period boundary (§8 requires some to).
+min_boundary_spanning_share = 0.25
+# Instructed power above PN is capped so PN, BOA and contracted response together
+# stay within power_mw.
+
+[declarations]
+resubmit_interval_min = 30   # routine resubmission
+honest_lag_min = 1           # after each BOA; NESO's benchmark (§7)
+
+[meter]
+noise_sd_mwh = 0.05          # Gaussian, on each period's net value only
+
+[ramp]
+ramp_limited_mw_per_min = 5.0   # "Honest, ramp-limited" battery: 10 min to full power
+
+[response]
+# Dynamic Containment, energy-limited provider: NESO, Response Services Service
+# Terms, Version 6, effective 31 July 2026, Schedule 2.
+source = "NESO Response Services Service Terms v6, effective 2026-07-31, Schedule 2"
+source_url = "https://www.neso.energy/document/384606/download"
+nominal_hz = 50.0
+deadband_hz = 0.015          # no zero deadband: that option is not for this provider
+knee_hz = 0.2
+knee_share = 0.05
+full_hz = 0.5
+delivery_duration_h = 0.25   # protected energy = contracted MW × 0.25 h, each way
+# Contracted MW is drawn per EFA block from these levels, then capped so PN plus
+# response stays within power_mw. Delivered response is idealised: exactly the
+# curve's request, second by second (ASSUMPTIONS P8).
+contract_levels_mw = [0.0, 10.0, 20.0]
+
+[reserve]
+# Reserve-style protection for the second one-sided-reading battery (§8): at each
+# settlement period, with this probability, protected energy steps by an amount
+# uniform in step_mwh, up or down with equal chance, then is clipped to the range.
+change_probability_per_period = 0.10
+step_mwh = [5.0, 15.0]
+range_mwh = [0.0, 30.0]
+
+[frequency]
+# NESO historic system frequency, 1-second resolution, timestamps in GMT. Rules
+# below were fixed before any file was read.
+first_day = "2026-06-01"
+last_day = "2026-10-25"
+files = [
+    "fnew-2026-6.csv",
+    "fnew-2026-7.csv",
+    "fnew-2026-8.csv",
+    "fnew-2026-9.csv",
+    "fnew-2026-10.csv",
+]
+# Download links read from the portal page on 18 Nov 2026; the fetch records each
+# with its hash in data/manifests/frequency_manifest.csv.
+url_prefix = "https://api.neso.energy/dataset/cb1cc925-ecd8-4406-b021-3a3f368196e1/resource/"
+resource_ids = [
+    "dc7c5468-08a1-4586-bcdd-77ced39a5067",
+    "027227d0-7c70-4497-bdc4-a80cff7726f8",
+    "758fa76d-b645-4532-a532-ab49335ee4c3",
+    "3d14640d-89e1-43bd-bf91-93d623493bc9",
+    "4175d58a-0247-46e2-8d4d-f32210f61887",
+]
+# Columns as expected; any other header stops the reduction (ASSUMPTIONS R30).
+header = ["dtm", "f"]
+slots_per_day = 86400
+# A missing slot is a second with no row, or with a value that is blank, not a
+# number, or outside valid_hz. A run of at most hold_max_gap_s missing slots after a
+# valid second holds that second's value; a longer run, or one at the very start,
+# gives no response. Exact duplicate rows are dropped and counted; duplicates that
+# differ stop the reduction. Every held and zeroed slot is counted in the summary.
+hold_max_gap_s = 60
+valid_hz = [49.0, 51.0]
+derived_file = "data/derived/dc_response_per_mw.csv"
+summary_file = "data/derived/dc_response_per_mw.json"

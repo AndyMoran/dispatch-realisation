@@ -52,7 +52,7 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 
 ## Repository layout
 
-`src/model/` holds the input types shared by real and synthetic data, `src/physics/` the §3 physics, and `src/claims/` Claims 1 and 2 with their scoring. `src/claim3/` and `src/synthetic/` are planned and not yet built.
+`src/model/` holds the input types shared by real and synthetic data, `src/physics/` the §3 physics, and `src/claims/` Claims 1 and 2 with their scoring. `src/synthetic/` holds the settings and frequency input for the known-answer batteries; the batteries themselves and `src/claim3/` are not yet built.
 
 ```
 ├── README.md
@@ -67,6 +67,7 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 ├── data/
 │   ├── raw/                as downloaded; never edited (gitignored)
 │   ├── interim/            (gitignored)
+│   ├── derived/            small files built from raw data, with hashes (committed)
 │   └── manifests/          download dates + hashes (committed)
 ├── src/
 │   ├── model/              input types shared by real and synthetic data; thresholds

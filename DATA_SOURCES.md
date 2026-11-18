@@ -39,6 +39,7 @@ Methodology: NESO / LCP Delta skip rate methodology (v2.0, May 2025).
 | Response-Reserve Results By Unit (EAC) | Contracted MW per auction unit, product and delivery window: Claim 1 and 2 contract screens (I13) | `auctionUnit` is not a BM unit ID; alias table committed before coverage is counted |
 | Static Firm Frequency Response Auction Results | Same use, for Static FFR | `Unit` is not a BM unit ID; resource `76bc5d39…` |
 | STOR Day Ahead Auction Results | Not used | NESO ceased STOR procurement with delivery on 31 Mar 2026, before the window |
+| System Frequency Data (monthly files) | Within-period cycling of the synthetic frequency-response battery only (PREREGISTRATION §8; `config/synthetic.toml`) | 1-second, GMT. June–October 2026 files, pinned in `data/manifests/frequency_manifest.csv`. Reduced by `src/synthetic/frequency.py` to `data/derived/dc_response_per_mw.csv` (committed, with a JSON summary of hashes and gap counts) so CI needs no raw data. System-level: identifies no BM unit (R30) |
 
 ## Asset metadata
 
