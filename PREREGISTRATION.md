@@ -2,7 +2,7 @@
 
 *A physics audit of MDO/MDB declarations, and the two gaps that stop a complete one.*
 
-**Status: DRAFT — not locked.**
+**Status: LOCKED.**
 Revision 2 of this pre-registration: scope narrowed on 30 October 2026 (§0). The audit it governs is release version 1; the locking commit is tagged `v1.0-lock`, and Zenodo archives the tagged release with a DOI and timestamp. The tag identifies the commit, since a commit cannot contain its own hash. The lock follows the contract-coverage run of 2 November 2026 and precedes any scoring; the date of the tagged commit is the lock date (§10). On lock, this status line is set to LOCKED.
 
 For: a reviewer checking that the audit's methods were fixed before any unit was scored.
