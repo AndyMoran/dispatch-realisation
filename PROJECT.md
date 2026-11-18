@@ -4,7 +4,7 @@
 
 Owner: Andy Moran (Heaviside Analytics)
 Start: w/c 26 October 2026 · Horizon: ~12 weeks (to mid-January 2027)
-Status: **Week 1 — pre-registration revision 2 drafted; lock 5–6 Nov 2026 after the contract-coverage run**
+Status: **Week 4 — pre-registration revision 2 ready to lock; nothing scored**
 
 ---
 
@@ -131,15 +131,20 @@ Supported the deferred £ analysis. Revisit with version 2.
 
 ## 6. Timeline
 
-| Wk | w/c | A: Audit | C: Post | D: Note | E: Outreach |
-|---|---|---|---|---|---|
-| 1 | 26 Oct | Gate A1; lock counts; U-source search; scope narrowed; pre-registration redrafted | Draft | Draft | Build list |
-| 2 | 2 Nov | Auction-unit alias table; contract-coverage run; lock pre-registration 5–6 Nov (Zenodo); synthetic suite. 5 Nov compliance deadline | Draft | Draft | — |
-| 3 | 9 Nov | Known-answer gate; data pull (PN, B1610, BOALF); case-series search (2 days) | Publish | Publish | First 5 (with C; method ask) |
-| 4 | 16 Nov | Pinned scoring run (window closes 15 Nov); reliability gate | — | — | — |
-| 5 | 23 Nov | Fleet results; private packs sent to lead parties (≥ 10 working days before fleet publication) | — | — | — |
-| 6 | 30 Nov | Corrections from lead-party responses | — | — | — |
-| 7–8 | 7 Dec | Publish audit (fleet level), methods paper and pipeline | — | — | Second 5 (with A) |
+Re-baselined 18 Nov 2026 (§11). Done: Gate A1, lock counts, power bound and contract coverage (Weeks 1–2). The scoring date is set by the SF settlement run for 15 Nov (PREREGISTRATION §3; ASSUMPTIONS R28).
+
+| Wk | w/c | A: Audit | E: Outreach |
+|---|---|---|---|
+| 4 | 16 Nov | Lock-ready edits; lock (`v1.0-lock`, Zenodo DOI). Follow up M13 and M14 | — |
+| 5 | 23 Nov | Build physics, claims and synthetic modules; pull MDO/MDB (30 Oct – 15 Nov), PN, BOALF and BOAV, with manifests; Claim 4 nameplate search (2 days) | — |
+| 6 | 30 Nov | Known-answer gate. SF run for 15 Nov expected about 4 Dec (R28) | — |
+| 7 | 7 Dec | B1610 pull (SF or later); pinned scoring run; reliability gate | — |
+| 8 | 14 Dec | Fleet results; private packs sent to lead parties by 18 Dec | — |
+| 9–10 | 21 Dec | Reply period (10 working days ends 6 Jan 2027, allowing for 25 and 28 Dec and 1 Jan) | — |
+| 11 | 4 Jan | Corrections from lead-party responses | — |
+| 12 | 11 Jan | Publish audit (fleet level), methods paper and pipeline | Second 5 (with A) |
+
+Workstreams C and D are not re-planned here.
 
 ## 7. Outreach (E)
 
@@ -275,3 +280,7 @@ Ask before A publishes (Wks 1–6): "I'm auditing GB battery MDO/MDB declaration
 | 2026-11-02 | **Reframed (option B):** lead question "Can GB battery declarations be audited from public data? Partly." Two gaps as the headline: no per-unit MWh register; auction results not keyed by BM unit. Policy asks in PREREGISTRATION §11 | Contract coverage 0 of 98 (R27) means unit-level verdicts are mostly ambiguous; the transparency gaps are the defensible contribution. Nothing scored, so the reframe precedes any result |
 | 2026-11-02 | Claim 1 read one-sidedly: "coherent" is a finding, "not shown coherent" may reflect unobserved reserve protection. The two periods either side of every EFA block boundary are excluded for every unit (response contracts). Two known-answer batteries test this, each with a pre-registered withdrawal if it misses its 95% band | Unobserved contract changes add absolute residuals, so they can only push away from "coherent" in expectation; the exclusion removes response-contract steps; the failure branch makes the gate binding |
 | 2026-11-02 | Lock date flexible: Thursday 5 Nov is self-imposed; the hard limit is before scoring in the week of 16 Nov | Allows the reframe to be done properly |
+| 2026-11-18 | Lock re-dated from 5–6 Nov to the date of the tagged commit; the limit remains "before any unit is scored". Author certifies that no PN, B1610, BOALF, BOAV or MELS data and no NESO skip or in-merit volumes were examined between 2 Nov and 18 Nov | Lock-readiness check found the dates in PREREGISTRATION's status line and §10 overtaken; nothing done since 2 Nov touches the method |
+| 2026-11-18 | B1610 from the SF run or later only; a period with no SF or later run counts as missing; scoring starts after the SF run covers 15 Nov (expected about 4 Dec, R28) | "Latest run at the scoring run" would mix Interim Information and settled data across a unit's weeks, and tie results to the run date (M6) |
+| 2026-11-18 | Lock proceeds without answers on M13 (NESO, asked 27 Oct) or M14 (Elexon case CS0026738, passed to NESO 3 Nov). M13: slope diagnostic added to PREREGISTRATION §9, reported only, never selecting a branch. M14: Claim 5 latency read as an upper bound, its ≤ 1-minute share as a lower bound (§7) | Both readings of MDO are already computed under a robustness rule; a publication lag can only lengthen measured latency. The slope test reads B1610, so it must be registered before lock |
+| 2026-11-18 | Timeline re-baselined (§6): scoring w/c 7 Dec, private packs by 18 Dec, fleet publication w/c 11 Jan 2027, inside the mid-January horizon | Lock slipped two weeks; the SF rule sets the earliest scoring date |

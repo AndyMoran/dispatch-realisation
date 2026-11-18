@@ -1,6 +1,6 @@
 # Data Sources
 
-All sources are public. Endpoints marked ⚠ are to be confirmed in Week 1.
+All sources are public.
 
 ## Elexon BMRS (Insights Solution API)
 
@@ -16,7 +16,7 @@ Licence: BMRS Data Licence Terms.
 | PN | Physical notifications | Per unit, per SP | Baseline position |
 | BOAL / BOALF | Accepted bid-offer instructions | Per unit, per acceptance | Accepted energy for Claim 3; timestamp for latency (Claim 5) |
 | BOD | Bid-offer prices and volumes | Per unit, per SP | Vintage-sensitive. Not used in version 1 |
-| B1610 | Metered generation | Per unit, per SP | Settlement data; revisions possible. Basis of the tank walls (Claims 1–4) |
+| B1610 | Metered generation | Per unit, per SP | Settlement data; revisions possible. SF run or later only (PREREGISTRATION §3; R28). Basis of the tank walls (Claims 1–4) |
 | MID — Market Index Data | Wholesale reference price for £ margin | Per SP | Deferred to version 2 |
 | Reference: BM units | Lead party, fuel type | Per unit | For optimiser mapping (I4) |
 | FSoE | Future State of Energy | — | Not published (R5a) |
@@ -60,14 +60,14 @@ Methodology: NESO / LCP Delta skip rate methodology (v2.0, May 2025).
 ## Week 1 checks
 
 - [x] MDO/MDB production endpoints return data from 25 June 2026 (23 Oct; R6)
-- [ ] Count battery BMUs with any MDO submission; derive first-submission (adoption) date per unit
+- [x] Count battery BMUs with any MDO submission; derive adoption date per unit: 163 adopted by 29 Oct (Gate A1, 30 Oct)
 - [x] FSoE: not published (23 Oct; R5a)
-- [ ] Lead party → optimiser mapping: share of fleet with confident attribution
-- [ ] Count units that changed optimiser since 2024
-- [ ] NESO In-Merit files: confirm unit-level fields for the post-June period
-- [ ] Switch-date dispersion: number of cohorts, units per cohort, post-period length for the earliest cohort
+- [ ] Lead party → optimiser mapping: deferred to version 2 (optimiser claims)
+- [ ] Count units that changed optimiser since 2024: deferred to version 2
+- [ ] NESO In-Merit files: confirm unit-level fields for the post-June period: deferred to version 2 (£ analysis)
+- [x] Switch-date dispersion: recorded at Gate A1 (30 Oct); serves the deferred £ analysis only
 - [x] NESO skip methodology: does the volume adjustment cap a unit's in-merit volume using its own MEL/MDO? Yes; outcome switched (23 Oct; M1, M7)
 - [x] Is NESO's migration schedule published? No (23 Oct; I7a)
-- [ ] NESO reserve grace-period end date announced? (R9)
+- [ ] NESO reserve grace-period end date announced? (R9): deferred to version 2
 - [x] BMRS and NESO licence terms permit a per-unit derived table: yes, with attribution (23 Oct; R10)
-- [ ] Registered MW: GC present and populated for battery units in a pinned reference snapshot (M8)
+- [x] Registered MW: GC = 0 for 33 of 163 units; rule GC, else |DC| (30 Oct; M16)

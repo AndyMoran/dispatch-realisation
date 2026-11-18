@@ -3,7 +3,7 @@
 *A physics audit of MDO/MDB declarations, and the two gaps that stop a complete one.*
 
 **Status: DRAFT — not locked.**
-Revision 2 of this pre-registration: scope narrowed on 30 October 2026 (§0). The audit it governs is release version 1; the locking commit is tagged `v1.0-lock`, and Zenodo archives the tagged release with a DOI and timestamp. The tag identifies the commit, since a commit cannot contain its own hash. Lock: 5 November 2026 (6 November if the contract-coverage mapping overruns) — after `outputs/lock/contract_coverage.json` exists, and before any unit is scored. On lock, this status line is set to LOCKED.
+Revision 2 of this pre-registration: scope narrowed on 30 October 2026 (§0). The audit it governs is release version 1; the locking commit is tagged `v1.0-lock`, and Zenodo archives the tagged release with a DOI and timestamp. The tag identifies the commit, since a commit cannot contain its own hash. The lock follows the contract-coverage run of 2 November 2026 and precedes any scoring; the date of the tagged commit is the lock date (§10). On lock, this status line is set to LOCKED.
 
 For: a reviewer checking that the audit's methods were fixed before any unit was scored.
 
@@ -38,6 +38,8 @@ After lock, there is one pinned scoring run (§10). Any change to a definition o
 | 30 Oct | Claim 3 built in version 1, by a power bound whose rule was committed before it ran (f25f43a) | MDO declarations and registered MW (§5.8) | Claim 3 specified but unbuilt, as in a slim version 1 |
 | 30 Oct | Per-unit results private in version 1 | No data | Named publication after right of reply and legal review |
 | 2 Nov | Claim 1 read one-sidedly, with response-contract boundary periods excluded (§4); question reframed (§0) | Contract coverage: 0 of 98 eligible units with a contract-free week (R27) | Claim 1 scored as first written, with unobserved contract changes inside every verdict |
+| 18 Nov | B1610 from the Initial Settlement (SF) run or later only (§3) | No data: Elexon's settlement timetable | The latest run at the scoring run, which would mix Interim Information and settled data across a unit's weeks |
+| 18 Nov | M13 slope diagnostic added, reported only (§9); Claim 5 latency read as an upper bound (§7) | No data: NESO and Elexon had not answered M13 or M14 | No slope test; latency reported without a bound direction |
 
 The Gate A1 design selection (design 2, 30 October) chose a design for the £ association, which is now deferred. It is kept as history; it does not shape this audit.
 
@@ -86,14 +88,14 @@ The Gate A1 design selection (design 2, 30 October) chose a design for the £ as
 
 **Scoring window.** From each unit's adoption to Sunday 15 November 2026. Units with at least 4 scored weeks (§3) are eligible; 98 units met the rule at the Gate A1 run (`outputs/lock/lock_counts.json`). Eligibility depends only on the adoption week: a unit needs 4 complete weeks by 15 November, so it must have adopted by ISO week 42 (12–18 October). Every such unit is in the Gate A1 data, so the 98 is final. 95 of the 98 can be scored: three eligible units submitted no non-default declarations after their adoption week (`outputs/lock/power_bound.json`); a unit reverting to default values is reported as a data-quality finding. An eligible unit can still fail a claim's screens and is then listed as not scored, with the reason. Units with fewer than 4 scored weeks are listed as not scored. The Claim 2 contract-coverage decision (§4) is made at the lock run and not revisited.
 
-**Eligible-set breakdown** (`outputs/lock/lock_counts.json`, `outputs/lock/power_bound.json`): 163 fleet units; 98 eligible = 73 non-secondary + 25 secondary; 95 scoreable; 71 of 98 potentially identifiable for Claim 3 (67 of 73 non-secondary); 23 eligible units have no registered MW (21 of the 25 secondary units, plus 2 others); 33 of the 163-unit fleet have GC = 0, of which 23 are among the 98 eligible. These are the same 23 units: no eligible unit with GC = 0 has a DC value.
+**Eligible-set breakdown** (`outputs/lock/lock_counts.json`, `outputs/lock/power_bound.json`): 163 fleet units; 98 eligible = 73 non-secondary + 25 secondary; 95 scoreable; 71 of 98 potentially identifiable for Claim 3 (67 of 73 non-secondary); 23 eligible units have no registered MW (21 of the 25 secondary units, plus 2 others); 33 of the 163-unit fleet have GC = 0, of which 23 are among the 98 eligible. These are the same 23 units: no eligible unit with GC = 0 has a DC value. In both output files and in `src/ingest/lock_counts.py` and `power_bound.py`, the label `mel_fallback` means "no registered MW": the MEL fallback was dropped on 30 October (M16), and the label was not renamed, so that the committed outputs stay as run.
 
 **Sources.**
 
 | Data | Use | Claims |
 |---|---|---|
 | BMRS MDO, MDB (`/stream` endpoints) | Declarations | 1–5 |
-| BMRS B1610, latest settlement run at the scoring run, run type recorded per period | Metered export and import | 1–4 |
+| BMRS B1610, SF run or later (§3), run type recorded per period | Metered export and import | 1–4 |
 | BMRS PN | Protected energy; deviations from PN | 1–4 |
 | BMRS BOALF | Accepted instructions, acceptance times, B^exp add-back (§3) | 1–5 |
 | NESO response and reserve auction results | Contract mapping for Claim 1's and Claim 2's screens (§4); protection volumes where given (§9) | 1, 2 |
@@ -101,7 +103,7 @@ The Gate A1 design selection (design 2, 30 October) chose a design for the £ as
 | Elexon BOAV | Validation of delivered energy | 3 |
 | Disclosed nameplate MWh (§6) | Upper bound on U | 4 |
 
-**Seen before lock.** All MDO/MDB declarations, 25 June – 29 October 2026; the reference snapshot; for one settlement period, the list of units with B1610 rows (identifiers only, no values displayed); one day of MID prices, to confirm field names; the field names and stage values of NESO's In-Merit files; and the storage columns of SSEN's Embedded Capacity Register and NESO's Capacity Market register — the last three consulted for the deferred work, not for any claim here. The Claim 3 power bound (§5.8) was computed from the declarations and the reference snapshot, after its decision rule was committed. The response and reserve auction results are read at the coverage run (§4), before the lock. **No PN, BOALF, BOD, BOAV or MELS data, no B1610 values and no NESO skip or in-merit volumes were examined. No unit has been scored.**
+**Seen before lock.** All MDO/MDB declarations, 25 June – 29 October 2026; the reference snapshot; for one settlement period, the list of units with B1610 rows (identifiers only, no values displayed); one day of MID prices, to confirm field names; the field names and stage values of NESO's In-Merit files; and the storage columns of SSEN's Embedded Capacity Register and NESO's Capacity Market register — the last three consulted for the deferred work, not for any claim here. The Claim 3 power bound (§5.8) was computed from the declarations and the reference snapshot, after its decision rule was committed. The response and reserve auction results are read at the coverage run (§4), before the lock. **No PN, BOALF, BOD, BOAV or MELS data, no B1610 values and no NESO skip or in-merit volumes were examined. No unit has been scored.** MDO/MDB declarations after 29 October have not been pulled. The author certified on 18 November 2026 that nothing was examined between the coverage run of 2 November and that date.
 
 ## 3. Common definitions
 
@@ -111,7 +113,7 @@ The Gate A1 design selection (design 2, 30 October) chose a design for the £ as
 
 **Declarations.** MDO_t ≥ 0 and MDB_t ≤ 0 are the declarations in force at minute *t*: the latest submission for that minute (M9). Claim 3 is the one exception: it uses MDO as published before each acceptance (§5.1). MDO is a stock: the energy available for offer acceptances at that minute, net of energy protected for the PN, accepted BOAs and reserve and response contracts. NESO's guide: "MDO/MDB reflects the instantaneous energy volume available at a given minute" (M12, M17).
 
-**Meter.** E⁺_h and E⁻_h are metered export and import in settlement period *h*, from B1610, in MWh.
+**Meter.** E⁺_h and E⁻_h are metered export and import in settlement period *h*, from B1610, in MWh. Only the Initial Settlement (SF) run or a later reconciliation run is used, the latest available at the pinned scoring run; the run type is recorded per period. A period with no SF or later run counts as missing B1610. The scoring run therefore starts only after the SF run covers 15 November 2026 (§10).
 
 **Protected PN energy.** P^exp_t and P^imp_t are the export and import energy in the unit's PN from *t* to the end of the protection horizon *H* = current settlement period plus three (M15).
 
@@ -277,6 +279,7 @@ Statistical significance alone never promotes Claim 3. Promotion does not depend
 For each BOA, L = minutes from the BOALF acceptance time to the unit's first MDO or MDB submission with publishTime at or after acceptance (M14). Censored at the unit's next acceptance or 30 minutes, whichever comes first.
 
 - **Reported at fleet level:** the distribution of L, and the share of BOAs with L ≤ 1 minute, NESO's benchmark.
+- **Direction of the bound.** Unless Elexon confirms that publishTime is within one minute of NESO's receipt (M14), L is reported as an upper bound on each unit's true latency, and the ≤ 1-minute share as a lower bound. A publication lag can only lengthen L.
 - **Per unit:** only in each lead party's private pack, and not published in version 2 either, because publishTime may record BMRS publication rather than receipt (M14).
 - **Cross-check:** latency and the r > 1 frequency are reported side by side at fleet level. If r > 1 is common, M14's publication lag is the first explanation checked.
 
@@ -327,11 +330,13 @@ Each published flag is recomputed under:
 
 A sensitivity table is published with the flags. **A flag that changes under either M13 branch or either *H* is published as "not robust", not as a finding.** Changes under the threshold variants are shown in the table.
 
+**M13 slope diagnostic (reported only).** Within each scored unit, ΔD^decl_h is regressed on (η̂·E⁻_h − E⁺_h) by least squares through the origin, over settlement periods that pass Claim 1's screens and contain no BOA, with D^decl computed under Branch A. Branch A predicts a slope near 1. Branch B predicts one near 1/√η̂, since a unit that exports *y* MWh at the meter draws *y*/√η̂ from storage; PN-protection changes, measured at the meter, pull it towards 1. The fleet distribution of unit slopes is reported with each unit's √η̂. The diagnostic never selects a branch, and never changes a flag or its robustness label: both branches are always computed and reported as above.
+
 ## 10. Scoring discipline
 
 - One pinned scoring run after lock: data manifests, code tag and output hashes recorded. Lead parties receive results from that run, and their responses are recorded against it.
 - Before the lock, exactly two computations touch the scoring window, each with its rule committed before it runs and reporting fleet counts only: the Claim 3 power bound (§5.8; declarations and the reference snapshot) and the Claim 2 contract-coverage mapping (§4; auction results only). Neither reads B1610, PN, BOALF, BOAV or MELS; eligibility needs no recount (§2). No violation, score or per-unit result is computed before the lock.
-- The lock follows the coverage run: rule committed, script run, `outputs/lock/contract_coverage.json` written, then lock — on 5 November 2026, or 6 November if the mapping overruns, and in any case before scoring starts in the week of 16 November.
+- The lock follows the coverage run: rule committed, script run, `outputs/lock/contract_coverage.json` written (2 November 2026), then lock. The lock precedes the known-answer gate, every pull of PN, B1610, BOALF, BOAV or MDO/MDB after 29 October, and any scoring. The pinned scoring run starts only after the SF run covers 15 November 2026 (§3).
 - Past declarations cannot change. What can change is data, through B1610 revisions, NESO reissues or a demonstrated error. Later revisions are not re-scored, except to fix a demonstrated error, which restarts the reply clock.
 - Claim 3 runs as a separate module from Claims 1 and 2. If Claim 3 fails its own tests, Claims 1 and 2 stand unchanged.
 

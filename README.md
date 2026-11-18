@@ -6,7 +6,7 @@ NESO can see which batteries hold contracts that lawfully lower their declaratio
 
 This project checks each GB battery's declarations against its own meter, and reports both what can be checked and what the published data stop anyone checking.
 
-**Status:** pre-registration drafted (October 2026); nothing has been scored. Nothing here is a result yet.
+**Status:** pre-registration revision 2 ready to lock (November 2026); nothing has been scored. Nothing here is a result yet.
 
 ---
 
@@ -50,7 +50,9 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 - Not an association between declaration quality and skips. It measures how common violations are, not whether worse declarers are skipped more.
 - Not a measure of how NESO perceives declarations, and not an estimate of the carbon or cost of skips.
 
-## Repository layout (proposed)
+## Repository layout
+
+`src/physics/`, `src/claims/` and `src/synthetic/` are planned and not yet built.
 
 ```
 ├── README.md
