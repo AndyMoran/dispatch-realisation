@@ -367,4 +367,4 @@ Every departure from this document after lock is recorded here, before results t
 
 | Date | Section | Deviation | Reason | Diff and tag | Certification |
 |---|---|---|---|---|---|
-| | | | | | |
+| 2026-11-18 | §4, Unit scores | The 95% interval resamples weeks, then days: each of 1,000 draws takes the unit's scored weeks with replacement, resamples each drawn week's UTC days with replacement, recomputes the weekly scores, and takes their median; the interval is the 2.5th to 97.5th percentiles. Was: "from resampling its days" | The unit score is a median of weekly scores; its uncertainty includes which weeks were observed, which resampling days within fixed weeks leaves out | Adds week resampling above day resampling; draws stay at 1,000. Tag `v1.0.1-lock` | No score for any real unit has been computed or seen; no PN, B1610, BOALF or BOAV data has been pulled |
