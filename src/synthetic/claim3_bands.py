@@ -18,18 +18,18 @@ Pass rules (fixed before any band was computed; PROJECT.md §11):
   lies in §8's band; `known_answer.overdeclarer_flag_min` of runs (§8: 80%).
 - flagged, or not identified: in-band runs are flagged, or not identified under
   at least one branch; `bands.min_share`.
-- "r > 1 not raised" (fast redeclarer): no r > 1 instruction when scored under
-  Branch A, for either declarer. Under (i), sizing and scoring read the same
-  record, so A-scored r = A/MDO = u ≤ 1 for both declarers: any r > 1 there
-  would mean an instruction sized beyond the published MDO, which the cell
-  guards against. B-scored offers have r = u/√η̂ for both declarers, above 1
-  whenever u > √η̂, for every battery: that comes from M13, not from
-  redeclaring, so it is reported, not judged.
+- "r > 1 not raised" (fast redeclarer): no r > 1 instruction in the matched
+  scoring, as for every other band (18 November: bands are judged on the matched
+  pairs). Under (i), A-scored r = u ≤ 1, but B-scored offers have r = u/√η̂,
+  above 1 whenever u > √η̂, for every battery; r > 1 counts are reported under
+  both branches, and a miss from the Branch B conversion is a suite miss.
 - report: counts only.
 
-A run left unscored under either branch is a miss, as on 18 November. A band that
-gates fails Claim 3's build if missed at either length; §8: "If the suite cannot
-meet these bands, Claim 3 is dropped from version 1, and the report says so."
+A run left unscored under either branch is a miss, as on 18 November. The 4-week
+and 20-week lengths are separate required gates: a band missed at either length
+fails Claim 3's build, and success at the other does not compensate; §8: "If the
+suite cannot meet these bands, Claim 3 is dropped from version 1, and the report
+says so."
 
 Usage:
     uv run python -m src.synthetic.claim3_bands --output \
@@ -224,7 +224,7 @@ def in_band(rule: Rule, d: Declarer, declarer: Branch) -> bool:
     if d.a.unscored or d.b.unscored:
         return False
     if rule.kind == "not flagged":
-        clean = not rule.no_r_over_1 or d.a.r_over_1 == 0
+        clean = not rule.no_r_over_1 or d.matched(declarer).r_over_1 == 0
         return not d.flagged and clean
     if rule.kind == "flagged or not identified":
         return d.flagged or not (d.a.identified and d.b.identified)

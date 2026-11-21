@@ -432,10 +432,10 @@ def test_fast_redeclarer_needs_no_r_over_1() -> None:
     rule = c3b.Rule("not flagged", "min_share", no_r_over_1=True)
     assert c3b.in_band(rule, declarer(scored()), "A")
     assert not c3b.in_band(rule, declarer(scored(r_over_1=1)), "A")
-    # only Branch A scoring counts, for either declarer: B-scored r = u/√η̂
+    # the matched scoring is judged: B-scored r > 1 misses for the B-declarer
     assert c3b.in_band(rule, declarer(scored(), scored(r_over_1=2)), "A")
-    assert c3b.in_band(rule, declarer(scored(), scored(r_over_1=2)), "B")
-    assert not c3b.in_band(rule, declarer(scored(r_over_1=1), scored()), "B")
+    assert not c3b.in_band(rule, declarer(scored(), scored(r_over_1=2)), "B")
+    assert c3b.in_band(rule, declarer(scored(r_over_1=1), scored()), "B")
 
 
 def test_report_cells_have_no_band() -> None:
