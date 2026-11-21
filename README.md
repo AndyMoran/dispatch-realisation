@@ -18,7 +18,7 @@ Since 2026, Grid Code modification **GC0166** has required batteries to declare 
 
 Yet the control room often skips cheaper batteries and runs gas instead. NESO's own review of why rated zonal allocation, frequency response and reserve services among the strongest causes. It finished in April 2026, before declarations were published, so it could not test them. This project tests that one hypothesis.
 
-So the question is simple: **are the declarations physically true?** A battery's meter records every MWh that goes in and out. If its declarations say the tank held more, or less, than the meter allows, the declarations are wrong. This project audits that, for every battery unit, from public data only. It publishes fleet-level results and the method, and sends each lead party its own units' results privately.
+So the question is simple: **are the declarations physically true?** A battery's meter records every MWh that goes in and out. If its declarations say the tank held more, or less, than the meter allows, the declarations are wrong. This project audits that, for every battery unit, from public data only. It publishes fleet-level results and the method, and sends each lead party its own units' descriptive results privately.
 
 The answer so far is "partly". GB's published data serve settlement first and audit second. Two gaps stop a complete audit: no register records how much energy each battery holds, and NESO's auction results do not say which BM unit holds each contract. Neither needs new measurement: the auction mapping needs publishing; the energy register needs an existing field filled and sites keyed to BM units.
 
@@ -32,7 +32,7 @@ Five claims, defined in [`PREREGISTRATION.md`](PREREGISTRATION.md):
 4. **Upper-wall violations (case series):** where a nameplate MWh is disclosed, a unit should never declare more than its tank could hold.
 5. **Redeclaration latency (fleet level):** how quickly units update their declarations after an instruction.
 
-The result is a **flag table**, not a ranking: for each unit, whether its declarations are physically consistent with its meter, with uncertainty and with each limit stated. In this version the table goes privately to each lead party, for its own units; what is published is the fleet-level picture. Units may be named in a later version, but only once five written conditions are met (see [`PREREGISTRATION.md`](PREREGISTRATION.md) §11).
+Version 1 makes no per-unit finding of over- or under-declaration. Claim 1's known-answer suite failed its reporting gate at every tested length, so no per-unit Claim 1 flags are reported ([`PREREGISTRATION.md`](PREREGISTRATION.md) §12). Claim 2's wall failed its known-answer band under the available efficiency uncertainty (§12). Claim 3 was dropped under §8: its known-answer suite missed its required bands, and its over-declarers failed the placebo control condition ([Claim 3 result](docs/results/claim3_known_answer.md)). Version 1 publishes the fleet-level results still in scope, Claim 4's case series without identifying any unit, the known-answer results, and the limits the published data place on verification. Each lead party receives its own units' descriptive results privately (§11), with no Claim 1–3 flag of over- or under-declaration. Unit-level findings of over- or under-declaration may be considered in a later version only after the five conditions in §11 are met.
 
 The claims do not test every channel equally. A unit shown coherent has declarations that track its meter; a unit not shown coherent may have bad declarations or contracts we cannot see. Claim 3, non-delivery, was designed as the test least affected by unseen contracts, but version 1 does not report it ([result](docs/results/claim3_known_answer.md)). Finding no violations is not evidence of compliance.
 
@@ -43,7 +43,7 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 ## What this is not
 
 - Not a verdict on any operator or optimiser. It tests declarations against physics, not commercial skill or intent.
-- Not a ranking. Units are flagged, with uncertainty, not placed in order.
+- Not a ranking. No unit is placed in order, or flagged, in this version.
 - Not a revenue estimate. Whether declaring well pays is deferred to a later version; this one could not identify it.
 - Not tied to a positive result. If declarations turn out to be physically consistent, that is the finding.
 - Not an explanation of skip rates. It tests one hypothesis, and cannot say how much each cause contributes.
