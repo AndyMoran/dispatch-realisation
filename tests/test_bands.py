@@ -103,3 +103,52 @@ def test_same_results_ignores_only_the_settings_hash() -> None:
     assert bd.same_results(a, {**a, "settings_sha256": "y"})
     assert not bd.same_results(a, {**a, "cells": [2]})
     assert not bd.same_results(a, {**a, "build_bands_passed": True})
+
+
+def test_deviation_2_set_covers_every_section_8_row() -> None:
+    """Eleven Claims 1–2 rows of §8's main table, plus the two one-sided batteries;
+    Claim 2's bands are recorded, not gating."""
+    bands = bd.DEVIATION_2_BANDS
+    assert len(bands) == 13
+    assert len({b.scenario.name for b in bands}) == 13
+    assert sum(b.claim1_kind == "build" for b in bands) == 11
+    assert sum(b.claim1_kind == "withdrawal" for b in bands) == 2
+    assert {b.claim2_kind for b in bands} == {"recorded", "report"}
+    under = next(b for b in bands if b.scenario.declare == "under")
+    assert under.claim2 == bd.PROVABLE
+
+
+def test_recorded_claim2_miss_gates_nothing() -> None:
+    runs = [outcome("coherent", "provable under-declaration")] * 100
+    s = bd.summarise(bd.DEVIATION_2_BANDS, {(0, 0): runs}, 100, by_length=True)
+    assert s["build_bands_passed"] is True
+    lengths: Any = s["lengths"]
+    (verdict,) = lengths
+    assert verdict["claim1_reportable"] is True
+    assert verdict["claim2_bands_passed"] is False
+
+
+def test_length_verdicts_need_every_build_band() -> None:
+    good = [outcome("coherent", "none detected")] * 100
+    bad = [outcome("indeterminate", "none detected")] * 100
+    s = bd.summarise(
+        bd.DEVIATION_2_BANDS,
+        {(0, 0): good, (2, 0): bad, (0, 1): good},
+        100,
+        by_length=True,
+    )
+    lengths: Any = s["lengths"]
+    short, long = lengths
+    assert short["claim1_reportable"] is False and long["claim1_reportable"] is True
+
+
+def test_one_sided_reading_needs_both_batteries_at_that_length() -> None:
+    ok = [outcome("coherent", "none detected")] * 100
+    miss = [outcome("indeterminate", "none detected")] * 100
+    s = bd.summarise(
+        bd.DEVIATION_2_BANDS, {(0, 0): ok, (11, 0): miss}, 100, by_length=True
+    )
+    lengths: Any = s["lengths"]
+    (verdict,) = lengths
+    assert verdict["claim1_reportable"] is True
+    assert verdict["one_sided_reading_stands"] is False

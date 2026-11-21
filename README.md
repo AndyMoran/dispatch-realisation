@@ -6,7 +6,7 @@ NESO can see which batteries hold contracts that lawfully lower their declaratio
 
 This project checks each GB battery's declarations against its own meter, and reports both what can be checked and what the published data stop anyone checking.
 
-**Status:** pre-registration locked on 18 November 2026 ([DOI](https://doi.org/10.5281/zenodo.24343931)), with two deviations recorded before scoring (§12): nested resampling ([DOI](https://doi.org/10.5281/zenodo.24354704)), and, after the first known-answer run failed at 4 weeks, Claim 1 reported only at lengths where its tests pass and Claim 2's wall reported as failing (tag `v1.0.2-lock`). No real unit has been scored. Nothing here is a result yet.
+**Status:** pre-registration locked on 18 November 2026 ([DOI](https://doi.org/10.5281/zenodo.24343931)), with two deviations recorded before scoring (§12): nested resampling ([DOI](https://doi.org/10.5281/zenodo.24354704)), and, after the first known-answer run failed at 4 weeks, Claim 1 reported only at lengths where its tests pass and Claim 2's wall reported as failing ([DOI](https://doi.org/10.5281/zenodo.24416574)). No real unit has been scored. Nothing here is a result yet.
 
 ---
 
@@ -52,7 +52,7 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 
 ## Repository layout
 
-`src/model/` holds the input types shared by real and synthetic data, `src/physics/` the §3 physics, and `src/claims/` Claims 1 and 2 with their scoring. `src/claims/unit.py` scores one unit, real or synthetic, from its inputs to its flags. `src/synthetic/` holds the known-answer batteries: their settings, frequency input, the honest batteries and the Claims 1–2 band runner (`src/synthetic/bands.py`). The planted faults and `src/claim3/` are not yet built.
+`src/model/` holds the input types shared by real and synthetic data, `src/physics/` the §3 physics, and `src/claims/` Claims 1 and 2 with their scoring. `src/claims/unit.py` scores one unit, real or synthetic, from its inputs to its flags. `src/synthetic/` holds the known-answer batteries: their settings, frequency input, the honest and planted-fault batteries, and the Claims 1–2 band runner (`src/synthetic/bands.py`). `src/claim3/` is not yet built.
 
 ```
 ├── README.md
@@ -100,6 +100,7 @@ Neither Elexon nor NESO endorses this project. Scores, flags and estimates here 
 
 Cite the latest lock. Each is archived on Zenodo:
 
+- Deviation 2 (Claim 1 reported by length; Claim 2 reported as failing its band; `PREREGISTRATION.md` §12): Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24416574 (tag `v1.0.2-lock`, commit 34d9626).
 - Deviation 1 (nested resampling of unit-score intervals; `PREREGISTRATION.md` §12): Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24354704 (tag `v1.0.1-lock`, commit c933d76).
 - Pre-registration lock, version 1: https://doi.org/10.5281/zenodo.24343931 (tag `v1.0-lock`, commit 4395934).
 

@@ -86,6 +86,9 @@ MIN_BOA_MW = 1.0
 RUN_TYPE = "SF"
 
 DcMode = Literal["none", "constant", "efa"]
+Lag = Literal["honest", "fast", "slow"]
+Declare = Literal["honest", "offset", "proportional", "static", "ignore_pn", "under"]
+PhysicsMode = Literal["normal", "ramp", "derate"]
 
 
 class SimulationError(RuntimeError):
@@ -94,19 +97,91 @@ class SimulationError(RuntimeError):
 
 @dataclass(frozen=True)
 class Scenario:
-    """A synthetic battery: its name (which seeds it) and its response contract.
+    """A synthetic battery: its name (which seeds it), contracts and planted fault.
 
     dc: "none" holds no response; "constant" holds the largest contract level all
     the time (frequency-response noise); "efa" draws a level per EFA block.
+    reserve: holds reserve-style protection that steps at random half-hours.
+    lag: when it redeclares after an instruction ("honest", or §8's "fast" and
+    "slow" redeclarers).
+    declare: how its MDO departs from the honest one (§8 rows): "offset" adds
+    planted_delta_mwh; "proportional" declares available / (1 − planted_f);
+    "static" declares the full tank throughout; "ignore_pn" leaves PN protection
+    in MDO; "under" subtracts under_declaration_mwh, floored at zero.
+    physics: "ramp" limits PN and instruction power to ramp_limited_mw_per_min;
+    "derate" limits export power linearly to derate_to_fraction below
+    derate_below_soc of U.
     """
 
     name: str
     dc: DcMode
+    reserve: bool = False
+    lag: Lag = "honest"
+    declare: Declare = "honest"
+    physics: PhysicsMode = "normal"
+
+    @property
+    def holds_contracts(self) -> bool:
+        """Return whether any week of this battery carries contract time (§4)."""
+        return self.dc != "none" or self.reserve
 
 
 HONEST = Scenario("honest", "none")
 HONEST_FR = Scenario("honest_frequency_response", "constant")
 HONEST_DC_EFA = Scenario("honest_dc_efa", "efa")
+HONEST_RAMP = Scenario("honest_ramp_limited", "none", physics="ramp")
+HONEST_DERATE = Scenario("honest_derating", "none", physics="derate")
+OVER_CONSTANT = Scenario("constant_over_declaration", "none", declare="offset")
+OVER_PROPORTIONAL = Scenario(
+    "proportional_over_declaration", "none", declare="proportional"
+)
+STATIC_PROFILE = Scenario("static_profile_from_maximum", "none", declare="static")
+REDECLARE_FAST = Scenario("redeclares_after_5_minutes", "none", lag="fast")
+REDECLARE_SLOW = Scenario("honest_redeclares_after_25_minutes", "none", lag="slow")
+PN_IGNORED = Scenario("pn_protection_ignored", "none", declare="ignore_pn")
+UNDER_CONSTANT = Scenario("constant_under_declaration", "none", declare="under")
+OVER_PROPORTIONAL_RESERVE = Scenario(
+    "proportional_over_declaration_with_reserve",
+    "none",
+    reserve=True,
+    declare="proportional",
+)
+
+
+@dataclass(frozen=True)
+class Faults:
+    """§8's planted-fault figures, from config/claims.toml."""
+
+    delta_mwh: float
+    f: float
+    under_mwh: float
+    fast_lag_min: int
+    slow_lag_min: int
+    derate_to_fraction: float
+    derate_below_soc: float
+
+
+def load_faults() -> Faults:
+    """Return §8's planted-fault figures as config/claims.toml pins them."""
+    p = load_params()
+    return Faults(
+        delta_mwh=p.number("known_answer.planted_delta_mwh"),
+        f=p.number("known_answer.planted_f"),
+        under_mwh=p.number("known_answer.under_declaration_mwh"),
+        fast_lag_min=p.integer("known_answer.redeclare_fast_min"),
+        slow_lag_min=p.integer("known_answer.redeclare_slow_min"),
+        derate_to_fraction=p.number("known_answer.derate_to_fraction"),
+        derate_below_soc=p.number("known_answer.derate_below_soc"),
+    )
+
+
+def lag_minutes(scenario: Scenario, settings: SyntheticSettings, faults: Faults) -> int:
+    """Return the minutes from acceptance to redeclaration for a battery."""
+    if scenario.lag == "fast":
+        return faults.fast_lag_min
+    if scenario.lag == "slow":
+        return faults.slow_lag_min
+    return settings.honest_lag_min
 
 
 @dataclass(frozen=True)
@@ -181,6 +256,8 @@ class Simulation:
     meter_net_mwh: NDArray[np.float64]
     boas_not_accepted: int
     curtailed_minutes: int
+    reserve_mwh: NDArray[np.float64]
+    limited_minutes: int
 
     @property
     def periods(self) -> int:
@@ -253,6 +330,7 @@ class Draws:
     boa_is_offer: NDArray[np.bool_]
     boa_share: NDArray[np.float64]
     meter_noise_mwh: NDArray[np.float64]
+    reserve_step_mwh: NDArray[np.float64]
 
 
 def draw(
@@ -272,6 +350,10 @@ def draw(
     offer = rng.random(size=total) < settings.boa_offer_share
     share = rng.uniform(*BOA_SHARE_RANGE, size=total)
     noise = rng.normal(0.0, settings.meter_noise_sd_mwh, size=days * 48)
+    # Drawn last, so adding it left every earlier draw, and the first run, intact.
+    changes = rng.random(size=days * 48) < settings.reserve_change_probability
+    size = rng.uniform(*settings.reserve_step_mwh, size=days * 48)
+    sign = np.where(rng.random(size=days * 48) < 0.5, -1.0, 1.0)
     order = np.argsort(day_of * MINUTES_PER_DAY + minute, kind="stable")
     return Draws(
         initial_share=initial,
@@ -281,6 +363,7 @@ def draw(
         boa_is_offer=offer[order],
         boa_share=share[order],
         meter_noise_mwh=noise,
+        reserve_step_mwh=np.where(changes, sign * size, 0.0),
     )
 
 
@@ -300,6 +383,7 @@ class _Arrays:
     dc_mw: NDArray[np.float64]
     dc_exp: NDArray[np.float64]
     dc_imp: NDArray[np.float64]
+    reserve: NDArray[np.float64]
 
 
 def _deviation(
@@ -415,8 +499,14 @@ def simulate(
     physics: Physics,
     dc: DcEnergy,
     rng: np.random.Generator,
+    faults: Faults | None = None,
 ) -> Simulation:
-    """Return one run of an honest battery (module docstring)."""
+    """Return one run of a battery (module docstring).
+
+    `faults` is needed only for the derating battery, whose limits §8 fixes.
+    """
+    if scenario.physics == "derate" and faults is None:
+        raise SimulationError("the derating battery needs §8's derating figures")
     start = length.adoption_week_start
     days = (length.end - start).days
     minutes = days * MINUTES_PER_DAY
@@ -433,6 +523,11 @@ def simulate(
         dc_mw = np.full(periods, float(levels.max()))
     else:
         dc_mw = d.dc_levels_mw[block_index + 1].astype(float)
+    reserve = (
+        reserve_levels(d.reserve_step_mwh, settings.reserve_range_mwh)
+        if scenario.reserve
+        else np.zeros(periods)
+    )
     a = _Arrays(
         pn_mw=np.zeros(periods),
         pn_active=np.zeros(periods, dtype=bool),
@@ -443,16 +538,37 @@ def simulate(
         dc_mw=dc_mw,
         dc_exp=dc_exp,
         dc_imp=dc_imp,
+        reserve=reserve,
     )
     s0 = d.initial_share * physics.energy_mwh
     not_accepted = _run_events(a, d, settings, physics, s0, minutes)
-    change = stored_change(a, 0, minutes, physics.root_eta, with_dc=True)
-    metered = meter_mwh(a, 0, minutes, with_dc=True)
-    stored, change, curtailed = curtail(s0, change, physics.energy_mwh)
-    if curtailed.any():
-        r = physics.root_eta
-        actual = np.where(change < 0, -change * r, -change / r)
-        metered = np.where(curtailed, actual, metered)
+    limited = np.zeros(minutes, dtype=bool)
+    if scenario.physics == "normal":
+        change = stored_change(a, 0, minutes, physics.root_eta, with_dc=True)
+        metered = meter_mwh(a, 0, minutes, with_dc=True)
+        stored, change, curtailed = curtail(s0, change, physics.energy_mwh)
+        if curtailed.any():
+            r = physics.root_eta
+            actual = np.where(change < 0, -change * r, -change / r)
+            metered = np.where(curtailed, actual, metered)
+    else:
+        if scenario.dc != "none":
+            raise SimulationError("ramp and derating batteries hold no response")
+        requested = meter_mwh(a, 0, minutes, with_dc=False) * 60.0
+        stored, metered, curtailed, limited = deliver(
+            s0,
+            requested,
+            physics,
+            settings.battery.power_mw,
+            ramp_mw_per_min=(
+                settings.ramp_limited_mw_per_min if scenario.physics == "ramp" else None
+            ),
+            derate=(
+                (faults.derate_to_fraction, faults.derate_below_soc)
+                if scenario.physics == "derate" and faults is not None
+                else None
+            ),
+        )
     meter = metered.reshape(periods, -1).sum(axis=1)
     return Simulation(
         scenario=scenario,
@@ -474,7 +590,79 @@ def simulate(
         meter_net_mwh=meter + d.meter_noise_mwh,
         boas_not_accepted=not_accepted,
         curtailed_minutes=int(np.count_nonzero(curtailed)),
+        reserve_mwh=reserve,
+        limited_minutes=int(np.count_nonzero(limited)),
     )
+
+
+def reserve_levels(
+    steps_mwh: NDArray[np.float64], range_mwh: tuple[float, float]
+) -> NDArray[np.float64]:
+    """Return reserve protection per period: a walk of the steps, kept in range.
+
+    It starts at the bottom of the range and changes only at period starts.
+    """
+    low, high = range_mwh
+    out = np.empty(steps_mwh.size)
+    level = low
+    for p, step in enumerate(steps_mwh):
+        level = min(max(level + float(step), low), high)
+        out[p] = level
+    return out
+
+
+def deliver(
+    s0: float,
+    requested_mw: NDArray[np.float64],
+    physics: Physics,
+    power_mw: float,
+    ramp_mw_per_min: float | None = None,
+    derate: tuple[float, float] | None = None,
+) -> tuple[
+    NDArray[np.float64], NDArray[np.float64], NDArray[np.bool_], NDArray[np.bool_]
+]:
+    """Return stored energy, metered energy, curtailed and limited minutes.
+
+    Minute by minute, for a battery holding no response: the requested power (PN
+    plus instruction) is limited by the ramp rate from the previous minute's
+    delivered power, and, when derating, export is limited to power_mw ×
+    (to_fraction + (1 − to_fraction) × S / (below × U)) while S is below below × U.
+    A minute that would cross empty or full is cut off at the wall, as in curtail.
+    """
+    r, full = physics.root_eta, physics.energy_mwh
+    n = requested_mw.size
+    levels = np.empty(n + 1)
+    metered = np.empty(n)
+    curtailed = np.zeros(n, dtype=bool)
+    limited = np.zeros(n, dtype=bool)
+    levels[0] = level = s0
+    previous = 0.0
+    for m in range(n):
+        power = float(requested_mw[m])
+        if ramp_mw_per_min is not None:
+            low, high = previous - ramp_mw_per_min, previous + ramp_mw_per_min
+            if power < low or power > high:
+                power = min(max(power, low), high)
+                limited[m] = True
+        if derate is not None and power > 0:
+            to_fraction, below = derate
+            share = min(level / (below * full), 1.0)
+            cap = power_mw * (to_fraction + (1.0 - to_fraction) * share)
+            if power > cap:
+                power = cap
+                limited[m] = True
+        energy = power / 60.0
+        wanted = level + (-energy / r if energy > 0 else -energy * r)
+        if wanted < 0.0 or wanted > full:
+            curtailed[m] = True
+            wanted = min(max(wanted, 0.0), full)
+            change = wanted - level
+            energy = -change * r if change < 0 else -change / r
+            power = energy * 60.0
+        levels[m + 1] = level = wanted
+        metered[m] = energy
+        previous = power
+    return levels, metered, curtailed, limited
 
 
 def curtail(
@@ -596,7 +784,9 @@ def _accept_boa(
     sizing_stop = min(max(horizon_stop(minute), last_pn, stop), minutes)
     prot = protection(a, minute, minute, minutes, sizing_stop)
     held = a.dc_mw[minute // MINUTES_PER_PERIOD : -(-sizing_stop // MINUTES_PER_PERIOD)]
-    reserved = float(held.max()) * settings.response.delivery_duration_h
+    reserved = float(held.max()) * settings.response.delivery_duration_h + float(
+        a.reserve[minute // MINUTES_PER_PERIOD]
+    )
     mdo, mdb = mdo_mdb_a(stored_now, prot, reserved, physics)
     span = np.arange(minute, stop) // MINUTES_PER_PERIOD
     hours = (stop - minute) / 60.0
@@ -630,17 +820,24 @@ def _working(sim: Simulation) -> _Arrays:
         dc_mw=sim.dc_mw,
         dc_exp=sim.dc_export_mwh_per_mw,
         dc_imp=sim.dc_import_mwh_per_mw,
+        reserve=sim.reserve_mwh,
     )
 
 
 def reserved_mwh(sim: Simulation, minute: int) -> float:
-    """Return energy held for contracted response at a minute: MW × duration."""
-    at = min(minute, sim.minutes - 1)
-    return float(sim.dc_mw[at // MINUTES_PER_PERIOD]) * sim.delivery_duration_h
+    """Return energy held for contracts at a minute: response MW × duration, plus
+    reserve-style protection."""
+    p = min(minute, sim.minutes - 1) // MINUTES_PER_PERIOD
+    return float(sim.dc_mw[p]) * sim.delivery_duration_h + float(sim.reserve_mwh[p])
 
 
 def declared_levels(
-    sim: Simulation, a: _Arrays, publish_min: int, end_min: int, lag_min: int
+    sim: Simulation,
+    a: _Arrays,
+    publish_min: int,
+    end_min: int,
+    lag_min: int,
+    ignore_pn: bool = False,
 ) -> tuple[tuple[float, float], tuple[float, float]]:
     """Return ((MDO from, to), (MDB from, to)) at the meter for one record (A).
 
@@ -657,6 +854,8 @@ def declared_levels(
     levels = []
     for minute, stored in ((publish_min, s_from), (end_min, s_to)):
         prot = protection(a, minute, known, sim.minutes)
+        if ignore_pn:  # §8 "PN protection ignored": PN energy left in MDO and MDB
+            prot = Protection(0.0, 0.0, prot.boa_export, prot.boa_import)
         levels.append(mdo_mdb_a(stored, prot, reserved_mwh(sim, minute), sim.physics))
     (mdo0, mdb0), (mdo1, mdb1) = levels
     return (mdo0, mdo1), (mdb0, mdb1)
@@ -674,14 +873,43 @@ def record_times(sim: Simulation, lag_min: int) -> list[tuple[int, int]]:
     return sorted(routine.items())
 
 
-def submissions(sim: Simulation, branch: Branch, lag_min: int) -> list[Submission]:
-    """Return the battery's MDO and MDB records, declared under `branch`."""
+def planted(
+    mdo: float, mdb: float, declare: Declare, faults: Faults | None, physics: Physics
+) -> tuple[float, float]:
+    """Return (MDO, MDB) at the meter after the battery's planted fault (§8)."""
+    if declare in ("honest", "ignore_pn"):
+        return mdo, mdb
+    if faults is None:
+        raise SimulationError(f"declaration fault {declare!r} needs §8's figures")
+    if declare == "offset":
+        return mdo + faults.delta_mwh, mdb
+    if declare == "proportional":
+        return mdo / (1.0 - faults.f), mdb
+    if declare == "under":
+        return max(mdo - faults.under_mwh, 0.0), mdb
+    full = physics.energy_mwh  # "static": the full tank, as if copied from maximum
+    return full * physics.root_eta, -full / physics.root_eta
+
+
+def submissions(
+    sim: Simulation, branch: Branch, lag_min: int, faults: Faults | None = None
+) -> list[Submission]:
+    """Return the battery's MDO and MDB records, declared under `branch`.
+
+    The planted fault acts on the meter-side (Branch A) declaration; Branch B
+    then converts it, as an honest Branch B declarer would convert its own.
+    """
     r = sim.physics.root_eta
     a = _working(sim)
+    declare = sim.scenario.declare
     datasets: tuple[Dataset, Dataset] = ("MDO", "MDB")
     out = []
     for publish, end in record_times(sim, lag_min):
-        (mdo0, mdo1), (mdb0, mdb1) = declared_levels(sim, a, publish, end, lag_min)
+        (mdo0, mdo1), (mdb0, mdb1) = declared_levels(
+            sim, a, publish, end, lag_min, ignore_pn=declare == "ignore_pn"
+        )
+        mdo0, mdb0 = planted(mdo0, mdb0, declare, faults, sim.physics)
+        mdo1, mdb1 = planted(mdo1, mdb1, declare, faults, sim.physics)
         if branch == "B":
             mdo0, mdo1, mdb0, mdb1 = mdo0 / r, mdo1 / r, mdb0 * r, mdb1 * r
         t0 = sim.start + timedelta(minutes=publish)
@@ -747,12 +975,14 @@ def meter_periods(sim: Simulation) -> list[MeterPeriod]:
     ]
 
 
-def unit_inputs(sim: Simulation, branch: Branch, lag_min: int) -> UnitInputs:
+def unit_inputs(
+    sim: Simulation, branch: Branch, lag_min: int, faults: Faults | None = None
+) -> UnitInputs:
     """Return the run as the claims see a unit (`UnitInputs`)."""
     return build_unit_inputs(
         unit_key=f"synthetic:{sim.scenario.name}:{branch}",
         registered_mw=sim.power_mw,
-        submissions=submissions(sim, branch, lag_min),
+        submissions=submissions(sim, branch, lag_min, faults),
         meter=meter_periods(sim),
         pn=pn_segments(sim),
         boas=boa_segments(sim),

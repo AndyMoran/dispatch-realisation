@@ -9,10 +9,16 @@ A matched cell passes when at least `bands.min_share` of its runs land in an
 allowed outcome. An outcome is a flag category, or "not scored: <reason>".
 
 Band kinds:
-- build: a miss fails the build (§8).
+- build: a miss fails the build (§8); under deviation 2 (§12), a length where
+  every Claim 1 build band passes is one at which Claim 1 flags are reportable.
 - withdrawal: a miss withdraws Claim 1's one-sided reading (§4, §8); the build
   does not fail.
+- recorded: a band whose pass or miss is recorded but gates nothing; deviation 2
+  makes Claim 2's bands so.
 - report: no band; counts are reported.
+
+Two band sets: "first-run", exactly as run on 18 November 2026 and reproduced
+by CI, and "deviation-2", every §8 row for Claims 1–2 at every tested length.
 
 Contract status: a battery that holds no response contract has every week
 contract-free. A battery that holds one has its contracts known, so none of its
@@ -21,8 +27,8 @@ unit with contract time (§4).
 
 Usage:
     uv run python -m src.synthetic.bands              # first-run lengths (CI)
-    uv run python -m src.synthetic.bands --lengths all \
-        --output outputs/known_answer/claims12_by_length.json   # deviation 2
+    uv run python -m src.synthetic.bands --bands deviation-2 --lengths all \
+        --report-only --output outputs/known_answer/claims12_by_length.json
 """
 
 from __future__ import annotations
@@ -62,7 +68,7 @@ SCHEMA_VERSION = "1.0"
 BRANCHES: tuple[Branch, Branch] = ("A", "B")
 NOT_SCORED = "not scored: "
 
-Kind = Literal["build", "withdrawal", "report"]
+Kind = Literal["build", "withdrawal", "recorded", "report"]
 
 
 @dataclass(frozen=True)
@@ -102,6 +108,40 @@ HONEST_BANDS = (
 )
 
 
+C1 = frozenset({"coherent"})
+C1_OR_INDETERMINATE = frozenset({"coherent", "indeterminate"})
+NOT_COHERENT = frozenset({"not shown coherent"})
+NONE_DETECTED = frozenset({"none detected"})
+PROVABLE = frozenset({"provable under-declaration"})
+
+# Every §8 row for Claims 1–2 (deviation 2, PREREGISTRATION §12). Claim 2's bands
+# are recorded, not gating. Batteries holding contracts cannot carry the hard flag
+# (§4), so their Claim 2 band is "not scored on the hard flag".
+DEVIATION_2_BANDS = (
+    Band(bt.HONEST, C1, "build", NONE_DETECTED, "recorded"),
+    Band(bt.HONEST_FR, C1, "build", frozenset({NO_HARD_FLAG}), "recorded"),
+    Band(bt.HONEST_RAMP, C1, "build", NONE_DETECTED, "recorded"),
+    Band(bt.OVER_CONSTANT, C1, "build", NONE_DETECTED, "recorded"),
+    Band(bt.OVER_PROPORTIONAL, NOT_COHERENT, "build", NONE_DETECTED, "recorded"),
+    Band(bt.STATIC_PROFILE, NOT_COHERENT, "build", NONE_DETECTED, "recorded"),
+    Band(bt.REDECLARE_FAST, C1_OR_INDETERMINATE, "build", NONE_DETECTED, "recorded"),
+    Band(bt.REDECLARE_SLOW, C1_OR_INDETERMINATE, "build", NONE_DETECTED, "recorded"),
+    Band(bt.PN_IGNORED, NOT_COHERENT, "build", NONE_DETECTED, "recorded"),
+    Band(bt.UNDER_CONSTANT, C1, "build", PROVABLE, "recorded"),
+    Band(bt.HONEST_DERATE, C1, "build", NONE_DETECTED, "recorded"),
+    # The two one-sided-reading batteries (§4, §8): 95% bands, withdrawal on a miss.
+    Band(bt.HONEST_DC_EFA, C1, "withdrawal", frozenset(), "report"),
+    Band(
+        bt.OVER_PROPORTIONAL_RESERVE, NOT_COHERENT, "withdrawal", frozenset(), "report"
+    ),
+)
+
+BAND_SETS: dict[str, tuple[Band, ...]] = {
+    "first-run": HONEST_BANDS,
+    "deviation-2": DEVIATION_2_BANDS,
+}
+
+
 @dataclass(frozen=True)
 class RunOutcome:
     """One run's outcomes, by (declared branch, scored branch)."""
@@ -110,6 +150,7 @@ class RunOutcome:
     claim2: dict[tuple[Branch, Branch], str]
     violation_share: dict[tuple[Branch, Branch], float | None]
     curtailed_minutes: int
+    limited_minutes: int = 0
 
 
 def outcome_label(category: str | None, reason: str | None) -> str:
@@ -119,10 +160,13 @@ def outcome_label(category: str | None, reason: str | None) -> str:
     return NOT_SCORED + (reason or "unknown")
 
 
-def run_once(band_index: int, length_index: int, run_index: int) -> RunOutcome:
+def run_once(
+    band_set: str, band_index: int, length_index: int, run_index: int
+) -> RunOutcome:
     """Simulate one run of a battery and score it under all four branch pairs."""
     settings = load_synthetic_settings()
-    band = HONEST_BANDS[band_index]
+    faults = bt.load_faults()
+    band = BAND_SETS[band_set][band_index]
     length = settings.lengths[length_index]
     rng = bt.run_rng(settings.master_seed, band.scenario.name, length_index, run_index)
     sim = bt.simulate(
@@ -132,17 +176,19 @@ def run_once(band_index: int, length_index: int, run_index: int) -> RunOutcome:
         bt.load_physics(),
         bt.load_dc_energy(settings),
         rng,
+        faults,
     )
     claims = load_claim_settings()
     weeks = week_starts(length.adoption_week_start, length.end)
     free: frozenset[datetime] = (
-        frozenset(weeks) if band.scenario.dc == "none" else frozenset()
+        frozenset() if band.scenario.holds_contracts else frozenset(weeks)
     )
+    lag = bt.lag_minutes(band.scenario, settings, faults)
     c1: dict[tuple[Branch, Branch], str] = {}
     c2: dict[tuple[Branch, Branch], str] = {}
     share: dict[tuple[Branch, Branch], float | None] = {}
     for declared in BRANCHES:
-        unit = bt.unit_inputs(sim, declared, settings.honest_lag_min)
+        unit = bt.unit_inputs(sim, declared, lag, faults)
         for scored in BRANCHES:
             r = score_unit(
                 unit, length.adoption_week_start, length.end, claims, scored, free
@@ -150,7 +196,7 @@ def run_once(band_index: int, length_index: int, run_index: int) -> RunOutcome:
             c1[(declared, scored)] = outcome_label(r.claim1_category, r.claim1_reason)
             c2[(declared, scored)] = outcome_label(r.claim2_category, r.claim2_reason)
             share[(declared, scored)] = unit_score(r.claim2_weeks)
-    return RunOutcome(c1, c2, share, sim.curtailed_minutes)
+    return RunOutcome(c1, c2, share, sim.curtailed_minutes, sim.limited_minutes)
 
 
 def required_runs(runs: int, min_share: float) -> int:
@@ -159,7 +205,10 @@ def required_runs(runs: int, min_share: float) -> int:
 
 
 def summarise(
-    bands: Sequence[Band], outcomes: dict[tuple[int, int], list[RunOutcome]], runs: int
+    bands: Sequence[Band],
+    outcomes: dict[tuple[int, int], list[RunOutcome]],
+    runs: int,
+    by_length: bool = False,
 ) -> dict[str, object]:
     """Return the suite's cells, pass marks and overall verdicts."""
     settings = load_synthetic_settings()
@@ -188,7 +237,7 @@ def summarise(
                         passed = hits >= need
                         if kind == "build":
                             build_ok = build_ok and passed
-                        else:
+                        elif kind == "withdrawal":
                             one_sided_ok = one_sided_ok and passed
                     cells.append(
                         {
@@ -214,7 +263,7 @@ def summarise(
                 "max_curtailed_minutes": max(curtailed),
             }
         )
-    return {
+    summary: dict[str, object] = {
         "schema_version": SCHEMA_VERSION,
         "runs": runs,
         "min_share": settings.band_min_share,
@@ -224,6 +273,53 @@ def summarise(
         "build_bands_passed": build_ok,
         "one_sided_reading_stands": one_sided_ok,
     }
+    if by_length:
+        summary["lengths"] = length_verdicts(cells, outcomes, bands)
+    return summary
+
+
+def length_verdicts(
+    cells: Sequence[dict[str, object]],
+    outcomes: dict[tuple[int, int], list[RunOutcome]],
+    bands: Sequence[Band],
+) -> list[dict[str, object]]:
+    """Return, per length, deviation 2's verdicts (PREREGISTRATION §12).
+
+    claim1_reportable: every matched Claim 1 build band passed at that length.
+    one_sided_reading_stands: both one-sided batteries also passed there.
+    claim2_bands_passed: whether every recorded Claim 2 band passed (gates nothing).
+    """
+    settings = load_synthetic_settings()
+    out = []
+    for li in sorted({li for _, li in outcomes}):
+        name = settings.lengths[li].name
+
+        def passed(claim: str, kind: str, length: str = name) -> bool:
+            judged = [
+                c["passed"]
+                for c in cells
+                if c.get("length") == length
+                and c.get("claim") == claim
+                and c.get("kind") == kind
+            ]
+            return bool(judged) and all(judged)
+
+        limited = [
+            r.limited_minutes for (_, i), rs in outcomes.items() if i == li for r in rs
+        ]
+        out.append(
+            {
+                "length": name,
+                "scored_weeks": settings.lengths[li].scored_weeks,
+                "claim1_reportable": passed("claim1", "build"),
+                "one_sided_reading_stands": passed("claim1", "build")
+                and passed("claim1", "withdrawal"),
+                "claim2_bands_passed": passed("claim2", "recorded"),
+                "batteries": len(bands),
+                "max_limited_minutes": max(limited) if limited else 0,
+            }
+        )
+    return out
 
 
 def length_indices(names: Sequence[str]) -> list[int]:
@@ -236,12 +332,13 @@ def length_indices(names: Sequence[str]) -> list[int]:
 
 
 def run_suite(
-    bands: Sequence[Band],
+    band_set: str,
     runs: int,
     lengths: Sequence[str] = FIRST_RUN_LENGTHS,
     workers: int | None = None,
 ) -> dict[str, object]:
     """Run every band's battery `runs` times at each named length; summarise."""
+    bands = BAND_SETS[band_set]
     jobs = [
         (b, li, r)
         for b in range(len(bands))
@@ -249,11 +346,13 @@ def run_suite(
         for r in range(runs)
     ]
     with ProcessPoolExecutor(max_workers=workers or os.cpu_count()) as pool:
-        results = list(pool.map(run_once, *zip(*jobs, strict=True)))
+        results = list(
+            pool.map(run_once, [band_set] * len(jobs), *zip(*jobs, strict=True))
+        )
     outcomes: dict[tuple[int, int], list[RunOutcome]] = {}
     for (b, li, _), result in zip(jobs, results, strict=True):
         outcomes.setdefault((b, li), []).append(result)
-    return summarise(bands, outcomes, runs)
+    return summarise(bands, outcomes, runs, by_length=band_set != "first-run")
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -265,6 +364,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         default=",".join(FIRST_RUN_LENGTHS),
         help="run lengths by name, comma-separated, or 'all'",
     )
+    parser.add_argument("--bands", choices=sorted(BAND_SETS), default="first-run")
     parser.add_argument(
         "--report-only",
         action="store_true",
@@ -277,7 +377,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         else args.lengths.split(",")
     )
     runs = load_params().integer("known_answer.runs")
-    summary = run_suite(HONEST_BANDS, runs, names)
+    summary = run_suite(args.bands, runs, names)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     tmp = args.output.with_suffix(".tmp")
     tmp.write_text(

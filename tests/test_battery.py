@@ -306,3 +306,201 @@ def test_lag_leaves_the_declaration_stale() -> None:
             assert d is not None and d == pytest.approx(truth + prot.boa_export)
             found += 1
     assert found >= 1
+
+
+# ------------------------------------------------------------------ planted faults
+
+FAULTS = bt.load_faults()
+
+
+def test_faults_from_section_8() -> None:
+    assert (FAULTS.delta_mwh, FAULTS.f, FAULTS.under_mwh) == (10.0, 0.2, 20.0)
+    assert (FAULTS.fast_lag_min, FAULTS.slow_lag_min) == (5, 25)
+    assert (FAULTS.derate_to_fraction, FAULTS.derate_below_soc) == (0.5, 0.2)
+
+
+@pytest.mark.parametrize(
+    ("declare", "mdo", "expected"),
+    [
+        ("honest", 40.0, 40.0),
+        ("offset", 40.0, 50.0),  # + 10 MWh
+        ("proportional", 40.0, 50.0),  # 40 / (1 − 0.2): declares 1.25 × available
+        ("under", 40.0, 20.0),  # − 20 MWh
+        ("under", 15.0, 0.0),  # floored: MDO cannot be negative
+        ("static", 40.0, 100.0 * math.sqrt(0.88)),  # the full tank, throughout
+    ],
+)
+def test_planted_declarations_hand_worked(
+    declare: Any, mdo: float, expected: float
+) -> None:
+    got, _ = bt.planted(mdo, -30.0, declare, FAULTS, PHYSICS)
+    assert got == pytest.approx(expected)
+
+
+def test_static_profile_declares_full_headroom_too() -> None:
+    _, mdb = bt.planted(40.0, -30.0, "static", FAULTS, PHYSICS)
+    assert mdb == pytest.approx(-100.0 / math.sqrt(0.88))
+
+
+def test_planted_fault_needs_section_8_figures() -> None:
+    with pytest.raises(bt.SimulationError, match="needs"):
+        bt.planted(40.0, -30.0, "offset", None, PHYSICS)
+
+
+def test_offset_battery_declares_10_mwh_above_the_honest_one() -> None:
+    """Same run, same records: only the MDO level moves, by exactly Δ."""
+    sim = run()
+    faulty = dataclasses.replace(sim, scenario=bt.OVER_CONSTANT)
+    honest = bt.submissions(sim, "A", LAG)
+    over = bt.submissions(faulty, "A", LAG, FAULTS)
+    for h, o in zip(honest, over, strict=True):
+        shift = 10.0 if h.dataset == "MDO" else 0.0
+        assert o.level_from_mwh == pytest.approx(h.level_from_mwh + shift)
+        assert o.time_from == h.time_from and o.publish_time == h.publish_time
+
+
+def test_pn_ignored_leaves_pn_energy_in_mdo() -> None:
+    """MDO rises by the PN export energy within H that an honest unit nets off."""
+    sim = run()
+    faulty = dataclasses.replace(sim, scenario=bt.PN_IGNORED)
+    work = bt._working(sim)
+    honest = bt.submissions(sim, "A", LAG)
+    ignored = bt.submissions(faulty, "A", LAG, FAULTS)
+    seen = 0
+    for h, g in zip(honest, ignored, strict=True):
+        if h.dataset != "MDO":
+            continue
+        minute = int((h.publish_time - sim.start) / timedelta(minutes=1))
+        prot = bt.protection(work, minute, minute - LAG, sim.minutes)
+        if h.level_from_mwh > 0:  # not floored
+            assert g.level_from_mwh == pytest.approx(h.level_from_mwh + prot.pn_export)
+            seen += prot.pn_export > 0
+    assert seen > 50
+
+
+def test_lags_and_record_times() -> None:
+    assert bt.lag_minutes(bt.HONEST, SETTINGS, FAULTS) == 1
+    assert bt.lag_minutes(bt.REDECLARE_FAST, SETTINGS, FAULTS) == 5
+    assert bt.lag_minutes(bt.REDECLARE_SLOW, SETTINGS, FAULTS) == 25
+    sim = run()
+    times = dict(bt.record_times(sim, 25))
+    for boa in sim.boas:
+        publish = boa.accepted_min + 25
+        if publish % 30 and publish < sim.minutes:
+            assert publish in times
+
+
+def test_contract_holders() -> None:
+    assert not bt.HONEST.holds_contracts and not bt.OVER_PROPORTIONAL.holds_contracts
+    assert bt.HONEST_FR.holds_contracts and bt.HONEST_DC_EFA.holds_contracts
+    assert bt.OVER_PROPORTIONAL_RESERVE.holds_contracts
+
+
+# ------------------------------------------------------------------ reserve
+
+
+def test_reserve_levels_hand_worked() -> None:
+    """Steps 5, 10, 20, −40, 3 within [0, 30]: 5, 15, 30 (capped), 0 (floored), 3."""
+    out = bt.reserve_levels(np.array([5.0, 10.0, 20.0, -40.0, 3.0]), (0.0, 30.0))
+    assert out.tolist() == [5.0, 15.0, 30.0, 0.0, 3.0]
+
+
+def test_reserve_changes_about_one_period_in_ten() -> None:
+    sim = run(bt.OVER_PROPORTIONAL_RESERVE)
+    steps = np.diff(sim.reserve_mwh)
+    share = np.count_nonzero(steps) / steps.size
+    assert 0.06 < share < 0.12  # 0.10 drawn, fewer seen when clipped at a bound
+    assert sim.reserve_mwh.min() >= 0.0 and sim.reserve_mwh.max() <= 30.0
+
+
+def test_honest_reserve_holder_declares_net_of_reserve() -> None:
+    """An honest battery holding reserve: D^decl = √η·S − reserve at period starts."""
+    holder = bt.Scenario("test_reserve_holder", "none", reserve=True)
+    sim = run(holder)
+    unit = bt.unit_inputs(sim, "A", LAG)
+    times = week_boundaries(TWO_WEEKS.first_scored_week)[:-1]
+    declared = declared_series(
+        unit, times, PHYSICS.eta, "A", 3, None, 9999.0, TWO_WEEKS.end
+    )
+    work = bt._working(sim)
+    checked = 0
+    for t, d in zip(times, declared, strict=True):
+        minute = int((t - sim.start) / timedelta(minutes=1))
+        if stale(sim, minute):
+            continue
+        p = minute // 30
+        truth = float(sim.stored_mwh[minute]) * PHYSICS.root_eta - sim.reserve_mwh[p]
+        prot = bt.protection(work, minute, minute - LAG, sim.minutes)
+        if truth - prot.pn_export - prot.boa_export < 0:
+            continue
+        assert d == pytest.approx(truth, abs=1e-6)
+        checked += 1
+    assert checked > 250
+
+
+def test_honest_batteries_draw_no_reserve() -> None:
+    assert not run().reserve_mwh.any()
+
+
+# ------------------------------------------------------------------ delivery limits
+
+
+def test_ramp_hand_worked() -> None:
+    """Requested 0, 20, 20, 20, 0 MW at 5 MW/min: delivered 0, 5, 10, 15, 10."""
+    stored, metered, cut, limited = bt.deliver(
+        50.0, np.array([0.0, 20.0, 20.0, 20.0, 0.0]), PHYSICS, 50.0, ramp_mw_per_min=5.0
+    )
+    assert (metered * 60).tolist() == pytest.approx([0.0, 5.0, 10.0, 15.0, 10.0])
+    assert limited.tolist() == [False, True, True, True, True]
+    assert not cut.any()
+    assert stored[-1] == pytest.approx(50.0 - 40.0 / 60 / PHYSICS.root_eta)
+
+
+def test_derating_hand_worked() -> None:
+    """At 10 MWh (10% of U, half of 20%), export is capped at 50 × (0.5 + 0.5 × 0.5)
+    = 37.5 MW; import is not limited."""
+    _, metered, _, limited = bt.deliver(
+        10.0, np.array([50.0]), PHYSICS, 50.0, derate=(0.5, 0.2)
+    )
+    assert metered[0] * 60 == pytest.approx(37.5)
+    assert limited.tolist() == [True]
+    _, metered, _, limited = bt.deliver(
+        10.0, np.array([-50.0]), PHYSICS, 50.0, derate=(0.5, 0.2)
+    )
+    assert metered[0] * 60 == pytest.approx(-50.0) and not limited.any()
+
+
+def test_delivery_stops_at_the_walls() -> None:
+    stored, metered, cut, _ = bt.deliver(0.1, np.array([60.0]), PHYSICS, 50.0)
+    assert stored[-1] == pytest.approx(0.0) and cut.tolist() == [True]
+    assert metered[0] == pytest.approx(0.1 * PHYSICS.root_eta)
+
+
+def test_limited_batteries_simulate_within_limits() -> None:
+    for scenario in (bt.HONEST_RAMP, bt.HONEST_DERATE):
+        sim = (
+            run(scenario)
+            if scenario.physics != "derate"
+            else bt.simulate(
+                scenario,
+                TWO_WEEKS,
+                SETTINGS,
+                PHYSICS,
+                DC,
+                bt.run_rng(SETTINGS.master_seed, scenario.name, 0, 0),
+                FAULTS,
+            )
+        )
+        assert 0.0 <= sim.stored_mwh.min() and sim.stored_mwh.max() <= 100.0
+        assert sim.limited_minutes > 0
+
+
+def test_derating_needs_its_figures() -> None:
+    with pytest.raises(bt.SimulationError, match="derating"):
+        run(bt.HONEST_DERATE)
+
+
+def test_limits_need_a_battery_without_response() -> None:
+    bad = bt.Scenario("test_ramp_with_dc", "constant", physics="ramp")
+    with pytest.raises(bt.SimulationError, match="hold no response"):
+        run(bad)

@@ -15,6 +15,9 @@ authors:
     orcid: "https://orcid.org/0009-0004-2194-8084"
 identifiers:
   - type: doi
+    value: 10.5281/zenodo.24416574
+    description: "Deviation 2, Claim 1 eligibility by length (tag v1.0.2-lock)"
+  - type: doi
     value: 10.5281/zenodo.24354704
     description: "Deviation 1, nested resampling of unit-score intervals (tag v1.0.1-lock)"
   - type: doi
