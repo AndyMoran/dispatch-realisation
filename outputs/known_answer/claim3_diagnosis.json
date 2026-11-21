@@ -1,0 +1,631 @@
+{
+  "declarer": "A",
+  "length": "long",
+  "regime": "(i)",
+  "runs": [
+    {
+      "battery": "proportional_over_declaration",
+      "eta_hat": 0.8810045850210599,
+      "f_hat": 0.19,
+      "flagged": false,
+      "identified": true,
+      "placebo_f_hat": 0.18,
+      "placebo_f_interval": [
+        0.15,
+        0.2
+      ],
+      "placebo_short": 15,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 8,
+        "other": 0,
+        "wall above true stock": 7
+      },
+      "placebo_size": 164,
+      "run": 0
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "eta_hat": 0.876410407593844,
+      "f_hat": 0.18,
+      "flagged": false,
+      "identified": false,
+      "placebo_f_hat": 0.04,
+      "placebo_f_interval": [
+        0.0,
+        0.2
+      ],
+      "placebo_short": 9,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 9,
+        "other": 0,
+        "wall above true stock": 0
+      },
+      "placebo_size": 158,
+      "run": 1
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "eta_hat": 0.8793979494051907,
+      "f_hat": 0.19,
+      "flagged": true,
+      "identified": true,
+      "placebo_f_hat": 0.14,
+      "placebo_f_interval": [
+        0.0,
+        0.2
+      ],
+      "placebo_short": 4,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 2,
+        "other": 0,
+        "wall above true stock": 2
+      },
+      "placebo_size": 167,
+      "run": 2
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "eta_hat": 0.8783073964454844,
+      "f_hat": 0.19,
+      "flagged": false,
+      "identified": true,
+      "placebo_f_hat": 0.19,
+      "placebo_f_interval": [
+        0.12975000000000023,
+        0.2
+      ],
+      "placebo_short": 9,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 9,
+        "other": 0,
+        "wall above true stock": 0
+      },
+      "placebo_size": 174,
+      "run": 3
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "eta_hat": 0.8802513804955787,
+      "f_hat": 0.2,
+      "flagged": false,
+      "identified": true,
+      "placebo_f_hat": 0.19,
+      "placebo_f_interval": [
+        0.17,
+        0.2
+      ],
+      "placebo_short": 13,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 8,
+        "other": 0,
+        "wall above true stock": 5
+      },
+      "placebo_size": 159,
+      "run": 4
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "eta_hat": 0.8789968831581133,
+      "f_hat": 0.19,
+      "flagged": false,
+      "identified": true,
+      "placebo_f_hat": 0.18,
+      "placebo_f_interval": [
+        0.11,
+        0.2
+      ],
+      "placebo_short": 11,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 7,
+        "other": 0,
+        "wall above true stock": 4
+      },
+      "placebo_size": 172,
+      "run": 5
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "eta_hat": 0.879081312477625,
+      "f_hat": 0.18,
+      "flagged": true,
+      "identified": true,
+      "placebo_f_hat": 0.17,
+      "placebo_f_interval": [
+        0.0,
+        0.2
+      ],
+      "placebo_short": 9,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 8,
+        "other": 0,
+        "wall above true stock": 1
+      },
+      "placebo_size": 163,
+      "run": 6
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "eta_hat": 0.8804271755353844,
+      "f_hat": 0.19,
+      "flagged": false,
+      "identified": true,
+      "placebo_f_hat": 0.16,
+      "placebo_f_interval": [
+        0.05,
+        0.19
+      ],
+      "placebo_short": 5,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 3,
+        "other": 0,
+        "wall above true stock": 2
+      },
+      "placebo_size": 153,
+      "run": 7
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "eta_hat": 0.8791266803287174,
+      "f_hat": 0.19,
+      "flagged": false,
+      "identified": true,
+      "placebo_f_hat": 0.18,
+      "placebo_f_interval": [
+        0.06,
+        0.2
+      ],
+      "placebo_short": 10,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 5,
+        "other": 0,
+        "wall above true stock": 5
+      },
+      "placebo_size": 168,
+      "run": 8
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "eta_hat": 0.8790544409938289,
+      "f_hat": 0.2,
+      "flagged": false,
+      "identified": true,
+      "placebo_f_hat": 0.19,
+      "placebo_f_interval": [
+        0.13,
+        0.21
+      ],
+      "placebo_short": 8,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 5,
+        "other": 0,
+        "wall above true stock": 3
+      },
+      "placebo_size": 160,
+      "run": 9
+    },
+    {
+      "battery": "constant_over_declaration",
+      "eta_hat": 0.8799462131508476,
+      "f_hat": 0.42,
+      "flagged": false,
+      "identified": true,
+      "placebo_f_hat": 0.35,
+      "placebo_f_interval": [
+        0.31,
+        0.38
+      ],
+      "placebo_short": 31,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 27,
+        "other": 0,
+        "wall above true stock": 4
+      },
+      "placebo_size": 156,
+      "run": 0
+    },
+    {
+      "battery": "constant_over_declaration",
+      "eta_hat": 0.8786461638681968,
+      "f_hat": 0.46,
+      "flagged": false,
+      "identified": false,
+      "placebo_f_hat": 0.4,
+      "placebo_f_interval": [
+        0.31,
+        0.47
+      ],
+      "placebo_short": 28,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 21,
+        "other": 0,
+        "wall above true stock": 7
+      },
+      "placebo_size": 164,
+      "run": 1
+    },
+    {
+      "battery": "constant_over_declaration",
+      "eta_hat": 0.8794752487786542,
+      "f_hat": 0.5,
+      "flagged": false,
+      "identified": true,
+      "placebo_f_hat": 0.44,
+      "placebo_f_interval": [
+        0.32,
+        0.54
+      ],
+      "placebo_short": 28,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 26,
+        "other": 0,
+        "wall above true stock": 2
+      },
+      "placebo_size": 165,
+      "run": 2
+    },
+    {
+      "battery": "constant_over_declaration",
+      "eta_hat": 0.8798126131073915,
+      "f_hat": 0.55,
+      "flagged": false,
+      "identified": true,
+      "placebo_f_hat": 0.39,
+      "placebo_f_interval": [
+        0.27,
+        0.51
+      ],
+      "placebo_short": 24,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 21,
+        "other": 0,
+        "wall above true stock": 3
+      },
+      "placebo_size": 160,
+      "run": 3
+    },
+    {
+      "battery": "constant_over_declaration",
+      "eta_hat": 0.8807129286477196,
+      "f_hat": 0.5,
+      "flagged": false,
+      "identified": true,
+      "placebo_f_hat": 0.31,
+      "placebo_f_interval": [
+        0.21,
+        0.47
+      ],
+      "placebo_short": 22,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 20,
+        "other": 0,
+        "wall above true stock": 2
+      },
+      "placebo_size": 150,
+      "run": 4
+    },
+    {
+      "battery": "constant_over_declaration",
+      "eta_hat": 0.8797783747351564,
+      "f_hat": 0.51,
+      "flagged": false,
+      "identified": false,
+      "placebo_f_hat": 0.38,
+      "placebo_f_interval": [
+        0.29,
+        0.45
+      ],
+      "placebo_short": 23,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 17,
+        "other": 0,
+        "wall above true stock": 6
+      },
+      "placebo_size": 164,
+      "run": 5
+    },
+    {
+      "battery": "constant_over_declaration",
+      "eta_hat": 0.8792579903790624,
+      "f_hat": 0.48,
+      "flagged": false,
+      "identified": false,
+      "placebo_f_hat": 0.39,
+      "placebo_f_interval": [
+        0.28,
+        0.45
+      ],
+      "placebo_short": 25,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 23,
+        "other": 0,
+        "wall above true stock": 2
+      },
+      "placebo_size": 145,
+      "run": 6
+    },
+    {
+      "battery": "constant_over_declaration",
+      "eta_hat": 0.8775417746880779,
+      "f_hat": 0.42,
+      "flagged": false,
+      "identified": true,
+      "placebo_f_hat": 0.4,
+      "placebo_f_interval": [
+        0.27,
+        0.47
+      ],
+      "placebo_short": 20,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 17,
+        "other": 0,
+        "wall above true stock": 3
+      },
+      "placebo_size": 156,
+      "run": 7
+    },
+    {
+      "battery": "constant_over_declaration",
+      "eta_hat": 0.879970510357539,
+      "f_hat": 0.51,
+      "flagged": false,
+      "identified": true,
+      "placebo_f_hat": 0.42,
+      "placebo_f_interval": [
+        0.34,
+        0.49
+      ],
+      "placebo_short": 23,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 19,
+        "other": 0,
+        "wall above true stock": 4
+      },
+      "placebo_size": 156,
+      "run": 8
+    },
+    {
+      "battery": "constant_over_declaration",
+      "eta_hat": 0.8782666202852368,
+      "f_hat": 0.43,
+      "flagged": false,
+      "identified": true,
+      "placebo_f_hat": 0.33,
+      "placebo_f_interval": [
+        0.27,
+        0.6
+      ],
+      "placebo_short": 29,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 24,
+        "other": 0,
+        "wall above true stock": 5
+      },
+      "placebo_size": 162,
+      "run": 9
+    },
+    {
+      "battery": "honest",
+      "eta_hat": 0.8790103444561056,
+      "f_hat": 0.0,
+      "flagged": false,
+      "identified": false,
+      "placebo_f_hat": 0.0,
+      "placebo_f_interval": [
+        0.0,
+        0.0
+      ],
+      "placebo_short": 0,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 0,
+        "other": 0,
+        "wall above true stock": 0
+      },
+      "placebo_size": 179,
+      "run": 0
+    },
+    {
+      "battery": "honest",
+      "eta_hat": 0.875157343140136,
+      "f_hat": 0.0,
+      "flagged": false,
+      "identified": false,
+      "placebo_f_hat": 0.0,
+      "placebo_f_interval": [
+        0.0,
+        0.01
+      ],
+      "placebo_short": 0,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 0,
+        "other": 0,
+        "wall above true stock": 0
+      },
+      "placebo_size": 202,
+      "run": 1
+    },
+    {
+      "battery": "honest",
+      "eta_hat": 0.879986778057155,
+      "f_hat": 0.0,
+      "flagged": false,
+      "identified": false,
+      "placebo_f_hat": 0.0,
+      "placebo_f_interval": [
+        0.0,
+        0.01
+      ],
+      "placebo_short": 0,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 0,
+        "other": 0,
+        "wall above true stock": 0
+      },
+      "placebo_size": 170,
+      "run": 2
+    },
+    {
+      "battery": "honest",
+      "eta_hat": 0.8804825666979599,
+      "f_hat": 0.0,
+      "flagged": false,
+      "identified": false,
+      "placebo_f_hat": 0.0,
+      "placebo_f_interval": [
+        0.0,
+        0.02
+      ],
+      "placebo_short": 0,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 0,
+        "other": 0,
+        "wall above true stock": 0
+      },
+      "placebo_size": 185,
+      "run": 3
+    },
+    {
+      "battery": "honest",
+      "eta_hat": 0.878158622748703,
+      "f_hat": 0.01,
+      "flagged": false,
+      "identified": false,
+      "placebo_f_hat": 0.01,
+      "placebo_f_interval": [
+        0.0,
+        0.02
+      ],
+      "placebo_short": 0,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 0,
+        "other": 0,
+        "wall above true stock": 0
+      },
+      "placebo_size": 184,
+      "run": 4
+    },
+    {
+      "battery": "honest",
+      "eta_hat": 0.8781120414785885,
+      "f_hat": 0.0,
+      "flagged": false,
+      "identified": false,
+      "placebo_f_hat": 0.0,
+      "placebo_f_interval": [
+        0.0,
+        0.0
+      ],
+      "placebo_short": 0,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 0,
+        "other": 0,
+        "wall above true stock": 0
+      },
+      "placebo_size": 190,
+      "run": 5
+    },
+    {
+      "battery": "honest",
+      "eta_hat": 0.8749779852433665,
+      "f_hat": 0.0,
+      "flagged": false,
+      "identified": false,
+      "placebo_f_hat": 0.0,
+      "placebo_f_interval": [
+        0.0,
+        0.01
+      ],
+      "placebo_short": 0,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 0,
+        "other": 0,
+        "wall above true stock": 0
+      },
+      "placebo_size": 209,
+      "run": 6
+    },
+    {
+      "battery": "honest",
+      "eta_hat": 0.8786355212273672,
+      "f_hat": 0.0,
+      "flagged": false,
+      "identified": false,
+      "placebo_f_hat": 0.0,
+      "placebo_f_interval": [
+        0.0,
+        0.05
+      ],
+      "placebo_short": 0,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 0,
+        "other": 0,
+        "wall above true stock": 0
+      },
+      "placebo_size": 194,
+      "run": 7
+    },
+    {
+      "battery": "honest",
+      "eta_hat": 0.8796051767087532,
+      "f_hat": 0.01,
+      "flagged": false,
+      "identified": false,
+      "placebo_f_hat": 0.0,
+      "placebo_f_interval": [
+        0.0,
+        0.04
+      ],
+      "placebo_short": 0,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 0,
+        "other": 0,
+        "wall above true stock": 0
+      },
+      "placebo_size": 209,
+      "run": 8
+    },
+    {
+      "battery": "honest",
+      "eta_hat": 0.8799826669991633,
+      "f_hat": 0.04,
+      "flagged": false,
+      "identified": false,
+      "placebo_f_hat": 0.04,
+      "placebo_f_interval": [
+        0.0,
+        0.06
+      ],
+      "placebo_short": 0,
+      "placebo_short_by_cause": {
+        "held A, stopped by protection": 0,
+        "other": 0,
+        "wall above true stock": 0
+      },
+      "placebo_size": 199,
+      "run": 9
+    }
+  ],
+  "scored": "A",
+  "totals": {
+    "constant_over_declaration": {
+      "held A, stopped by protection": 215,
+      "other": 0,
+      "placebo_offers": 1578,
+      "short": 253,
+      "wall above true stock": 38
+    },
+    "honest": {
+      "held A, stopped by protection": 0,
+      "other": 0,
+      "placebo_offers": 1921,
+      "short": 0,
+      "wall above true stock": 0
+    },
+    "proportional_over_declaration": {
+      "held A, stopped by protection": 64,
+      "other": 0,
+      "placebo_offers": 1638,
+      "short": 93,
+      "wall above true stock": 29
+    }
+  }
+}

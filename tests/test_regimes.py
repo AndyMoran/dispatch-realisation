@@ -545,3 +545,21 @@ def test_r_under_each_scoring_branch(declarer: str) -> None:
         assert r_a <= 1 + 1e-12
         over_b += r_b > 1
     assert over_b > 0  # offers with u > √η, for either declarer
+
+
+def test_claim3_diagnosis_uses_the_scoring_placebo_set() -> None:
+    """The diagnostic rebuilds the scoring code's placebo set (it stops if the
+    sizes differ) and classifies every shortfall; the honest battery has none.
+    Run 0 of the proportional battery is pinned to the committed output."""
+    from src.synthetic import claim3_diagnosis as cd
+
+    honest = cd.diagnose_run(bt.HONEST, 0)
+    assert honest["placebo_short"] == 0 and int(honest["placebo_size"]) > 0  # type: ignore[call-overload]
+    over = cd.diagnose_run(bt.OVER_PROPORTIONAL, 0)
+    causes = over["placebo_short_by_cause"]
+    assert over["placebo_size"] == 164 and over["placebo_short"] == 15
+    assert causes == {
+        "wall above true stock": 7,
+        "held A, stopped by protection": 8,
+        "other": 0,
+    }

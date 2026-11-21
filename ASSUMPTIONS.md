@@ -17,7 +17,7 @@ Rules:
 - Update the status when evidence changes.
 - Never delete a row. Strike it through and give the reason and date.
 
-Last updated: 2026-11-18.
+Last updated: 2026-11-21.
 
 ---
 
@@ -119,6 +119,7 @@ Last updated: 2026-11-18.
 | P9 | The honest synthetic battery recovers energy moved by instructions or frequency response only through its next charge or discharge window, which aims at fixed state-of-charge targets; it makes no energy-recovery trades under DC's Vrec allowance (20% of the response energy volume per settlement period, Service Terms v6, Schedule 2) | DELIBERATE | Recovery through PN is what B1610 and PN would show for a real unit. Vrec trades would add PN changes of their own, which the honest battery's declarations would track either way | — |
 | P10 | In the synthetic battery, Dynamic Containment response nets with PN or an instruction active in the same period, so flows one way there; with neither active it flows both ways as the frequency data says | DELIBERATE | The derived file gives each period's export and import response separately, not second by second, so the seconds in which a large response would reverse a PN flow are not resolved. PN levels (about 20–25 MW) exceed the response in almost every second, since the curve gives at most 5% of contracted MW inside ±0.2 Hz. Understates two-way flow slightly, so slightly understates P7's effect | — |
 | P11 | Claim 2's lower wall is provable only if η̂ is close to the unit's true efficiency: an error of \|η̂ − η\| displaces the wall by about that much times the week's imports | GROUNDED | First known-answer run, 18 Nov 2026 (`outputs/known_answer/claims12.json`; diagnosis in PROJECT.md §11): at 4 weeks η̂ ranged 0.863–0.901 around a true 0.88, an error of up to about 20 MWh a week against τ of about 2 MWh, and 17–20% of honest batteries were flagged as provably under-declaring. With the true η the false flags all but vanish. Public data gives no independent efficiency | ✓ Claim 2 reported under deviation 2 (PREREGISTRATION §12) |
+| P12 | Claim 3's placebo criterion (§5.6), a lower wall at or above the accepted energy A, establishes that A was deliverable after protection | GROUNDED (not established in the known-answer runs) | Claim 3 known-answer run, 21 Nov 2026 (`outputs/known_answer/claim3.json`), and its diagnostic rerun of runs 0–9 at 20 weeks, regime (i), A-declarer scored under Branch A (`outputs/known_answer/claim3_diagnosis.json`; [`docs/results/claim3_known_answer.md`](docs/results/claim3_known_answer.md)). The over-declarers' placebo fits found the kink (placebo f̂ 0.04–0.44). Of 346 placebo shortfalls in that aggregate, 279 had true stock at least A and stopped at PN protection, which leaves less deliverable than stored; 67 had true stock below A, the computed wall exceeding it through η̂ error (P11). The honest battery's 1,921 placebo offers delivered in full. This shows the criterion failing in these runs, not the physical reasoning failing in general | ✓ Claim 3 dropped from version 1 under §8; a corrected placebo needs a §12 deviation specified before any rerun |
 
 ## Identification
 

@@ -6,7 +6,7 @@ NESO can see which batteries hold contracts that lawfully lower their declaratio
 
 This project checks each GB battery's declarations against its own meter, and reports both what can be checked and what the published data stop anyone checking.
 
-**Status:** pre-registration locked on 18 November 2026 ([DOI](https://doi.org/10.5281/zenodo.24343931)), with two deviations recorded before scoring (§12): nested resampling ([DOI](https://doi.org/10.5281/zenodo.24354704)), and, after the first known-answer run failed at 4 weeks, Claim 1 reported only at lengths where its tests pass and Claim 2's wall reported as failing ([DOI](https://doi.org/10.5281/zenodo.24416574)). No real unit has been scored. Nothing here is a result yet.
+**Status:** pre-registration locked on 18 November 2026 ([DOI](https://doi.org/10.5281/zenodo.24343931)), with two deviations recorded before scoring (§12): nested resampling ([DOI](https://doi.org/10.5281/zenodo.24354704)), and, after the first known-answer run failed at 4 weeks, Claim 1 reported only at lengths where its tests pass and Claim 2's wall reported as failing ([DOI](https://doi.org/10.5281/zenodo.24416574)). Claim 3 is dropped from version 1: its known-answer suite missed its bands, as §8 provides ([result](docs/results/claim3_known_answer.md)). No real unit has been scored.
 
 ---
 
@@ -34,7 +34,7 @@ Five claims, defined in [`PREREGISTRATION.md`](PREREGISTRATION.md):
 
 The result is a **flag table**, not a ranking: for each unit, whether its declarations are physically consistent with its meter, with uncertainty and with each limit stated. In this version the table goes privately to each lead party, for its own units; what is published is the fleet-level picture. Units may be named in a later version, but only once five written conditions are met (see [`PREREGISTRATION.md`](PREREGISTRATION.md) §11).
 
-The claims do not test every channel equally. A unit shown coherent has declarations that track its meter; a unit not shown coherent may have bad declarations or contracts we cannot see. Claim 3, non-delivery, is the test least affected by unseen contracts. Finding no violations is not evidence of compliance.
+The claims do not test every channel equally. A unit shown coherent has declarations that track its meter; a unit not shown coherent may have bad declarations or contracts we cannot see. Claim 3, non-delivery, was designed as the test least affected by unseen contracts, but version 1 does not report it ([result](docs/results/claim3_known_answer.md)). Finding no violations is not evidence of compliance.
 
 A first finding came out of the design work: public registers do not record how much energy GB batteries hold. REPD records power only. In SSEN's Embedded Capacity Register the storage-MWh field read "DATA NOT AVAILABLE" for every connected battery site. That is why the audit uses tests that need no capacity figure. A second followed: NESO's reserve and response auction results do not identify BM units, so no battery's week could be certified free of contracts that lawfully lower its declarations. The audit therefore cannot call any unit's under-declaration provable in this version.
 
@@ -52,7 +52,7 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 
 ## Repository layout
 
-`src/model/` holds the input types shared by real and synthetic data, `src/physics/` the §3 physics, and `src/claims/` Claims 1 and 2 with their scoring. `src/claims/unit.py` scores one unit, real or synthetic, from its inputs to its flags. `src/synthetic/` holds the known-answer batteries: their settings, frequency input, the honest and planted-fault batteries, and the Claims 1–2 band runner (`src/synthetic/bands.py`). `src/claim3/` is not yet built.
+`src/model/` holds the input types shared by real and synthetic data, `src/physics/` the §3 physics, and `src/claims/` Claims 1 and 2 with their scoring. `src/claims/unit.py` scores one unit, real or synthetic, from its inputs to its flags. `src/synthetic/` holds the known-answer batteries: their settings, frequency input, the honest and planted-fault batteries, the Claims 1–2 band runner (`src/synthetic/bands.py`), Claim 3's instruction-sizing regimes (`src/synthetic/regimes.py`) and its band runner (`src/synthetic/claim3_bands.py`). `src/claim3/` holds Claim 3's scoring, kept for the record and for any later deviation; version 1 does not report it.
 
 ```
 ├── README.md
