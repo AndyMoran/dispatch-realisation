@@ -327,7 +327,6 @@ def test_faults_from_section_8() -> None:
         ("proportional", 40.0, 50.0),  # 40 / (1 − 0.2): declares 1.25 × available
         ("under", 40.0, 20.0),  # − 20 MWh
         ("under", 15.0, 0.0),  # floored: MDO cannot be negative
-        ("static", 40.0, 100.0 * math.sqrt(0.88)),  # the full tank, throughout
     ],
 )
 def test_planted_declarations_hand_worked(
@@ -337,9 +336,36 @@ def test_planted_declarations_hand_worked(
     assert got == pytest.approx(expected)
 
 
-def test_static_profile_declares_full_headroom_too() -> None:
-    _, mdb = bt.planted(40.0, -30.0, "static", FAULTS, PHYSICS)
-    assert mdb == pytest.approx(-100.0 / math.sqrt(0.88))
+def test_static_profile_holds_the_given_peak() -> None:
+    assert bt.planted(40.0, -30.0, "static", FAULTS, PHYSICS, (80.0, -90.0)) == (
+        80.0,
+        -90.0,
+    )
+    with pytest.raises(bt.SimulationError, match="own peak"):
+        bt.planted(40.0, -30.0, "static", FAULTS, PHYSICS)
+
+
+def test_static_battery_copies_its_own_maximum() -> None:
+    """§8 "Static profile copied from maximum": every record holds the battery's
+    own highest honest MDO (and deepest honest MDB), not the nameplate tank."""
+    sim = run()
+    honest = bt.submissions(sim, "A", LAG)
+    static = bt.submissions(
+        dataclasses.replace(sim, scenario=bt.STATIC_PROFILE), "A", LAG, FAULTS
+    )
+
+    def ends(dataset: str, records: list[Any]) -> list[float]:
+        out: list[float] = []
+        for x in records:
+            if x.dataset == dataset:
+                assert x.level_to_mwh is not None
+                out += [x.level_from_mwh, x.level_to_mwh]
+        return out
+
+    top, deep = max(ends("MDO", honest)), min(ends("MDB", honest))
+    assert set(ends("MDO", static)) == {top}
+    assert set(ends("MDB", static)) == {deep}
+    assert top < 100.0 * PHYSICS.root_eta  # below the full tank
 
 
 def test_planted_fault_needs_section_8_figures() -> None:
@@ -504,3 +530,50 @@ def test_limits_need_a_battery_without_response() -> None:
     bad = bt.Scenario("test_ramp_with_dc", "constant", physics="ramp")
     with pytest.raises(bt.SimulationError, match="hold no response"):
         run(bad)
+
+
+@pytest.mark.parametrize("scenario", [bt.HONEST_RAMP, bt.HONEST_DERATE])
+def test_limited_batteries_plan_with_their_own_limits(scenario: bt.Scenario) -> None:
+    """Without instructions, each window still ends at its target under the
+    battery's own limits: 85 MWh after the first charge (00:00–03:00) and 15 MWh
+    after the first discharge (05:00–08:00), to within the ramp's tail."""
+    quiet = dataclasses.replace(SETTINGS, boa_mean_per_day=0.0)
+    sim = bt.simulate(
+        scenario,
+        TWO_WEEKS,
+        quiet,
+        PHYSICS,
+        DC,
+        bt.run_rng(SETTINGS.master_seed, scenario.name, 0, 0),
+        FAULTS,
+    )
+    assert sim.stored_mwh[180] == pytest.approx(85.0, abs=0.5)
+    assert sim.stored_mwh[480] == pytest.approx(15.0, abs=0.5)
+    assert sim.curtailed_minutes == 0
+
+
+def test_derating_battery_never_reaches_a_wall() -> None:
+    """Planning under its own derating, it falls short only for want of power."""
+    sim = bt.simulate(
+        bt.HONEST_DERATE,
+        TWO_WEEKS,
+        SETTINGS,
+        PHYSICS,
+        DC,
+        bt.run_rng(SETTINGS.master_seed, bt.HONEST_DERATE.name, 0, 0),
+        FAULTS,
+    )
+    assert sim.curtailed_minutes == 0 and sim.limited_minutes > 0
+
+
+def test_ramp_starts_from_the_power_already_delivered() -> None:
+    """Already at 18 MW, a 20 MW request is within 5 MW/min: delivered in full.
+    From rest it would be held to 5 MW."""
+    _, metered, _, limited = bt.deliver(
+        50.0, np.array([20.0]), PHYSICS, 50.0, ramp_mw_per_min=5.0, previous_mw=18.0
+    )
+    assert metered[0] * 60 == pytest.approx(20.0) and not limited.any()
+    _, metered, _, _ = bt.deliver(
+        50.0, np.array([20.0]), PHYSICS, 50.0, ramp_mw_per_min=5.0
+    )
+    assert metered[0] * 60 == pytest.approx(5.0)

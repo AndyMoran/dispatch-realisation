@@ -175,6 +175,38 @@ def load_faults() -> Faults:
     )
 
 
+@dataclass(frozen=True)
+class Limits:
+    """A battery's own power limits, used both to deliver and to plan (§8, §5.8)."""
+
+    power_mw: float
+    ramp_mw_per_min: float | None
+    derate: tuple[float, float] | None
+
+
+def limits_for(
+    scenario: Scenario, settings: SyntheticSettings, faults: Faults | None
+) -> Limits | None:
+    """Return the limits of a ramp-limited or derating battery; None otherwise."""
+    if scenario.physics == "normal":
+        return None
+    if scenario.dc != "none":
+        raise SimulationError("ramp and derating batteries hold no response")
+    if scenario.physics == "derate" and faults is None:
+        raise SimulationError("the derating battery needs §8's derating figures")
+    return Limits(
+        power_mw=settings.battery.power_mw,
+        ramp_mw_per_min=(
+            settings.ramp_limited_mw_per_min if scenario.physics == "ramp" else None
+        ),
+        derate=(
+            (faults.derate_to_fraction, faults.derate_below_soc)
+            if scenario.physics == "derate" and faults is not None
+            else None
+        ),
+    )
+
+
 def lag_minutes(scenario: Scenario, settings: SyntheticSettings, faults: Faults) -> int:
     """Return the minutes from acceptance to redeclaration for a battery."""
     if scenario.lag == "fast":
@@ -505,8 +537,7 @@ def simulate(
 
     `faults` is needed only for the derating battery, whose limits §8 fixes.
     """
-    if scenario.physics == "derate" and faults is None:
-        raise SimulationError("the derating battery needs §8's derating figures")
+    limits = limits_for(scenario, settings, faults)
     start = length.adoption_week_start
     days = (length.end - start).days
     minutes = days * MINUTES_PER_DAY
@@ -541,9 +572,9 @@ def simulate(
         reserve=reserve,
     )
     s0 = d.initial_share * physics.energy_mwh
-    not_accepted = _run_events(a, d, settings, physics, s0, minutes)
+    not_accepted = _run_events(a, d, settings, physics, s0, minutes, limits)
     limited = np.zeros(minutes, dtype=bool)
-    if scenario.physics == "normal":
+    if limits is None:
         change = stored_change(a, 0, minutes, physics.root_eta, with_dc=True)
         metered = meter_mwh(a, 0, minutes, with_dc=True)
         stored, change, curtailed = curtail(s0, change, physics.energy_mwh)
@@ -552,22 +583,14 @@ def simulate(
             actual = np.where(change < 0, -change * r, -change / r)
             metered = np.where(curtailed, actual, metered)
     else:
-        if scenario.dc != "none":
-            raise SimulationError("ramp and derating batteries hold no response")
         requested = meter_mwh(a, 0, minutes, with_dc=False) * 60.0
         stored, metered, curtailed, limited = deliver(
             s0,
             requested,
             physics,
-            settings.battery.power_mw,
-            ramp_mw_per_min=(
-                settings.ramp_limited_mw_per_min if scenario.physics == "ramp" else None
-            ),
-            derate=(
-                (faults.derate_to_fraction, faults.derate_below_soc)
-                if scenario.physics == "derate" and faults is not None
-                else None
-            ),
+            limits.power_mw,
+            limits.ramp_mw_per_min,
+            limits.derate,
         )
     meter = metered.reshape(periods, -1).sum(axis=1)
     return Simulation(
@@ -618,6 +641,7 @@ def deliver(
     power_mw: float,
     ramp_mw_per_min: float | None = None,
     derate: tuple[float, float] | None = None,
+    previous_mw: float = 0.0,
 ) -> tuple[
     NDArray[np.float64], NDArray[np.float64], NDArray[np.bool_], NDArray[np.bool_]
 ]:
@@ -636,7 +660,7 @@ def deliver(
     curtailed = np.zeros(n, dtype=bool)
     limited = np.zeros(n, dtype=bool)
     levels[0] = level = s0
-    previous = 0.0
+    previous = previous_mw
     for m in range(n):
         power = float(requested_mw[m])
         if ramp_mw_per_min is not None:
@@ -711,24 +735,132 @@ def _run_events(
     physics: Physics,
     s0: float,
     minutes: int,
+    limits: Limits | None = None,
 ) -> int:
-    """Apply PN decisions and instructions in time order; return those refused."""
+    """Apply PN decisions and instructions in time order; return those refused.
+
+    A battery with its own limits tracks its delivered state, and plans with it.
+    """
     events: list[tuple[int, int, int]] = []  # (minute, 0 = PN / 1 = BOA, index)
     windows = _windows(settings, minutes // MINUTES_PER_DAY)
     events += [(dec, 0, i) for i, (dec, _, _) in enumerate(windows)]
     events += [(int(m), 1, i) for i, m in enumerate(d.boa_start_min)]
     events.sort()
-    known_s, known_m, refused = s0, 0, 0
+    known_s, known_m, previous_mw, refused = s0, 0, 0.0, 0
     for minute, kind, i in events:
-        known_s += float(
-            stored_change(a, known_m, minute, physics.root_eta, True).sum()
-        )
+        if limits is None:
+            known_s += float(
+                stored_change(a, known_m, minute, physics.root_eta, True).sum()
+            )
+        elif minute > known_m:
+            known_s, previous_mw = _delivered(
+                a, known_m, minute, known_s, previous_mw, physics, limits
+            )
         known_m = minute
         if kind == 0:
-            _decide_pn(a, windows[i], known_s, settings, physics, minutes)
+            if limits is None:
+                _decide_pn(a, windows[i], known_s, settings, physics, minutes)
+            else:
+                _plan_pn(
+                    a,
+                    windows[i],
+                    known_s,
+                    previous_mw,
+                    settings,
+                    physics,
+                    minutes,
+                    limits,
+                )
         elif not _accept_boa(a, d, i, minute, known_s, settings, physics, minutes):
             refused += 1
     return refused
+
+
+def _delivered(
+    a: _Arrays,
+    start: int,
+    stop: int,
+    stored: float,
+    previous_mw: float,
+    physics: Physics,
+    limits: Limits,
+    requested_mw: NDArray[np.float64] | None = None,
+) -> tuple[float, float]:
+    """Return stored energy and delivered power after [start, stop), with limits."""
+    if requested_mw is None:
+        requested_mw = meter_mwh(a, start, stop, with_dc=False) * 60.0
+    if requested_mw.size == 0:
+        return stored, previous_mw
+    levels, metered, _, _ = deliver(
+        stored,
+        requested_mw,
+        physics,
+        limits.power_mw,
+        limits.ramp_mw_per_min,
+        limits.derate,
+        previous_mw,
+    )
+    return float(levels[-1]), float(metered[-1]) * 60.0
+
+
+PLAN_ITERATIONS = 40
+
+
+def _plan_pn(
+    a: _Arrays,
+    window: tuple[int, int, str],
+    stored_now: float,
+    previous_mw: float,
+    settings: SyntheticSettings,
+    physics: Physics,
+    minutes: int,
+    limits: Limits,
+) -> None:
+    """Set a window's PN so that, delivered under the battery's own limits, stored
+    energy ends the window at its target, as forecast now (§8 "Honest").
+
+    The forecast runs the plan through the same ramp and derating limits as
+    delivery; the window's power is found by bisection between zero and the cap.
+    Where even the cap cannot reach the target, the window runs at the cap.
+    """
+    decided, w, kind = window
+    b = settings.battery
+    if w >= minutes:
+        return
+    stop = min(w + round(b.window_h * 60), minutes)
+    s_w, p_w = _delivered(a, decided, w, stored_now, previous_mw, physics, limits)
+    sign = -1.0 if kind == "charge" else 1.0
+    target = (b.soc_high_share if kind == "charge" else b.soc_low_share) * (
+        physics.energy_mwh
+    )
+    boa = a.boa_dev[w:stop]
+
+    def end_state(power_mw: float) -> float:
+        requested = sign * power_mw + boa
+        return _delivered(a, w, stop, s_w, p_w, physics, limits, requested)[0]
+
+    def short_of_target(power_mw: float) -> bool:
+        end = end_state(power_mw)
+        return end < target if kind == "charge" else end > target
+
+    cap = b.power_mw - max(settings.response.contract_levels_mw)
+    first, last = w // MINUTES_PER_PERIOD, stop // MINUTES_PER_PERIOD
+    if not short_of_target(0.0):
+        a.pn_mw[first:last] = 0.0
+        a.pn_active[first:last] = False
+        return
+    low, high = 0.0, cap
+    if short_of_target(cap):
+        low = cap
+    else:
+        for _ in range(PLAN_ITERATIONS):
+            mid = 0.5 * (low + high)
+            if short_of_target(mid):
+                low = mid
+            else:
+                high = mid
+    a.pn_mw[first:last] = sign * (cap if low >= cap else high)
+    a.pn_active[first:last] = True
 
 
 def _decide_pn(
@@ -874,21 +1006,31 @@ def record_times(sim: Simulation, lag_min: int) -> list[tuple[int, int]]:
 
 
 def planted(
-    mdo: float, mdb: float, declare: Declare, faults: Faults | None, physics: Physics
+    mdo: float,
+    mdb: float,
+    declare: Declare,
+    faults: Faults | None,
+    physics: Physics,
+    peak: tuple[float, float] | None = None,
 ) -> tuple[float, float]:
-    """Return (MDO, MDB) at the meter after the battery's planted fault (§8)."""
+    """Return (MDO, MDB) at the meter after the battery's planted fault (§8).
+
+    `peak` is the battery's own highest honest MDO and deepest honest MDB over the
+    run, which the static profile holds throughout ("copied from maximum").
+    """
     if declare in ("honest", "ignore_pn"):
         return mdo, mdb
+    if declare == "static":
+        if peak is None:
+            raise SimulationError("the static profile needs the battery's own peak")
+        return peak
     if faults is None:
         raise SimulationError(f"declaration fault {declare!r} needs §8's figures")
     if declare == "offset":
         return mdo + faults.delta_mwh, mdb
     if declare == "proportional":
         return mdo / (1.0 - faults.f), mdb
-    if declare == "under":
-        return max(mdo - faults.under_mwh, 0.0), mdb
-    full = physics.energy_mwh  # "static": the full tank, as if copied from maximum
-    return full * physics.root_eta, -full / physics.root_eta
+    return max(mdo - faults.under_mwh, 0.0), mdb  # "under"
 
 
 def submissions(
@@ -903,13 +1045,19 @@ def submissions(
     a = _working(sim)
     declare = sim.scenario.declare
     datasets: tuple[Dataset, Dataset] = ("MDO", "MDB")
+    times = record_times(sim, lag_min)
+    honest = [
+        declared_levels(sim, a, publish, end, lag_min, ignore_pn=declare == "ignore_pn")
+        for publish, end in times
+    ]
+    peak = (
+        max(max(mdo) for mdo, _ in honest),
+        min(min(mdb) for _, mdb in honest),
+    )
     out = []
-    for publish, end in record_times(sim, lag_min):
-        (mdo0, mdo1), (mdb0, mdb1) = declared_levels(
-            sim, a, publish, end, lag_min, ignore_pn=declare == "ignore_pn"
-        )
-        mdo0, mdb0 = planted(mdo0, mdb0, declare, faults, sim.physics)
-        mdo1, mdb1 = planted(mdo1, mdb1, declare, faults, sim.physics)
+    for (publish, end), ((mdo0, mdo1), (mdb0, mdb1)) in zip(times, honest, strict=True):
+        mdo0, mdb0 = planted(mdo0, mdb0, declare, faults, sim.physics, peak)
+        mdo1, mdb1 = planted(mdo1, mdb1, declare, faults, sim.physics, peak)
         if branch == "B":
             mdo0, mdo1, mdb0, mdb1 = mdo0 / r, mdo1 / r, mdb0 * r, mdb1 * r
         t0 = sim.start + timedelta(minutes=publish)
