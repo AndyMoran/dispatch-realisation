@@ -32,7 +32,7 @@ from typing import Literal
 from zoneinfo import ZoneInfo
 
 from src.model.types import LevelSegment, MeterPeriod, Submission, UnitInputs
-from src.physics.declared import Branch, declared_at
+from src.physics.declared import Branch, declared_at, record_level
 from src.physics.protection import piece_levels
 
 UK = ZoneInfo("Europe/London")
@@ -90,13 +90,45 @@ def period_floor(t: datetime) -> datetime:
     )
 
 
-def segment_integral_mwh(
-    segments: Sequence[LevelSegment], a: datetime, b: datetime
-) -> float:
+class SegmentIndex:
+    """Segments sorted by start (stably), to find those touching an interval.
+
+    Only segments with time_from ≤ b and time_to ≥ a can cover a point of [a, b]
+    or cut it, and filtering keeps their order, so every result below is the same
+    with the index as with the full list; the index only saves time.
+    """
+
+    def __init__(self, segments: Sequence[LevelSegment]) -> None:
+        self.original = tuple(segments)
+        self.order = sorted(
+            range(len(self.original)), key=lambda k: self.original[k].time_from
+        )
+        self.starts = [self.original[k].time_from for k in self.order]
+        self.longest = max(
+            (s.time_to - s.time_from for s in self.original), default=timedelta(0)
+        )
+
+    def touching(self, a: datetime, b: datetime) -> list[LevelSegment]:
+        """Return every segment with time_from ≤ b and time_to ≥ a, in list order."""
+        lo = bisect.bisect_left(self.starts, a - self.longest)
+        hi = bisect.bisect_right(self.starts, b)
+        found = sorted(k for k in self.order[lo:hi] if self.original[k].time_to >= a)
+        return [self.original[k] for k in found]
+
+
+Segments = Sequence[LevelSegment] | SegmentIndex
+
+
+def _near(segments: Segments, a: datetime, b: datetime) -> Sequence[LevelSegment]:
+    return segments.touching(a, b) if isinstance(segments, SegmentIndex) else segments
+
+
+def segment_integral_mwh(segments: Segments, a: datetime, b: datetime) -> float:
     """Return the signed energy of piecewise-linear levels over [a, b], MWh.
 
     The governing segment covers each piece (M24); uncovered time counts as zero.
     """
+    segments = _near(segments, a, b)
     cuts = sorted({a, b, *(x for s in segments for x in (s.time_from, s.time_to))})
     total = 0.0
     for lo, hi in zip(cuts, cuts[1:], strict=False):
@@ -108,10 +140,9 @@ def segment_integral_mwh(
     return total
 
 
-def deviation_mwh(
-    boas: Sequence[LevelSegment], pn: Sequence[LevelSegment], a: datetime, b: datetime
-) -> float:
+def deviation_mwh(boas: Segments, pn: Segments, a: datetime, b: datetime) -> float:
     """Return ∫ (governing BOALF level − PN) over [a, b] where an acceptance governs."""
+    boas, pn = _near(boas, a, b), _near(pn, a, b)
     cuts = sorted({a, b, *(x for s in [*boas, *pn] for x in (s.time_from, s.time_to))})
     total = 0.0
     for lo, hi in zip(cuts, cuts[1:], strict=False):
@@ -132,6 +163,7 @@ def instructions(unit: UnitInputs) -> tuple[Instruction, ...]:
     for s in unit.boas:
         if s.acceptance_number is not None and s.acceptance_time is not None:
             by_number[s.acceptance_number].append(s)
+    boas, pn = SegmentIndex(unit.boas), SegmentIndex(unit.pn)
     out = []
     for number, segs in sorted(by_number.items()):
         start = min(s.time_from for s in segs)
@@ -147,7 +179,7 @@ def instructions(unit: UnitInputs) -> tuple[Instruction, ...]:
                 accepted,
                 start,
                 end,
-                deviation_mwh(unit.boas, unit.pn, start, end),
+                deviation_mwh(boas, pn, start, end),
                 tuple(periods),
             )
         )
@@ -192,11 +224,12 @@ def baselines(
 ) -> Baselines:
     """Return the BOA-free observations the baseline medians draw on."""
     busy = {p for s in boas for p in _periods_overlapping(s.time_from, s.time_to)}
+    pn_index = SegmentIndex(pn)
     values: dict[tuple[datetime, tuple[int, int, int]], list[float]] = defaultdict(list)
     for m in meter:
         if m.period_start in busy or m.run_type not in sf_or_later:
             continue
-        pn_mwh = segment_integral_mwh(pn, m.period_start, m.period_start + PERIOD)
+        pn_mwh = segment_integral_mwh(pn_index, m.period_start, m.period_start + PERIOD)
         key = (iso_week(m.period_start), clock_key(m.period_start))
         values[key].append(m.net_mwh - pn_mwh)
     return Baselines(dict(values))
@@ -212,15 +245,39 @@ def _periods_overlapping(a: datetime, b: datetime) -> list[datetime]:
 
 @dataclass(frozen=True)
 class _Published:
-    """Submissions sorted by publish time, for "published before acceptance"."""
+    """Submissions sorted by publish time, for "published before acceptance".
+
+    `by_start` holds, per dataset, (time_from, position in `records`, record)
+    sorted by start, with the longest record's span. It is used only when every
+    record of the dataset has a time_to, so that where a record ends depends on
+    no other record (M9; `record_ends`).
+    """
 
     records: tuple[Submission, ...]
     publish: list[datetime]
+    by_start: dict[str, tuple[list[datetime], list[tuple[int, Submission]], timedelta]]
 
 
 def _published(submissions: Sequence[Submission]) -> _Published:
     ordered = tuple(sorted(submissions, key=lambda s: (s.publish_time, s.serial)))
-    return _Published(ordered, [s.publish_time for s in ordered])
+    by_start = {}
+    for dataset in ("MDO", "MDB"):
+        rows = [
+            (r.time_from, k, r) for k, r in enumerate(ordered) if r.dataset == dataset
+        ]
+        if any(r.time_to is None for _, _, r in rows):
+            continue
+        rows.sort(key=lambda row: (row[0], row[1]))
+        longest = max(
+            (r.time_to - r.time_from for _, _, r in rows if r.time_to),
+            default=timedelta(0),
+        )
+        by_start[dataset] = (
+            [t for t, _, _ in rows],
+            [(k, r) for _, k, r in rows],
+            longest,
+        )
+    return _Published(ordered, [s.publish_time for s in ordered], by_start)
 
 
 def declared_before(
@@ -231,11 +288,47 @@ def declared_before(
     data_end: datetime,
 ) -> float | None:
     """Return MDO (offers) or |MDB| (bids) as published before acceptance (M22)."""
-    known = published.records[: bisect.bisect_left(published.publish, accepted)]
+    cut = bisect.bisect_left(published.publish, accepted)
     minute = accepted.replace(second=0, microsecond=0)
     dataset: Literal["MDO", "MDB"] = "MDO" if side == "offer" else "MDB"
-    (value,) = declared_at(known, dataset, [minute], default_abs_mwh, data_end)
+    if dataset in published.by_start:
+        value = _latest_covering(
+            published, dataset, cut, minute, default_abs_mwh, data_end
+        )
+    else:
+        known = published.records[:cut]
+        (value,) = declared_at(known, dataset, [minute], default_abs_mwh, data_end)
     return None if value is None else abs(value)
+
+
+def _latest_covering(
+    published: _Published,
+    dataset: str,
+    cut: int,
+    minute: datetime,
+    default_abs_mwh: float,
+    data_end: datetime,
+) -> float | None:
+    """`declared_at` for one minute, when every record has a time_to: the record
+    painted last among those published before `cut` that cover `minute` wins."""
+    starts, rows, longest = published.by_start[dataset]
+    lo = bisect.bisect_left(starts, minute - longest)
+    hi = bisect.bisect_right(starts, minute)
+    best: tuple[tuple[datetime, int, datetime, int], Submission, datetime] | None = None
+    for k, record in rows[lo:hi]:
+        if k >= cut:
+            continue
+        assert record.time_to is not None
+        end = min(record.time_to, data_end)
+        if not record.time_from <= minute < end:
+            continue
+        key = (record.publish_time, record.serial, record.time_from, k)
+        if best is None or key > best[0]:
+            best = (key, record, end)
+    if best is None:
+        return None
+    level = record_level(best[1], minute, best[2])
+    return None if abs(level) >= default_abs_mwh else level
 
 
 def measure(
@@ -253,11 +346,12 @@ def measure(
     base = baselines(unit.meter, unit.pn, unit.boas, sf_or_later)
     published = _published(unit.submissions)
     root = math.sqrt(eta)
+    boas, pn = SegmentIndex(unit.boas), SegmentIndex(unit.pn)
     out = []
     for ins in items:
         others = [
             s
-            for s in unit.boas
+            for s in boas.touching(ins.periods[0], ins.periods[-1] + PERIOD)
             if s.acceptance_number != ins.number
             and s.time_from < ins.periods[-1] + PERIOD
             and s.time_to > ins.periods[0]
@@ -276,7 +370,7 @@ def measure(
         missing_baseline = False
         for p, row in zip(ins.periods, rows, strict=True):
             assert row is not None
-            pn_mwh = segment_integral_mwh(unit.pn, p, p + PERIOD)
+            pn_mwh = segment_integral_mwh(pn, p, p + PERIOD)
             share = _overlap(ins.start, ins.end, p, p + PERIOD) / PERIOD
             typical = base.median_mwh(p)
             if typical is None:

@@ -71,6 +71,7 @@ files = [
     "tests/test_unit_scoring.py",
     "tests/test_bands.py",
     "tests/test_claim3.py",
+    "tests/test_regimes.py",
 ]
 
 # Coverage floor for new packages (CODING.md §7); CI runs pytest with --cov.

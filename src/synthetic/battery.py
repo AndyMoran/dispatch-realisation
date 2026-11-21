@@ -251,12 +251,17 @@ class DcEnergy:
 
 @dataclass(frozen=True)
 class Boa:
-    """One accepted instruction: a constant deviation from PN, minutes from start."""
+    """One accepted instruction, minutes from start.
+
+    The BOALF level is PN + deviation_mw in each period, or level_mw throughout
+    where set (Claim 3's regime (ii), an absolute level at MEL or MIL).
+    """
 
     number: int
     accepted_min: int
     end_min: int
     deviation_mw: float
+    level_mw: float | None = None
 
 
 @dataclass(frozen=True)
@@ -1034,12 +1039,18 @@ def planted(
 
 
 def submissions(
-    sim: Simulation, branch: Branch, lag_min: int, faults: Faults | None = None
+    sim: Simulation,
+    branch: Branch,
+    lag_min: int,
+    faults: Faults | None = None,
+    peak: tuple[float, float] | None = None,
 ) -> list[Submission]:
     """Return the battery's MDO and MDB records, declared under `branch`.
 
     The planted fault acts on the meter-side (Branch A) declaration; Branch B
     then converts it, as an honest Branch B declarer would convert its own.
+    `peak` overrides the static profile's peak, which is otherwise this run's own
+    (Claim 3's regime (i) takes it from an honest pass; `regimes`).
     """
     r = sim.physics.root_eta
     a = _working(sim)
@@ -1050,7 +1061,7 @@ def submissions(
         declared_levels(sim, a, publish, end, lag_min, ignore_pn=declare == "ignore_pn")
         for publish, end in times
     ]
-    peak = (
+    peak = peak or (
         max(max(mdo) for mdo, _ in honest),
         min(min(mdb) for _, mdb in honest),
     )
@@ -1100,7 +1111,11 @@ def boa_segments(sim: Simulation) -> list[LevelSegment]:
         )
         accepted = sim.start + timedelta(minutes=boa.accepted_min)
         for lo, hi in zip(cuts, cuts[1:], strict=False):
-            level = float(sim.pn_mw[lo // MINUTES_PER_PERIOD]) + boa.deviation_mw
+            level = (
+                boa.level_mw
+                if boa.level_mw is not None
+                else float(sim.pn_mw[lo // MINUTES_PER_PERIOD]) + boa.deviation_mw
+            )
             out.append(
                 LevelSegment(
                     sim.start + timedelta(minutes=lo),
@@ -1124,13 +1139,17 @@ def meter_periods(sim: Simulation) -> list[MeterPeriod]:
 
 
 def unit_inputs(
-    sim: Simulation, branch: Branch, lag_min: int, faults: Faults | None = None
+    sim: Simulation,
+    branch: Branch,
+    lag_min: int,
+    faults: Faults | None = None,
+    peak: tuple[float, float] | None = None,
 ) -> UnitInputs:
     """Return the run as the claims see a unit (`UnitInputs`)."""
     return build_unit_inputs(
         unit_key=f"synthetic:{sim.scenario.name}:{branch}",
         registered_mw=sim.power_mw,
-        submissions=submissions(sim, branch, lag_min, faults),
+        submissions=submissions(sim, branch, lag_min, faults, peak),
         meter=meter_periods(sim),
         pn=pn_segments(sim),
         boas=boa_segments(sim),

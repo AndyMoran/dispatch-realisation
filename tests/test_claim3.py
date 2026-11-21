@@ -331,6 +331,46 @@ def test_flag_needs_both_branches() -> None:
         flagged_under_both(b, a)
 
 
+def test_cross_branch_shift_exact() -> None:
+    """The √η̂ shift, by exact equations on the hand-built units (η̂ = η = 0.88).
+
+    A-declarer (MDO = 10 at the meter, delivers 8 = (1 − f)·MDO, f = 0.2):
+      under A, r = A/10 and ρ = min(1, 0.8/r): f̂ = 0.2;
+      under B, r_B = A/(√η̂·10) = r/√η̂ and ρ is unchanged, so
+      ρ = min(1, (1 − f_B)/r_B) with f_B = 1 − 0.8/√η̂ = 0.14720 (grid: 0.15).
+    B-declarer (MDO = 10/√η of stored energy, the same 8 deliverable):
+      under B, the deliverable reading is √η̂·10/√η = 10: f̂ = 0.2 exactly when
+      η̂ = η, and f_B = 1 − 0.8·√(η/η̂) in general;
+      under A, r = A·√η/10, so f_A = 1 − 0.8·√η = 0.24953 (grid: 0.25).
+    """
+    root = math.sqrt(ETA)
+    f_b = 1 - 0.8 / root
+    assert f_b == pytest.approx(0.147197, abs=1e-6)
+    a_rows = {round(m.instruction.a_mwh, 6): m for m in measured(make_unit(), "A")}
+    b_rows = {round(m.instruction.a_mwh, 6): m for m in measured(make_unit(), "B")}
+    for a, m in a_rows.items():
+        mb = b_rows[a]
+        assert m.r is not None and mb.r is not None and m.rho is not None
+        assert mb.r == pytest.approx(m.r / root, rel=1e-12)
+        assert mb.rho == m.rho
+        assert m.rho == pytest.approx(min(1.0, (1 - f_b) / mb.r), rel=1e-12)
+    a_scored = score_claim3(make_unit(), ADOPTION, END, SETTINGS, "B")
+    assert a_scored.offers is not None and a_scored.offers.fit is not None
+    assert a_scored.offers.fit.f_hat == pytest.approx(0.15)
+
+    b_unit = make_unit(declared=10.0 / root)
+    f_a = 1 - 0.8 * root
+    assert f_a == pytest.approx(0.249533, abs=1e-6)
+    for branch, want in (("B", 0.2), ("A", 0.25)):
+        res = score_claim3(b_unit, ADOPTION, END, SETTINGS, branch)  # type: ignore[arg-type]
+        assert res.eta_hat == pytest.approx(ETA)
+        assert res.offers is not None and res.offers.fit is not None
+        assert res.offers.fit.f_hat == pytest.approx(want)
+    for m in measured(b_unit, "A"):
+        if m.r is not None and m.rho is not None and m.r <= 1:
+            assert m.rho == pytest.approx(min(1.0, (1 - f_a) / m.r), rel=1e-12)
+
+
 def test_honest_unit_is_not_flagged() -> None:
     """cap 12: every offer delivered in full, ρ = 1, f̂ = 0; nothing lies beyond the
     kink, so the slope check is unavailable and the unit not identified."""
@@ -407,3 +447,90 @@ def test_wall_is_read_at_the_acceptance_period() -> None:
     the placebo set. Read at the start of delivery instead, all 14 would be."""
     res = score_claim3(make_unit(charge_lead=1), ADOPTION, END, SETTINGS, "A")
     assert res.offers is not None and res.offers.placebo_size == 0
+
+
+# ------------------------------------------------------------------ fast paths
+
+
+def random_segments(rng: np.random.Generator, n: int) -> list[LevelSegment]:
+    """Overlapping, ramping segments with tied acceptance numbers and starts (so
+    list order decides the governing segment), in any order."""
+    out = []
+    for _ in range(n):
+        start = WEEK + timedelta(minutes=60 * int(rng.integers(0, 10)))
+        length = timedelta(minutes=int(rng.integers(1, 120)))
+        number = int(rng.integers(1, 4)) if rng.random() < 0.8 else None
+        out.append(
+            LevelSegment(
+                start,
+                start + length,
+                float(rng.normal(0, 20)),
+                float(rng.normal(0, 20)),
+                acceptance_number=number,
+                acceptance_time=start if number else None,
+            )
+        )
+    return out
+
+
+def test_segment_index_gives_identical_integrals() -> None:
+    rng = np.random.default_rng(7)
+    for _ in range(200):
+        boas, pn = random_segments(rng, 15), random_segments(rng, 10)
+        a = WEEK + timedelta(minutes=int(rng.integers(0, 600)))
+        b = a + timedelta(minutes=int(rng.integers(0, 200)))
+        bi, pi = ins.SegmentIndex(boas), ins.SegmentIndex(pn)
+        assert ins.segment_integral_mwh(bi, a, b) == ins.segment_integral_mwh(
+            boas, a, b
+        )
+        assert ins.deviation_mwh(bi, pi, a, b) == ins.deviation_mwh(boas, pn, a, b)
+
+
+def random_records(
+    rng: np.random.Generator, n: int, open_ended: bool
+) -> list[Submission]:
+    out = []
+    for _ in range(n):
+        # coarse times, so records tie on publish time, serial and start
+        start = WEEK + timedelta(minutes=30 * int(rng.integers(0, 10)))
+        publish = start - timedelta(minutes=30 * int(rng.integers(0, 2)))
+        end = (
+            None
+            if open_ended and rng.random() < 0.3
+            else start + timedelta(minutes=int(rng.integers(1, 90)))
+        )
+        dataset = str(rng.choice(["MDO", "MDB"]))
+        sign = 1.0 if dataset == "MDO" else -1.0
+        level_to = None if rng.random() < 0.3 else sign * abs(rng.normal(20, 10))
+        first = 9999.0 if rng.random() < 0.05 else abs(rng.normal(20, 10))
+        out.append(
+            Submission(
+                dataset,  # type: ignore[arg-type]
+                start,
+                end,
+                sign * float(first),
+                None if level_to is None else float(level_to),
+                publish,
+                int(rng.integers(0, 2)),
+            )
+        )
+    return out
+
+
+@pytest.mark.parametrize("open_ended", [False, True])
+def test_declared_before_matches_declared_at(open_ended: bool) -> None:
+    """With every time_to present the fast path is used; it returns exactly what
+    `declared_at` returns over the records published before acceptance."""
+    from src.physics.declared import declared_at
+
+    rng = np.random.default_rng(11)
+    for _ in range(300):
+        records = random_records(rng, 25, open_ended)
+        published = ins._published(records)
+        accepted = WEEK + timedelta(minutes=int(rng.integers(0, 330)), seconds=30)
+        known = [r for r in published.records if r.publish_time < accepted]
+        minute = accepted.replace(second=0)
+        for side, dataset in (("offer", "MDO"), ("bid", "MDB")):
+            (want,) = declared_at(known, dataset, [minute], 9999.0, END)  # type: ignore[arg-type]
+            got = ins.declared_before(published, side, accepted, 9999.0, END)  # type: ignore[arg-type]
+            assert got == (None if want is None else abs(want))
