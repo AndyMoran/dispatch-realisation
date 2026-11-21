@@ -14,14 +14,14 @@ The suite ran each battery in §8's table 100 times at each length, under §8's 
 - **(ii) sized to MEL × duration:** the instruction runs at MEL less the battery's contracted response, so that its power plus response stays within 50 MW.
 - **(iii) sized to PN deviation only:** a turn-down of the flow PN schedules, at *u* × the smallest |PN| over the instruction.
 
-Each battery ran twice: as an **A-declarer**, whose declarations follow Branch A (MDO as energy at the meter), and as a **B-declarer**, whose declarations follow Branch B (MDO as stored energy). Each declarer's declarations were scored under both branches. A run is **flagged** only if all four conditions of §5.7 hold under both scoring branches. The pass rules, the sizing rules and the delivery model were fixed before the run (PROJECT.md §11, 21 November 2026). The code is at `9bf6ed1`.
+Each battery ran twice. An **A-declarer** declares under Branch A, reading MDO as energy at the meter. A **B-declarer** declares under Branch B, reading MDO as stored energy. Each declarer's declarations were scored under both branches. A run is **flagged** only if all four conditions of §5.7 hold under both scoring branches. The pass rules, the sizing rules and the delivery model were fixed before the run (PROJECT.md §11, 21 November 2026). The code is at `9bf6ed1`.
 
 ## Results
 
 Every judged cell passed except two groups. Each row gives the runs in band out of 100, for the A-declarer and the B-declarer, at each length. What "in band" means depends on the cell:
 
 - **Not flagged** (honest, under-declaration, fast redeclarer): the run was scored under both branches and not flagged. The fast redeclarer's run must also have no instruction with *r* > 1 in its matched scoring (A-declarer under A, B-declarer under B).
-- **Flagged, with the estimate in band** (the two over-declarers): the run was flagged, and its matched estimate lay in §8's band: Δ̂ in [7, 13] MWh, or *f̂* in [0.15, 0.25].
+- **Flagged, with the estimate in band** (the two over-declarers): the run was flagged, and its matched estimate lay in §8's band. That band is Δ̂ in [7, 13] MWh, or *f̂* in [0.15, 0.25].
 - **Flagged, or not identified** (static profile): the run was flagged, or was not identified under at least one scoring branch.
 
 Unscored runs count as out of band. The table groups some batteries and regimes; [`outputs/known_answer/claim3.json`](../../outputs/known_answer/claim3.json) holds every cell, including the report-only ones.
@@ -54,7 +54,7 @@ The placebo set is a control group, chosen by a computed criterion. It includes 
 
 A diagnostic rerun checked this for runs 0–9 at 20 weeks: regime (i), the A-declarer, scored under Branch A only. It used the suite's seeds and rebuilt the scoring code's own placebo set, whose wall uses that scoring's η̂ ([`src/synthetic/claim3_diagnosis.py`](../../src/synthetic/claim3_diagnosis.py); output in [`outputs/known_answer/claim3_diagnosis.json`](../../outputs/known_answer/claim3_diagnosis.json)). Placebo *f̂* was 0.04–0.19 for the proportional battery and 0.31–0.44 for the constant battery. In most runs the placebo interval excluded zero, so §5.7's third condition failed.
 
-The simulation's ground truth shows why. The table gives the diagnostic aggregate over those ten runs. It sorts each placebo offer that fell short into one of two mutually exclusive classes, by whether the battery's simulated true stock (√η × stored energy at acceptance) was at least *A*.
+The simulation's ground truth shows why. The table gives the diagnostic aggregate over those ten runs. It sorts each placebo offer that fell short into one of two mutually exclusive classes. The test is whether the battery's simulated true stock, √η × stored energy at acceptance, was at least *A*.
 
 | Battery (A-declarer, A-scored, runs 0–9) | Placebo offers | Fell short | True stock ≥ *A*: stopped by protection | True stock < *A*: wall above true stock |
 |---|---|---|---|---|
@@ -62,7 +62,7 @@ The simulation's ground truth shows why. The table gives the diagnostic aggregat
 | Constant, Δ = 10 MWh | 1,578 | 253 | 215 | 38 |
 | Honest | 1,921 | 0 | 0 | 0 |
 
-- **True stock ≥ *A*: stopped by protection.** The battery held at least *A*, but its deliverable energy after protecting scheduled PN, known instructions and contracts was smaller, and it stopped there. In every such case the protected energy was positive. The lower wall counts stored energy and cannot see protection.
+- **True stock ≥ *A*: stopped by protection.** The battery held at least *A*. Its deliverable energy after protecting scheduled PN, known instructions and contracts was smaller, and it stopped there. In every such case the protected energy was positive. The lower wall counts stored energy and cannot see protection.
 - **True stock < *A*: wall above true stock.** The battery held less than *A*, but the computed lower wall was at least *A*. The wall depends on η̂, and an error in η̂ displaces it, as with Claim 2's wall (ASSUMPTIONS P11).
 
 The totals add up: 93 = 64 + 29, and 253 = 215 + 38. Protection and η̂ error broke the link between a wall at or above *A* and energy deliverable after protection. This is recorded in ASSUMPTIONS P12. It shows what the criterion failed to establish in these runs, not that the physical reasoning fails in general. The diagnosis explains the miss; it does not change the gate.
