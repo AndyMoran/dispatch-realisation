@@ -20,7 +20,9 @@ weeks is contract-free, and Claim 2's hard flag is not scored for it, as for any
 unit with contract time (§4).
 
 Usage:
-    uv run python -m src.synthetic.bands              # all bands, writes outputs
+    uv run python -m src.synthetic.bands              # first-run lengths (CI)
+    uv run python -m src.synthetic.bands --lengths all \
+        --output outputs/known_answer/claims12_by_length.json   # deviation 2
 """
 
 from __future__ import annotations
@@ -53,6 +55,9 @@ from src.synthetic.settings import SYNTHETIC_TOML, load_synthetic_settings
 
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "outputs" / "known_answer" / "claims12.json"
+# The lengths of the first run (18 Nov 2026), kept as the default so CI reproduces
+# its committed results. Deviation 2 (PREREGISTRATION §12) adds the others.
+FIRST_RUN_LENGTHS = ("short", "long")
 SCHEMA_VERSION = "1.0"
 BRANCHES: tuple[Branch, Branch] = ("A", "B")
 NOT_SCORED = "not scored: "
@@ -221,15 +226,26 @@ def summarise(
     }
 
 
+def length_indices(names: Sequence[str]) -> list[int]:
+    """Return the configured index of each named run length (its seed index)."""
+    configured = [length.name for length in load_synthetic_settings().lengths]
+    unknown = [n for n in names if n not in configured]
+    if unknown:
+        raise ValueError(f"unknown run lengths {unknown}; configured: {configured}")
+    return [configured.index(n) for n in names]
+
+
 def run_suite(
-    bands: Sequence[Band], runs: int, workers: int | None = None
+    bands: Sequence[Band],
+    runs: int,
+    lengths: Sequence[str] = FIRST_RUN_LENGTHS,
+    workers: int | None = None,
 ) -> dict[str, object]:
-    """Run every band's battery `runs` times at each length; return the summary."""
-    settings = load_synthetic_settings()
+    """Run every band's battery `runs` times at each named length; summarise."""
     jobs = [
         (b, li, r)
         for b in range(len(bands))
-        for li in range(len(settings.lengths))
+        for li in length_indices(lengths)
         for r in range(runs)
     ]
     with ProcessPoolExecutor(max_workers=workers or os.cpu_count()) as pool:
@@ -244,16 +260,41 @@ def main(argv: Sequence[str] | None = None) -> int:
     """Run the Claims 1–2 bands, write the summary, return 1 if a build band fails."""
     parser = argparse.ArgumentParser(description="Claims 1–2 known-answer bands")
     parser.add_argument("--output", type=Path, default=OUTPUT)
+    parser.add_argument(
+        "--lengths",
+        default=",".join(FIRST_RUN_LENGTHS),
+        help="run lengths by name, comma-separated, or 'all'",
+    )
+    parser.add_argument(
+        "--report-only",
+        action="store_true",
+        help="exit 0 even if a build band fails (reproducing a recorded run)",
+    )
     args = parser.parse_args(argv)
+    names = (
+        [length.name for length in load_synthetic_settings().lengths]
+        if args.lengths == "all"
+        else args.lengths.split(",")
+    )
     runs = load_params().integer("known_answer.runs")
-    summary = run_suite(HONEST_BANDS, runs)
+    summary = run_suite(HONEST_BANDS, runs, names)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     tmp = args.output.with_suffix(".tmp")
     tmp.write_text(
         json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     os.replace(tmp, args.output)
-    return 0 if summary["build_bands_passed"] else 1
+    return 0 if args.report_only or summary["build_bands_passed"] else 1
+
+
+def same_results(a: dict[str, object], b: dict[str, object]) -> bool:
+    """Return whether two summaries agree in everything but the settings hash.
+
+    The settings file gains entries over time (deviation 2 added run lengths); a
+    rerun reproduces a recorded run if every cell and verdict is identical.
+    """
+    keep = {k for k in a.keys() | b.keys() if k != "settings_sha256"}
+    return all(a.get(k) == b.get(k) for k in keep)
 
 
 if __name__ == "__main__":

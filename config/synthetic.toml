@@ -38,7 +38,11 @@ master_seed = 20261119
 # Each length is one unscored adoption week, then its scored weeks (ISO weeks, UTC).
 # Both end on Sunday 25 Oct 2026, the 25-hour UK day, and use frequency files
 # June–October 2026, the latest published when this was fixed.
-lengths = ["short", "long"]
+# short and long were fixed on 18 Nov 2026 and keep their seed indices 0 and 1.
+# The intermediate lengths were added on 21 Nov 2026 by deviation 2
+# (PREREGISTRATION §12), before any of them was run; their seed indices follow in
+# the order listed. Every run ends on 25 Oct 2026.
+lengths = ["short", "long", "w5", "w6", "w7", "w8", "w10", "w12", "w16"]
 
 [runs.short]
 adoption_week_start = "2026-09-21"
@@ -47,6 +51,34 @@ scored_weeks = 4
 [runs.long]
 adoption_week_start = "2026-06-01"
 scored_weeks = 20
+
+[runs.w5]
+adoption_week_start = "2026-09-14"
+scored_weeks = 5
+
+[runs.w6]
+adoption_week_start = "2026-09-07"
+scored_weeks = 6
+
+[runs.w7]
+adoption_week_start = "2026-08-31"
+scored_weeks = 7
+
+[runs.w8]
+adoption_week_start = "2026-08-24"
+scored_weeks = 8
+
+[runs.w10]
+adoption_week_start = "2026-08-10"
+scored_weeks = 10
+
+[runs.w12]
+adoption_week_start = "2026-07-27"
+scored_weeks = 12
+
+[runs.w16]
+adoption_week_start = "2026-06-29"
+scored_weeks = 16
 
 [bands]
 # A battery passes a band when, in each run length and each matched pair (declared

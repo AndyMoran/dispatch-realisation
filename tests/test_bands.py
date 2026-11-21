@@ -82,3 +82,24 @@ def test_contracted_battery_band_is_no_hard_flag() -> None:
     assert bd.HONEST_BANDS[1].claim2 == frozenset({bd.NO_HARD_FLAG})
     runs = [outcome("coherent", bd.NO_HARD_FLAG)] * 100
     assert bd.summarise(bd.HONEST_BANDS, {(1, 1): runs}, 100)["build_bands_passed"]
+
+
+def test_length_indices_follow_the_settings() -> None:
+    """short and long keep seed indices 0 and 1; added lengths follow in order."""
+    assert bd.length_indices(["short", "long"]) == [0, 1]
+    assert bd.length_indices(["w5", "w16"]) == [2, 8]
+    assert bd.FIRST_RUN_LENGTHS == ("short", "long")
+
+
+def test_unknown_length_refused() -> None:
+    import pytest
+
+    with pytest.raises(ValueError, match="unknown run lengths"):
+        bd.length_indices(["w9"])
+
+
+def test_same_results_ignores_only_the_settings_hash() -> None:
+    a = {"settings_sha256": "x", "cells": [1], "build_bands_passed": False}
+    assert bd.same_results(a, {**a, "settings_sha256": "y"})
+    assert not bd.same_results(a, {**a, "cells": [2]})
+    assert not bd.same_results(a, {**a, "build_bands_passed": True})

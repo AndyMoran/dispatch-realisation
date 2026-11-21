@@ -6,7 +6,7 @@ NESO can see which batteries hold contracts that lawfully lower their declaratio
 
 This project checks each GB battery's declarations against its own meter, and reports both what can be checked and what the published data stop anyone checking.
 
-**Status:** pre-registration locked on 18 November 2026 ([DOI](https://doi.org/10.5281/zenodo.24343931)), with one deviation recorded before scoring ([DOI](https://doi.org/10.5281/zenodo.24354704)); nothing has been scored. Nothing here is a result yet.
+**Status:** pre-registration locked on 18 November 2026 ([DOI](https://doi.org/10.5281/zenodo.24343931)), with two deviations recorded before scoring (§12): nested resampling ([DOI](https://doi.org/10.5281/zenodo.24354704)), and, after the first known-answer run failed at 4 weeks, Claim 1 reported only at lengths where its tests pass and Claim 2's wall reported as failing (tag `v1.0.2-lock`). No real unit has been scored. Nothing here is a result yet.
 
 ---
 

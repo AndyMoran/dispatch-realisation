@@ -23,8 +23,9 @@ jobs:
       - name: Run tests, with coverage of new packages (CODING.md §7)
         run: uv run pytest -q --cov --cov-report=term
 
-  # Known-answer bands for Claims 1–2 (PREREGISTRATION §8). A missed build band
-  # fails the job. Once results are committed, a rerun must reproduce them exactly.
+  # Known-answer bands for Claims 1–2 (PREREGISTRATION §8). The first run (18 Nov
+  # 2026) failed its 4-week bands; that result stands and is reproduced here, not
+  # re-judged. Deviation 2 (§12) gates scoring by length once every battery exists.
   known-answer:
     needs: test
     runs-on: ubuntu-24.04
@@ -33,7 +34,12 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - name: Install locked dependencies
         run: uv sync --locked
-      - name: Run the Claims 1–2 bands (PREREGISTRATION §8)
-        run: uv run python -m src.synthetic.bands
-      - name: Check committed results reproduce
-        run: git diff --exit-code -- outputs/known_answer/claims12.json
+      - name: Rerun the first Claims 1–2 band run (PREREGISTRATION §8)
+        run: uv run python -m src.synthetic.bands --report-only --output rerun.json
+      - name: Check the committed first run reproduces
+        run: >-
+          uv run python -c "import json, sys;
+          from src.synthetic.bands import same_results as same;
+          a = json.load(open('outputs/known_answer/claims12.json'));
+          b = json.load(open('rerun.json'));
+          sys.exit(0 if same(a, b) else 1)"

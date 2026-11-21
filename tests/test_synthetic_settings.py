@@ -16,7 +16,7 @@ from src.synthetic.settings import (
 # and before any frequency file was read (PROJECT.md §11). Change it only with a
 # decision-log row, and never after the first real unit is scored (§8).
 SYNTHETIC_TOML_SHA256 = (
-    "8acc530922ccabba7caee8285c748a127fcf6a439857f428cfb78586083c28ff"
+    "e5d2df8219a7263f869d14dabf660d457f1a62309330fcf9ce181f3d17ecbe35"
 )
 
 
@@ -31,7 +31,10 @@ def test_settings_load_with_agreed_values() -> None:
     s = load_synthetic_settings()
     assert s.battery.power_mw == pytest.approx(50.0)
     assert s.master_seed == 20261119
-    short, long = s.lengths
+    short, long, *added = s.lengths
+    assert [x.name for x in added] == ["w5", "w6", "w7", "w8", "w10", "w12", "w16"]
+    assert [x.scored_weeks for x in added] == [5, 6, 7, 8, 10, 12, 16]
+    assert all(x.end == datetime(2026, 10, 26, tzinfo=UTC) for x in added)
     assert (short.name, short.scored_weeks) == ("short", 4)
     assert short.first_scored_week == datetime(2026, 9, 28, tzinfo=UTC)
     assert (long.name, long.scored_weeks) == ("long", 20)
@@ -97,7 +100,12 @@ def edited(tmp_path: Path, old: str, new: str) -> Path:
         ('last_day = "2026-10-25"', 'last_day = "2026-05-01"', "before"),
         ("master_seed = 20261119", "master_seed = -1", "master_seed"),
         ("honest_lag_min = 1", "honest_lag_min = true", "honest_lag_min"),
-        ('lengths = ["short", "long"]', "lengths = []", "at least one"),
+        ('lengths = ["short", "long", "w5"', 'lengths = ["x"', "missing table"),
+        (
+            'lengths = ["short", "long", "w5", "w6", "w7", "w8", "w10", "w12", "w16"]',
+            "lengths = []",
+            "at least one",
+        ),
         ('source = "NESO', 'source_old = "NESO', "service terms"),
         ('url_prefix = "https://', 'url_prefix = "http://', "https"),
     ],
