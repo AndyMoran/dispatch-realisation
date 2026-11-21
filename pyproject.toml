@@ -59,6 +59,7 @@ files = [
     "src/physics",
     "src/claims",
     "src/synthetic",
+    "src/claim3",
     "tests/test_model_types.py",
     "tests/test_claims_params.py",
     "tests/test_physics.py",
@@ -69,11 +70,12 @@ files = [
     "tests/test_battery.py",
     "tests/test_unit_scoring.py",
     "tests/test_bands.py",
+    "tests/test_claim3.py",
 ]
 
 # Coverage floor for new packages (CODING.md §7); CI runs pytest with --cov.
 [tool.coverage.run]
-source = ["src/model", "src/physics", "src/claims", "src/synthetic"]
+source = ["src/model", "src/physics", "src/claims", "src/synthetic", "src/claim3"]
 branch = true
 
 [tool.coverage.report]
