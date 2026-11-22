@@ -1,6 +1,6 @@
 # Claim 4 synthetic check: rule
 
-*For a reviewer checking that Claim 4's known-answer gate was fixed before it ran. Approved by Andy on 21 November 2026 as deviation 3 (PREREGISTRATION §12, tag `v1.0.3-lock`). No Claim 4 result for any battery, synthetic or real, existed when it was approved.*
+*For a reviewer checking that Claim 4's known-answer gate was fixed before it ran. Approved by Andy on 21 November 2026 as deviation 3 (PREREGISTRATION §12, tag `v1.0.3-lock`). Its rule for public release, below, was approved by Andy the same day and locked separately as deviation 4 (tag `v1.0.4-lock`). No Claim 4 result for any battery, synthetic or real, existed when either was approved.*
 
 **The rule in one sentence.** Before any nameplate is searched for, honest synthetic batteries are scored on Claim 4 against a ceiling set at the most energy each could actually have delivered; if any of them shows an upper-wall violation in more than 5 of 100 runs, for either declarer, at either 4 or 20 weeks, Claim 4 is not run on real units in version 1.
 
@@ -40,8 +40,17 @@ The gate is deliberately at least as strict as Claim 4's use on real units, whos
 - **Any miss:** no nameplate search. Claim 4 is not run on real units in version 1. The check's result is published with the other known-answer results, as a limit set by efficiency, like Claim 2's (P11).
 - **Either way:** the reported ceilings, the cross pairs, the over-declarers' detection rates and the counts of physics-inconsistent weeks are published. No battery, ceiling, threshold or rule changes after the run.
 
+## Public release of Claim 4 results on real units
+
+Added by deviation 4 (PREREGISTRATION §12, tag `v1.0.4-lock`). This governs release only. It changes no scoring, ceiling, threshold or gate, and it is fixed before the check runs.
+
+- **Minimum cell size.** No public figure reports a count, share or rate drawn from fewer than 5 units. Five is a minimum, not an anonymity guarantee.
+- **Complementary suppression.** If a suppressed figure could be recovered by subtraction, from a published total, an overlapping aggregate or another published cell, those figures are suppressed too.
+- **Identifiability check.** Before release, each public Claim 4 figure is read against public nameplate disclosures and the project's other published outputs. If it would identify a unit, or narrow the units with violations to fewer than 5, it is suppressed. If the few units with disclosed nameplates remain identifiable however the figures are cut, the public Claim 4 aggregate is withheld altogether. The report then says it was withheld to honour version 1's commitment to name no unit. In doubt, withhold.
+- **Unchanged.** The synthetic check's results are published in full, since they concern no real unit. A Claim 4 case note on a unit may still go privately to that unit's own lead party (PROJECT.md §7a).
+
 ## Order of work
 
-1. This rule, the §12 entry and the decision-log row are committed, and `v1.0.3-lock` is tagged and archived, before any Claim 4 code runs on any battery.
+1. This rule, the §12 entries and the decision-log rows are committed, and `v1.0.3-lock` and `v1.0.4-lock` are tagged and archived, before any Claim 4 code runs on any battery.
 2. Claim 4 code with hand-worked tests and planted bugs, and the check runner, are committed.
 3. The check runs once; its results are committed; the outcome follows the rule above.
