@@ -4,7 +4,7 @@
 
 NESO can see which batteries hold contracts that lawfully lower their declarations. Nobody outside NESO can. So the declarations the control room now relies on cannot be checked independently from published data.
 
-This project checks each GB battery's declarations against its own meter, and reports both what can be checked and what the published data stop anyone checking.
+Version 1 delivers a preregistered auditability assessment of GB public balancing data for verifying battery declarations. It documents two key data gaps, tests the proposed checks against synthetic batteries with known ground truth, and measures where those checks work, where they fail, and why. It reports the fleet-level findings and data limitations, but makes no per-unit finding of over- or under-declaration. The open, tested pipeline provides a basis for future work with better data or revised methods.
 
 **Status:** pre-registration locked on 18 November 2026 ([DOI](https://doi.org/10.5281/zenodo.24343931)), with two deviations recorded before scoring (§12): nested resampling ([DOI](https://doi.org/10.5281/zenodo.24354704)), and, after the first known-answer run failed at 4 weeks, Claim 1 reported only at lengths where its tests pass and Claim 2's wall reported as failing ([DOI](https://doi.org/10.5281/zenodo.24416574)). Claim 3 is dropped from version 1: its known-answer suite missed its bands, as §8 provides ([result](docs/results/claim3_known_answer.md)). No real unit has been scored.
 
@@ -18,7 +18,7 @@ Since 2026, Grid Code modification **GC0166** has required batteries to declare 
 
 Yet the control room often skips cheaper batteries and runs gas instead. NESO's own review of why rated zonal allocation, frequency response and reserve services among the strongest causes. It finished in April 2026, before declarations were published, so it could not test them. This project tests that one hypothesis.
 
-So the question is simple: **are the declarations physically true?** A battery's meter records every MWh that goes in and out. If its declarations say the tank held more, or less, than the meter allows, the declarations are wrong. This project audits that, for every battery unit, from public data only. It publishes fleet-level results and the method, and sends each lead party its own units' descriptive results privately.
+So the question is simple: **are the declarations physically true?** A battery's meter records every MWh that goes in and out. If its declarations say the tank held more, or less, than the meter allows, the declarations are wrong. This project tests how far public data can answer that, for every battery unit. It publishes fleet-level results and the method, and sends each lead party its own units' descriptive results privately.
 
 The answer so far is "partly". GB's published data serve settlement first and audit second. Two gaps stop a complete audit: no register records how much energy each battery holds, and NESO's auction results do not say which BM unit holds each contract. Neither needs new measurement: the auction mapping needs publishing; the energy register needs an existing field filled and sites keyed to BM units.
 
