@@ -6,7 +6,7 @@ NESO can see which batteries hold contracts that lawfully lower their declaratio
 
 Version 1 delivers a preregistered auditability assessment of GB public balancing data for verifying battery declarations. It documents two key data gaps, tests the proposed checks against synthetic batteries with known ground truth, and measures where those checks work, where they fail, and why. It reports the fleet-level findings and data limitations, but makes no per-unit finding of over- or under-declaration. The open, tested pipeline provides a basis for future work with better data or revised methods.
 
-**Status:** pre-registration locked on 18 November 2026 ([DOI](https://doi.org/10.5281/zenodo.24343931)), with two deviations recorded before scoring (§12): nested resampling ([DOI](https://doi.org/10.5281/zenodo.24354704)), and, after the first known-answer run failed at 4 weeks, Claim 1 reported only at lengths where its tests pass and Claim 2's wall reported as failing ([DOI](https://doi.org/10.5281/zenodo.24416574)). Claim 3 is dropped from version 1: its known-answer suite missed its bands, as §8 provides ([result](docs/results/claim3_known_answer.md)). No real unit has been scored.
+**Status:** pre-registration locked on 18 November 2026 ([DOI](https://doi.org/10.5281/zenodo.24343931)), with four deviations recorded before scoring (§12): nested resampling ([DOI](https://doi.org/10.5281/zenodo.24354704)), and, after the first known-answer run failed at 4 weeks, Claim 1 reported only at lengths where its tests pass and Claim 2's wall reported as failing ([DOI](https://doi.org/10.5281/zenodo.24416574)). Two more followed the known-answer results: a known-answer gate for Claim 4, with version 1 bounded as an auditability assessment ([DOI](https://doi.org/10.5281/zenodo.24439737)), and a rule for releasing Claim 4 results without identifying any unit ([DOI](https://doi.org/10.5281/zenodo.24439749)). Claim 3 is dropped from version 1: its known-answer suite missed its bands, as §8 provides ([result](docs/results/claim3_known_answer.md)). No real unit has been scored.
 
 ---
 
@@ -100,6 +100,8 @@ Neither Elexon nor NESO endorses this project. Scores, flags and estimates here 
 
 Cite the latest lock. Each is archived on Zenodo:
 
+- Deviation 4 (Claim 4 release rule; `PREREGISTRATION.md` §12): Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24439749 (tag `v1.0.4-lock`, commit 5e4689e).
+- Deviation 3 (Claim 4 known-answer gate; version 1 as an auditability assessment; `PREREGISTRATION.md` §12): Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24439737 (tag `v1.0.3-lock`, commit d730c86).
 - Deviation 2 (Claim 1 reported by length; Claim 2 reported as failing its band; `PREREGISTRATION.md` §12): Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24416574 (tag `v1.0.2-lock`, commit 34d9626).
 - Deviation 1 (nested resampling of unit-score intervals; `PREREGISTRATION.md` §12): Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24354704 (tag `v1.0.1-lock`, commit c933d76).
 - Pre-registration lock, version 1: https://doi.org/10.5281/zenodo.24343931 (tag `v1.0-lock`, commit 4395934).

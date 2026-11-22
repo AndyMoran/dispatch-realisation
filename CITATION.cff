@@ -17,6 +17,12 @@ authors:
     orcid: "https://orcid.org/0009-0004-2194-8084"
 identifiers:
   - type: doi
+    value: 10.5281/zenodo.24439749
+    description: "Deviation 4, Claim 4 release rule (tag v1.0.4-lock)"
+  - type: doi
+    value: 10.5281/zenodo.24439737
+    description: "Deviation 3, Claim 4 known-answer gate; version 1 as an auditability assessment (tag v1.0.3-lock)"
+  - type: doi
     value: 10.5281/zenodo.24416574
     description: "Deviation 2, Claim 1 eligibility by length (tag v1.0.2-lock)"
   - type: doi
