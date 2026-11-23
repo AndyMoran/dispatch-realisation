@@ -56,7 +56,7 @@ Version 1 publishes the fleet-level results still in scope, the known-answer res
 
 Version 1 makes no per-unit finding of over- or under-declaration, and no unit is named publicly. Unit-level findings may be considered in a later version only after the five conditions in §11 are met.
 
-Each lead party receives a private pack for its own units, with the method and descriptive results only: the Claim 1 score and interval, the Claim 2 lower-wall status with its contract-exposed and unknown-status shares, and Claim 5 latency. A score describes how closely a unit's declarations tracked its meter; a flag would call that an over- or under-declaration. The packs carry scores but no flags, and no Claim 3 results.
+Each lead party receives a private pack for its own units, with the method and descriptive results only: the Claim 1 score and interval, the Claim 2 lower-wall status over weeks not certified contract-free (version 1 cannot separate contract-exposed weeks from those of unknown status), and Claim 5 latency. A score describes how closely a unit's declarations tracked its meter; a flag would call that an over- or under-declaration. The packs carry scores but no flags, and no Claim 3 results.
 
 ### How to read the results
 
