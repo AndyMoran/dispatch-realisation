@@ -2,8 +2,11 @@
 
 Design fixed in the decision log on 23 Nov 2026 before any of this ran:
 
-- Every chunk is one settlement date, periods 1 to 50, so chunks neither overlap
-  nor leave a gap, whichever way an endpoint treats the ends of a time range.
+- PN, BOALF and B1610 chunks are one settlement date, periods 1 to 50, so they
+  neither overlap nor leave a gap. MDO and MDB do not accept that form (the first
+  probe, 23 Nov 2026, returned no rows), so their chunks are one UTC day as a
+  timestamp range, inclusive at both ends (R12a); the boundary duplicates are
+  removed later as exact duplicates, as Gate A1 does.
 - Each response is saved as downloaded to `data/raw/pull/<dataset>/` and gets one
   manifest row (`data/manifests/pull_manifest.csv`): dataset, URL and parameters
   without the unit list, the number of units and a SHA-256 of their sorted IDs,
@@ -105,12 +108,23 @@ STREAM = {
     "PN": "/datasets/PN/stream",
     "BOALF": "/datasets/BOALF/stream",
 }
+TIMESTAMP_RANGE = frozenset({"MDO", "MDB"})
 
 
 def stream_request(dataset: str, day: date, units: Sequence[str]) -> Request:
-    """Return one settlement date, periods 1–50, for `units` (MDO, MDB, PN, BOALF)."""
+    """Return one chunk for `units`: a settlement date, periods 1–50 (PN, BOALF),
+    or one UTC day as an inclusive timestamp range (MDO, MDB; R12a)."""
     if dataset not in STREAM:
         raise PullError(f"not a stream dataset: {dataset}")
+    if dataset in TIMESTAMP_RANGE:
+        nxt = day + timedelta(days=1)
+        params = [
+            ("from", f"{day.isoformat()}T00:00Z"),
+            ("to", f"{nxt.isoformat()}T00:00Z"),
+        ]
+        return Request(
+            dataset, day, STREAM[dataset], tuple(params), tuple(sorted(units))
+        )
     d = day.isoformat()
     params = [
         ("from", d),
@@ -124,7 +138,12 @@ def stream_request(dataset: str, day: date, units: Sequence[str]) -> Request:
 def b1610_request(day: date, units: Sequence[str]) -> Request:
     """Return one settlement date of B1610, every settlement run type (M6)."""
     d = day.isoformat()
-    params = (("settlementDateFrom", d), ("settlementDateTo", d))
+    params = (
+        ("settlementDateFrom", d),
+        ("settlementDateTo", d),
+        ("settlementPeriodFrom", "1"),
+        ("settlementPeriodTo", "50"),
+    )
     return Request("B1610", day, "/datasets/B1610/stream", params, tuple(sorted(units)))
 
 
@@ -157,7 +176,9 @@ def http_get(url: str, timeout: float = 120.0) -> bytes:
     return body
 
 
-def get_with_retry(get: Getter, url: str, tries: int = 3, wait_s: float = 5.0) -> bytes:
+def get_with_retry(
+    get: Getter, url: str, tries: int = 3, wait_s: float | None = None
+) -> bytes:
     """Return `get(url)`, retrying a failure up to `tries` times in all."""
     pause = RETRY_WAIT_S if wait_s is None else wait_s
     last: Exception | None = None

@@ -51,6 +51,17 @@ def test_stream_request_is_one_settlement_date() -> None:
         stream_request("B1610", D, [])
 
 
+def test_mdo_and_mdb_use_a_utc_day_as_a_timestamp_range() -> None:
+    for dataset in ("MDO", "MDB"):
+        r = stream_request(dataset, D, ["U1"])
+        q = urllib.parse.parse_qsl(urllib.parse.urlsplit(r.url).query)
+        assert q == [
+            ("from", "2026-10-14T00:00Z"),
+            ("to", "2026-10-15T00:00Z"),
+            ("bmUnit", "U1"),
+        ]
+
+
 def test_public_url_and_manifest_keep_unit_ids_out() -> None:
     r = stream_request("BOALF", D, ["U2", "U1"])
     assert "U1" in r.url and "U1" not in r.public_url
@@ -62,6 +73,7 @@ def test_b1610_asks_for_every_run_type() -> None:
     r = b1610_request(D, ["U1"])
     q = dict(urllib.parse.parse_qsl(urllib.parse.urlsplit(r.url).query))
     assert q["settlementDateFrom"] == q["settlementDateTo"] == "2026-10-14"
+    assert (q["settlementPeriodFrom"], q["settlementPeriodTo"]) == ("1", "50")
     assert "settlementRunType" not in q
 
 
