@@ -224,6 +224,7 @@ def test_plan_covers_october_b1610_pn_and_one_neso_request() -> None:
     neso = requests[-1]
     assert neso.url.startswith("https://api.neso.energy/api/3/action/datastore_search?")
     assert "8a4a771c-3929-4e56-93ad-cdf13219dea5" in neso.public_url
+    assert "fields=" not in neso.url  # NESO answers a field list with HTTP 409
     assert all(r.units == ("PS1", "PS2") for r in requests[:-1])
 
 

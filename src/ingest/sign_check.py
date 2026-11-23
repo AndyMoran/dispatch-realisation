@@ -44,12 +44,6 @@ SF = "SF"
 PUMPED_STORAGE = "PS"
 CHECK_DAYS = (date(2026, 10, 1), date(2026, 10, 31))  # settlement dates, inclusive
 NESO_RESOURCE = "8a4a771c-3929-4e56-93ad-cdf13219dea5"  # historic demand 2026
-NESO_FIELDS = (
-    "SETTLEMENT_DATE",
-    "SETTLEMENT_PERIOD",
-    "PUMP_STORAGE_PUMPING",
-    "FORECAST_ACTUAL_INDICATOR",
-)
 NESO_LIMIT = 32000  # above a year of half-hours; the response's total is checked
 OUT = pull.ROOT / "outputs" / "pull" / "b1610_check.json"
 
@@ -204,10 +198,13 @@ def ps_units(fuel: Mapping[str, str], fleet: Iterable[str]) -> list[str]:
 
 
 def neso_request() -> Request:
-    """Return the one NESO request: the four fields of the whole 2026 resource."""
+    """Return the one NESO request: every field of the whole 2026 resource.
+
+    No `fields` filter: NESO's server counts rows by `_id`, so a field list without
+    `_id` fails with HTTP 409 (23 Nov 2026). Only the four mapped fields are read.
+    """
     params = (
         ("resource_id", NESO_RESOURCE),
-        ("fields", ",".join(NESO_FIELDS)),
         ("limit", str(NESO_LIMIT)),
         ("sort", "_id"),
     )
