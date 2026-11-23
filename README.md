@@ -6,7 +6,19 @@ NESO can see which batteries hold contracts that lawfully lower their declaratio
 
 Version 1 delivers a preregistered auditability assessment of GB public balancing data for verifying battery declarations. It documents two key data gaps, tests the proposed checks against synthetic batteries with known ground truth, and measures where those checks work, where they fail, and why. It reports the fleet-level findings and data limitations, but makes no per-unit finding of over- or under-declaration. The open, tested pipeline provides a basis for future work with better data or revised methods.
 
-**Status:** pre-registration locked on 18 November 2026 ([DOI](https://doi.org/10.5281/zenodo.24343931)), with five deviations recorded before scoring (§12): nested resampling ([DOI](https://doi.org/10.5281/zenodo.24354704)), and, after the first known-answer run failed at 4 weeks, Claim 1 reported only at lengths where its tests pass and Claim 2's wall reported as failing ([DOI](https://doi.org/10.5281/zenodo.24416574)). Two more followed the known-answer results: a known-answer gate for Claim 4, with version 1 bounded as an auditability assessment ([DOI](https://doi.org/10.5281/zenodo.24439737)), and a rule for releasing Claim 4 results without identifying any unit ([DOI](https://doi.org/10.5281/zenodo.24439749)). A fifth corrects how declared energy is rebuilt during instructions: an instruction accepted after the declaration in force was published is no longer added back, which had counted its energy twice ([DOI](https://doi.org/10.5281/zenodo.24473559)). Claim 3 is dropped from version 1: its known-answer suite missed its bands, as §8 provides ([result](docs/results/claim3_known_answer.md)). Claim 4's synthetic check missed its gate: honest batteries crossed the upper wall in most runs, so Claim 4 is not run on real units in version 1 (deviation 3). No real unit has been scored.
+## Status
+
+Pre-registration locked on 18 November 2026 ([zenodo.24343931](https://doi.org/10.5281/zenodo.24343931)). Five deviations were recorded before any real unit was scored (`PREREGISTRATION.md` §12):
+
+1. Nested resampling of unit-score intervals ([zenodo.24354704](https://doi.org/10.5281/zenodo.24354704)).
+2. After the first known-answer run failed at 4 weeks of scored data, Claim 1 is reported only at window lengths where its tests pass, and Claim 2's wall is reported as failing its known-answer band ([zenodo.24416574](https://doi.org/10.5281/zenodo.24416574)).
+3. Claim 4 gained a known-answer gate, and version 1 is bounded as an auditability assessment ([zenodo.24439737](https://doi.org/10.5281/zenodo.24439737)).
+4. Claim 4 results may be released only without identifying any unit ([zenodo.24439749](https://doi.org/10.5281/zenodo.24439749)).
+5. Declared energy rebuilt during instructions was corrected: an instruction accepted after the declaration in force was published is no longer added back, which had counted its energy twice ([zenodo.24473559](https://doi.org/10.5281/zenodo.24473559)).
+
+Two claims did not reach the reporting stage. Claim 3 was dropped after its known-answer suite missed its bands (§8; [result](docs/results/claim3_known_answer.md)). Claim 4 failed its synthetic check: honest batteries crossed the upper wall in most runs, so it is not run on real units in version 1 (deviation 3).
+
+No real unit has been scored.
 
 ---
 
@@ -16,7 +28,7 @@ The electricity control room constantly buys small adjustments: a bit more power
 
 Since 2026, Grid Code modification **GC0166** has required batteries to declare what is in the tank, through two parameters: **Maximum Delivery Offer (MDO)** and **Maximum Delivery Bid (MDB)**. Elexon has published them per unit on BMRS since 25 June 2026, under BSC modification P499. The control room sizes its instructions from them. NESO's own trial found that submitted values overstated what batteries could deliver.
 
-Yet the control room often skips cheaper batteries and runs gas instead. NESO's own review of why rated zonal allocation, frequency response and reserve services among the strongest causes. It finished in April 2026, before declarations were published, so it could not test them. This project tests that one hypothesis.
+Yet the control room often skips cheaper batteries and runs gas instead. NESO's own review of why batteries are skipped rated zonal allocation, frequency response and reserve services among the strongest causes. It finished in April 2026, before declarations were published, so it could not test them. This project tests that one hypothesis.
 
 So the question is simple: **are the declarations physically true?** A battery's meter records every MWh that goes in and out. If its declarations say the tank held more, or less, than the meter allows, the declarations are wrong. This project tests how far public data can answer that, for every battery unit. It publishes fleet-level results and the method, and sends each lead party its own units' descriptive results privately.
 
@@ -32,11 +44,27 @@ Five claims, defined in [`PREREGISTRATION.md`](PREREGISTRATION.md):
 4. **Upper-wall violations (case series):** where a nameplate MWh is disclosed, a unit should never declare more than its tank could hold.
 5. **Redeclaration latency (fleet level):** how quickly units update their declarations after an instruction.
 
-Version 1 makes no per-unit finding of over- or under-declaration. Claim 1's known-answer suite failed its reporting gate at every tested length, so no per-unit Claim 1 flags are reported ([`PREREGISTRATION.md`](PREREGISTRATION.md) §12). After deviation 5 corrected how declared energy is rebuilt during instructions, the only band still missing is a planted under-declarer whose declarations sit at zero, a limit of the test rather than of the data. Claim 2's wall failed its known-answer band under the available efficiency uncertainty (§12). Claim 3 was dropped under §8 after missing its required bands; its over-declarers also failed the placebo control condition ([Claim 3 result](docs/results/claim3_known_answer.md)). Claim 4 failed its synthetic check, so no nameplate is searched for and Claim 4 is not run on real units. Version 1 publishes the fleet-level results still in scope, the known-answer results, and the limitations the published data place on verification. Each lead party receives a private pack for its own units, containing the Claim 1 score and interval without a Claim 1 flag, Claim 2 lower-wall status and its contract-exposed and unknown-status shares, Claim 5 latency, and the method. The packs contain no Claim 1–3 over- or under-declaration flags or Claim 3 per-unit results. No unit is named publicly in version 1. Unit-level findings may be considered in a later version only after the five conditions in §11 are met.
+### What version 1 reports
 
-The claims do not test every channel equally. A unit shown coherent has declarations that track its meter; a unit not shown coherent may have bad declarations or contracts we cannot see. Claim 3, non-delivery, was designed as the test least affected by unseen contracts, but version 1 does not report it ([result](docs/results/claim3_known_answer.md)). Finding no violations is not evidence of compliance.
+Version 1 publishes the fleet-level results still in scope, the known-answer results, and the limits the published data place on verification. By claim:
 
-A first finding came out of the design work: public registers do not record how much energy GB batteries hold. REPD records power only. In SSEN's Embedded Capacity Register the storage-MWh field read "DATA NOT AVAILABLE" for every connected battery site. That is why the audit uses tests that need no capacity figure. A second followed: NESO's reserve and response auction results do not identify BM units, so no battery's week could be certified free of contracts that lawfully lower its declarations. The audit therefore cannot call any unit's under-declaration provable in this version.
+- **Claim 1:** the known-answer suite failed its reporting gate at every tested window length, so no per-unit flags are reported. After deviation 5, the only band still missed is a planted under-declarer whose declarations sit at zero, a limit of the test rather than of the data.
+- **Claim 2:** the wall failed its known-answer band under the available efficiency uncertainty (§12).
+- **Claim 3:** dropped under §8; its over-declarers also failed the placebo control condition ([result](docs/results/claim3_known_answer.md)).
+- **Claim 4:** failed its synthetic check, so no nameplate is searched for and it is not run on real units.
+- **Claim 5:** reported publicly at fleet level; each unit's latency goes only to its own lead party.
+
+Version 1 makes no per-unit finding of over- or under-declaration, and no unit is named publicly. Unit-level findings may be considered in a later version only after the five conditions in §11 are met.
+
+Each lead party receives a private pack for its own units, with the method and descriptive results only: the Claim 1 score and interval, the Claim 2 lower-wall status with its contract-exposed and unknown-status shares, and Claim 5 latency. A score describes how closely a unit's declarations tracked its meter; a flag would call that an over- or under-declaration. The packs carry scores but no flags, and no Claim 3 results.
+
+### How to read the results
+
+The claims do not test every channel equally. A unit shown coherent has declarations that track its meter; a unit not shown coherent may have bad declarations or contracts we cannot see. Claim 3, non-delivery, was designed as the test least affected by unseen contracts, but version 1 does not report it. Finding no violations is not evidence of compliance.
+
+### Two data gaps found during design
+
+Public registers do not record how much energy GB batteries hold: REPD records power only, and in SSEN's Embedded Capacity Register the storage-MWh field read "DATA NOT AVAILABLE" for every connected battery site. That is why the audit uses tests that need no capacity figure. Separately, NESO's reserve and response auction results do not identify BM units, so no battery's week can be certified free of contracts that lawfully lower its declarations. The audit therefore cannot call any unit's under-declaration provable in this version. What would close each gap is set out under *In plain terms*.
 
 See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMPTIONS.md) for the assumptions ledger, and [`DATA_SOURCES.md`](DATA_SOURCES.md) for datasets and vintage policy.
 
@@ -52,7 +80,7 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 
 ## Repository layout
 
-`src/model/` holds the input types shared by real and synthetic data, `src/physics/` the §3 physics, and `src/claims/` Claims 1, 2, 4 and 5 with their scoring. `src/claims/unit.py` scores one unit, real or synthetic, from its inputs to its flags. `src/synthetic/` holds the known-answer batteries: their settings, frequency input, the honest and planted-fault batteries, the Claims 1–2 band runner (`src/synthetic/bands.py`), Claim 3's instruction-sizing regimes (`src/synthetic/regimes.py`) and its band runner (`src/synthetic/claim3_bands.py`), the Claim 4 synthetic check (`src/synthetic/claim4_check.py`) and the Claim 5 synthetic report (`src/synthetic/claim5_report.py`). `src/claim3/` holds Claim 3's scoring, kept for the record and for any later deviation; version 1 does not report it.
+`src/model/` holds the input types shared by real and synthetic data, and `src/physics/` the §3 physics. `src/claims/` holds Claims 1, 2, 4 and 5 with their scoring; `src/claims/unit.py` scores one unit, real or synthetic, from its inputs to its Claims 1–2 results. `src/claim3/` holds Claim 3's scoring, kept for the record and for any later deviation; version 1 does not report it. `src/synthetic/` holds the known-answer batteries and their runners: the Claims 1–2 bands (`bands.py`), Claim 3's sizing regimes and bands (`regimes.py`, `claim3_bands.py`), the Claim 4 check and its diagnostics (`claim4_check.py`), and the Claim 5 report (`claim5_report.py`).
 
 ```
 ├── README.md
@@ -73,16 +101,19 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 │   ├── model/              input types shared by real and synthetic data; thresholds
 │   ├── ingest/             BMRS, NESO pulls
 │   ├── physics/            energy balance, SoC reconstruction
-│   ├── claims/             Claims 1–5 (Claim 3 a separate module)
+│   ├── claims/             Claims 1, 2, 4 and 5
+│   ├── claim3/             Claim 3 scoring (kept; not reported in version 1)
 │   └── synthetic/          known-answer batteries
 ├── notebooks/              exploration only; results come from src/
-├── outputs/                figures, tables
-└── docs/                   papers, posts, notes
+├── outputs/                figures, tables, known-answer results
+└── docs/
+    ├── results/            known-answer write-ups
+    └── rules/              rules approved before the runs they govern
 ```
 
 ## Reproducing
 
-To follow. Every published number will regenerate from `src/` against pinned data manifests.
+*To follow.* Every published number will regenerate from `src/` against pinned data manifests.
 
 ## Licence
 
@@ -92,20 +123,26 @@ Code: [MIT](LICENSE). Text, figures and derived tables: [CC BY 4.0](https://crea
 
 Contains BMRS data © Elexon Limited copyright and database right 2026. Used under Elexon's [licence to use BMRS open data](https://www.elexon.co.uk/data/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/).
 
-Supported by National Energy SO Open Data. Used under the [NESO Open Data Licence v1.0](https://www.neso.energy/data-portal/neso-open-licence).
+Supported by National Energy SO Open Data. (NESO's licence requires this attribution statement word for word.) Used under the [NESO Open Data Licence v1.0](https://www.neso.energy/data-portal/neso-open-licence).
 
 Neither Elexon nor NESO endorses this project. Scores, flags and estimates here are this project's derived results, not Elexon or NESO data.
 
 ## Citation
 
-Cite the latest lock. Each is archived on Zenodo:
+Cite the latest lock:
 
-- Deviation 5 (accepted-BOA add-back corrected; `PREREGISTRATION.md` §12): Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24473559 (tag `v1.0.5-lock`, commit 7b65082).
-- Deviation 4 (Claim 4 release rule; `PREREGISTRATION.md` §12): Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24439749 (tag `v1.0.4-lock`, commit 5e4689e).
-- Deviation 3 (Claim 4 known-answer gate; version 1 as an auditability assessment; `PREREGISTRATION.md` §12): Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24439737 (tag `v1.0.3-lock`, commit d730c86).
-- Deviation 2 (Claim 1 reported by length; Claim 2 reported as failing its band; `PREREGISTRATION.md` §12): Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24416574 (tag `v1.0.2-lock`, commit 34d9626).
-- Deviation 1 (nested resampling of unit-score intervals; `PREREGISTRATION.md` §12): Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24354704 (tag `v1.0.1-lock`, commit c933d76).
-- Pre-registration lock, version 1: https://doi.org/10.5281/zenodo.24343931 (tag `v1.0-lock`, commit 4395934).
+> Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24473559 (tag `v1.0.5-lock`, commit 7b65082).
+
+Every lock is archived on Zenodo:
+
+| Tag | What it locked | Zenodo |
+|---|---|---|
+| `v1.0.5-lock` | Deviation 5: accepted-BOA add-back corrected | [zenodo.24473559](https://doi.org/10.5281/zenodo.24473559) |
+| `v1.0.4-lock` | Deviation 4: Claim 4 release rule | [zenodo.24439749](https://doi.org/10.5281/zenodo.24439749) |
+| `v1.0.3-lock` | Deviation 3: Claim 4 known-answer gate; version 1 as an auditability assessment | [zenodo.24439737](https://doi.org/10.5281/zenodo.24439737) |
+| `v1.0.2-lock` | Deviation 2: Claim 1 reported by window length; Claim 2 reported as failing | [zenodo.24416574](https://doi.org/10.5281/zenodo.24416574) |
+| `v1.0.1-lock` | Deviation 1: nested resampling of unit-score intervals | [zenodo.24354704](https://doi.org/10.5281/zenodo.24354704) |
+| `v1.0-lock` | The pre-registration | [zenodo.24343931](https://doi.org/10.5281/zenodo.24343931) |
 
 Citation metadata: [`CITATION.cff`](CITATION.cff). Its licence field names the code licence only, because Zenodo cannot read a list of licences from it; the text licence is stated above.
 
