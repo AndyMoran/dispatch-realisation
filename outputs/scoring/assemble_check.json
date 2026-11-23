@@ -1,0 +1,206 @@
+{
+  "b1610": "not read: the fleet B1610 pull is locked until SF covers 15 Nov",
+  "datasets": {
+    "BOALF": {
+      "duplicate_records_across_files": 0,
+      "duplicate_rows_in_a_file": 0,
+      "excluded": {},
+      "files": 740,
+      "records": 2260658,
+      "rows": 2260658,
+      "rows_outside_fleet": 0
+    },
+    "MDB": {
+      "duplicate_records_across_files": 57533,
+      "duplicate_rows_in_a_file": 0,
+      "excluded": {},
+      "files": 217,
+      "records": 1359306,
+      "rows": 1416842,
+      "rows_outside_fleet": 3
+    },
+    "MDO": {
+      "duplicate_records_across_files": 62109,
+      "duplicate_rows_in_a_file": 0,
+      "excluded": {},
+      "files": 217,
+      "records": 1456830,
+      "rows": 1518942,
+      "rows_outside_fleet": 3
+    },
+    "PN": {
+      "duplicate_records_across_files": 0,
+      "duplicate_rows_in_a_file": 0,
+      "excluded": {},
+      "files": 740,
+      "records": 1650819,
+      "rows": 1650819,
+      "rows_outside_fleet": 0
+    }
+  },
+  "fleet": {
+    "adoption_entries_as_pulled": 163,
+    "bm_units": 162,
+    "null_bmunit_buckets_dropped": 1
+  },
+  "pn_m24": {
+    "gap_hours": 0.0,
+    "gaps": 0,
+    "gaps_by_length": {
+      "24 h or more": 0,
+      "30 min to 6 h": 0,
+      "6 h to 24 h": 0,
+      "under 30 min": 0
+    },
+    "overlapping_segments": 0,
+    "units_with_a_gap": 0,
+    "units_with_a_window": 162,
+    "units_with_no_pn_in_window": 0,
+    "units_without_a_window": 0,
+    "window": "each unit's first scored week to 2026-11-16T00:00Z"
+  },
+  "pull_chunks_held_twice": {
+    "boalf": 0,
+    "mdo-mdb": 0,
+    "pn": 0
+  },
+  "pull_coverage_by_batch": {
+    "BOALF": [
+      {
+        "batch": 1,
+        "bm_units": 40,
+        "bm_units_with_rows": 33,
+        "holds_null_bucket": false
+      },
+      {
+        "batch": 2,
+        "bm_units": 40,
+        "bm_units_with_rows": 37,
+        "holds_null_bucket": false
+      },
+      {
+        "batch": 3,
+        "bm_units": 39,
+        "bm_units_with_rows": 38,
+        "holds_null_bucket": true
+      },
+      {
+        "batch": 4,
+        "bm_units": 40,
+        "bm_units_with_rows": 38,
+        "holds_null_bucket": false
+      },
+      {
+        "batch": 5,
+        "bm_units": 3,
+        "bm_units_with_rows": 3,
+        "holds_null_bucket": false
+      }
+    ],
+    "MDB": [
+      {
+        "batch": 1,
+        "bm_units": 40,
+        "bm_units_with_rows": 38,
+        "holds_null_bucket": false
+      },
+      {
+        "batch": 2,
+        "bm_units": 40,
+        "bm_units_with_rows": 40,
+        "holds_null_bucket": false
+      },
+      {
+        "batch": 3,
+        "bm_units": 39,
+        "bm_units_with_rows": 38,
+        "holds_null_bucket": true
+      },
+      {
+        "batch": 4,
+        "bm_units": 40,
+        "bm_units_with_rows": 40,
+        "holds_null_bucket": false
+      },
+      {
+        "batch": 5,
+        "bm_units": 3,
+        "bm_units_with_rows": 3,
+        "holds_null_bucket": false
+      }
+    ],
+    "MDO": [
+      {
+        "batch": 1,
+        "bm_units": 40,
+        "bm_units_with_rows": 38,
+        "holds_null_bucket": false
+      },
+      {
+        "batch": 2,
+        "bm_units": 40,
+        "bm_units_with_rows": 40,
+        "holds_null_bucket": false
+      },
+      {
+        "batch": 3,
+        "bm_units": 39,
+        "bm_units_with_rows": 38,
+        "holds_null_bucket": true
+      },
+      {
+        "batch": 4,
+        "bm_units": 40,
+        "bm_units_with_rows": 40,
+        "holds_null_bucket": false
+      },
+      {
+        "batch": 5,
+        "bm_units": 3,
+        "bm_units_with_rows": 3,
+        "holds_null_bucket": false
+      }
+    ],
+    "PN": [
+      {
+        "batch": 1,
+        "bm_units": 40,
+        "bm_units_with_rows": 40,
+        "holds_null_bucket": false
+      },
+      {
+        "batch": 2,
+        "bm_units": 40,
+        "bm_units_with_rows": 40,
+        "holds_null_bucket": false
+      },
+      {
+        "batch": 3,
+        "bm_units": 39,
+        "bm_units_with_rows": 39,
+        "holds_null_bucket": true
+      },
+      {
+        "batch": 4,
+        "bm_units": 40,
+        "bm_units_with_rows": 40,
+        "holds_null_bucket": false
+      },
+      {
+        "batch": 5,
+        "bm_units": 3,
+        "bm_units_with_rows": 3,
+        "holds_null_bucket": false
+      }
+    ]
+  },
+  "schema_version": "1.0",
+  "secondary_units": 31,
+  "units": 162,
+  "units_with_no_records": {
+    "BOALF": 13,
+    "MDO/MDB": 0,
+    "PN": 0
+  },
+  "units_without_registered_mw": 29
+}
