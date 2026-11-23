@@ -21,6 +21,7 @@ This file holds the shared pieces and the probe. The pulls proper follow once
 the probe's output has fixed the field mapping.
 
     uv run python -m src.ingest.pull probe
+    uv run python -m src.ingest.pull probe-mdo
 """
 
 from __future__ import annotations
@@ -411,18 +412,88 @@ def probe(
     return out
 
 
+def earliest_adopters(path: Path = FLEET_CSV, n: int = PROBE_UNITS) -> list[str]:
+    """Return the `n` fleet units with the earliest first non-default declaration.
+
+    Adoption dates are Gate A1 results, seen before the lock; no outcome is read.
+    """
+    load_fleet(path)  # checks the table and the locked fleet size
+    with path.open(newline="", encoding="utf-8") as f:
+        rows = [
+            r
+            for r in csv.DictReader(f)
+            if r["status"] == "adopted" and r.get("first_real_utc")
+        ]
+    rows.sort(key=lambda r: (r["first_real_utc"], r["bm_unit"]))
+    return [r["bm_unit"] for r in rows[:n]]
+
+
+def unit_matches(
+    rows: Sequence[Mapping[str, object]], units: Sequence[str]
+) -> dict[str, int]:
+    """Return how many of `units` appear under each candidate unit-ID field."""
+    wanted = set(units)
+    out: dict[str, int] = {}
+    for key in ("bmUnit", "nationalGridBmUnit", "nationalGridBmUnitId"):
+        seen = {r.get(key) for r in rows}
+        out[key] = len(wanted & {v for v in seen if isinstance(v, str)})
+    return out
+
+
+def probe_mdo(
+    get: Getter = http_get,
+    now: Callable[[], datetime] = lambda: datetime.now(UTC),
+    sample: Sequence[str] | None = None,
+    raw_root: Path = RAW,
+    manifest: Path = MANIFEST,
+) -> dict[str, object]:
+    """Diagnose empty MDO and MDB responses: counts only (decision log, 23 Nov).
+
+    One hour, 14 Oct 2026 12:00–13:00 UTC: once with no unit filter, once
+    filtered to the three earliest adopters. Reports rows, distinct units, and how
+    many sample units appear under each ID field. Prints no value or unit ID.
+    """
+    units = sorted(sample) if sample is not None else sorted(earliest_adopters())
+    day = date(2026, 10, 14)
+    window = (("from", "2026-10-14T12:00Z"), ("to", "2026-10-14T13:00Z"))
+    out: dict[str, object] = {"units_sampled": len(units), "window": dict(window)}
+    for dataset in ("MDO", "MDB"):
+        report: dict[str, object] = {}
+        for label, chosen in (("unfiltered", ()), ("filtered", tuple(units))):
+            request = Request(dataset, day, STREAM[dataset], window, chosen)
+            try:
+                body = get_with_retry(get, request.url)
+            except PullError as exc:
+                report[label] = {"error": str(exc).split(":", 1)[0]}
+                continue
+            save(request, body, now(), raw_root, manifest)
+            rows = rows_of(body)
+            report[label] = {
+                "rows": len(rows),
+                "distinct_units": len({r.get("bmUnit") for r in rows}),
+                "sample_units_present": unit_matches(rows, units),
+                "fields": schema(rows),
+            }
+        out[dataset] = report
+    return out
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Run a subcommand. Only the probe exists until its output fixes the mapping."""
     parser = argparse.ArgumentParser(description="Scoring-window pulls")
-    parser.add_argument("command", choices=("probe",))
+    parser.add_argument("command", choices=("probe", "probe-mdo"))
     args = parser.parse_args(argv)
     if args.command == "probe":
         result = probe()
-        PROBE_OUT.parent.mkdir(parents=True, exist_ok=True)
-        PROBE_OUT.write_text(
-            json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-        )
-        print(json.dumps(result, indent=2, sort_keys=True))
+        out = PROBE_OUT
+    else:
+        result = probe_mdo()
+        out = PROBE_OUT.with_name("probe_mdo.json")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(
+        json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    print(json.dumps(result, indent=2, sort_keys=True))
     return 0
 
 

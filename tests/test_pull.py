@@ -278,3 +278,68 @@ def test_neso_without_a_2026_resource_stops(monkeypatch: pytest.MonkeyPatch) -> 
 def test_request_is_hashable_and_fixed() -> None:
     r = Request("X", D, "/p", (("a", "1"),))
     assert r.units == () and r.public_url == r.url
+
+
+def adoption_table(path: Path) -> Path:
+    rows = [
+        ("U3", "adopted", "2026-06-25T10:00:00+00:00"),
+        ("U1", "adopted", "2026-07-01T10:00:00+00:00"),
+        ("U2", "adopted", "2026-06-25T09:00:00+00:00"),
+        ("U4", "adopted", "2026-10-20T09:00:00+00:00"),
+        ("P1", "excluded(fuel_type_PS)", "2026-06-25T08:00:00+00:00"),
+    ]
+    with path.open("w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(
+            ["schema_version", "bm_unit", "status", "fuel_type", "first_real_utc"]
+        )
+        w.writerows(("1.0", u, s, "", d) for u, s, d in rows)
+    return path
+
+
+def test_earliest_adopters_skip_excluded_units(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(pull, "FLEET_SIZE", 4)
+    path = adoption_table(tmp_path / "a.csv")
+    monkeypatch.setattr(pull, "load_fleet", lambda p: ["U1", "U2", "U3", "U4"])
+    assert pull.earliest_adopters(path, 3) == ["U2", "U3", "U1"]
+
+
+def test_unit_matches_by_field() -> None:
+    rows = [
+        {"bmUnit": "T_A", "nationalGridBmUnit": "A"},
+        {"bmUnit": "T_B", "nationalGridBmUnit": "B"},
+    ]
+    assert pull.unit_matches(rows, ["T_A", "B", "C"]) == {
+        "bmUnit": 1,
+        "nationalGridBmUnit": 1,
+        "nationalGridBmUnitId": 0,
+    }
+
+
+def test_probe_mdo_counts_only(tmp_path: Path) -> None:
+    raw = tmp_path / "data" / "raw" / "pull"
+    manifest = tmp_path / "data" / "manifests" / "pull_manifest.csv"
+
+    def net(url: str) -> bytes:
+        rows = [
+            {"bmUnit": "T_A", "levelFrom": 41.5, "timeFrom": "2026-10-14T12:00Z"},
+            {"bmUnit": "T_Z", "levelFrom": 7.0, "timeFrom": "2026-10-14T12:30Z"},
+        ]
+        if "bmUnit=" in url:
+            return b"[]"
+        return json.dumps(rows).encode()
+
+    out = pull.probe_mdo(net, lambda: NOW, ["T_A", "T_B", "T_C"], raw, manifest)
+    mdo = out["MDO"]
+    assert isinstance(mdo, dict)
+    assert mdo["unfiltered"]["rows"] == 2
+    assert mdo["unfiltered"]["distinct_units"] == 2
+    assert mdo["unfiltered"]["sample_units_present"]["bmUnit"] == 1
+    assert mdo["filtered"]["rows"] == 0
+    text = json.dumps(out)
+    assert "T_A" not in text and "41.5" not in text
+    with manifest.open() as f:
+        rows = list(csv.DictReader(f))
+    assert len(rows) == 4 and "T_A" not in json.dumps(rows)
