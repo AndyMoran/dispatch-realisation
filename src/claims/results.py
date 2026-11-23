@@ -66,6 +66,7 @@ class ScoringSettings:
     reliability_draws: int
     default_abs_mwh: float
     sf_or_later_runs: frozenset[str]
+    boa_addback: str
 
 
 def load_scoring_settings(path: Path = SCORING_TOML) -> ScoringSettings:
@@ -87,4 +88,7 @@ def load_scoring_settings(path: Path = SCORING_TOML) -> ScoringSettings:
         or not all(isinstance(r, str) for r in runs)
     ):
         raise ValueError(f"{path.name}: sf_or_later_runs must list run codes")
-    return ScoringSettings(seed, draws, float(default), frozenset(runs))
+    addback = raw.get("boa_addback")
+    if addback not in ("known", "all"):
+        raise ValueError(f'{path.name}: boa_addback must be "known" or "all"')
+    return ScoringSettings(seed, draws, float(default), frozenset(runs), addback)

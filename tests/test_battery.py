@@ -14,7 +14,7 @@ from typing import Any
 import numpy as np
 import pytest
 
-from src.claims.declared_series import declared_series
+from src.claims.declared_series import AddBack, declared_series
 from src.claims.screens import week_boundaries
 from src.physics.declared import Branch
 from src.synthetic import battery as bt
@@ -283,10 +283,17 @@ def test_unit_inputs_carry_power_and_sf_meter() -> None:
     assert len(u.meter) == 14 * 48
 
 
-def test_lag_leaves_the_declaration_stale() -> None:
+@pytest.mark.parametrize("addback", ["all", "known"])
+def test_lag_leaves_the_declaration_stale(addback: AddBack) -> None:
     """At a period start where an acceptance is younger than the lag, the record in
-    force does not net the instruction yet, so D^decl exceeds the truth by the
-    instruction's export energy within H, which the scoring adds back (§3, M21)."""
+    force does not net the instruction yet.
+
+    Under "all", the rule before deviation 5, the scoring still adds the
+    instruction's export energy back, so D^decl exceeds the truth by that energy:
+    the double count this test pinned on 18 Nov 2026 as expected behaviour.
+    Under "known" (deviation 5) the instruction postdates the record, so it is not
+    added back, and D^decl equals the truth.
+    """
     found = 0
     for seed in range(20):
         sim = run(seed=seed)
@@ -299,11 +306,12 @@ def test_lag_leaves_the_declaration_stale() -> None:
             if t < TWO_WEEKS.first_scored_week:
                 continue
             (d,) = declared_series(
-                unit, [t], PHYSICS.eta, "A", 3, None, 9999.0, TWO_WEEKS.end
+                unit, [t], PHYSICS.eta, "A", 3, None, 9999.0, TWO_WEEKS.end, addback
             )
             prot = bt.protection(work, boa.accepted_min, boa.accepted_min, sim.minutes)
             truth = truth_mwh(sim, boa.accepted_min)
-            assert d is not None and d == pytest.approx(truth + prot.boa_export)
+            extra = prot.boa_export if addback == "all" else 0.0
+            assert d is not None and d == pytest.approx(truth + extra)
             found += 1
     assert found >= 1
 

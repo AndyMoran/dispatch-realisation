@@ -25,7 +25,7 @@ from datetime import datetime, timedelta
 
 from src.claims.claim1 import Claim1Screens, Claim1Week, claim1_week
 from src.claims.claim2 import claim2_week
-from src.claims.declared_series import declared_series
+from src.claims.declared_series import ADDBACK_RULES, AddBack, declared_series
 from src.claims.results import WeekResult, load_scoring_settings
 from src.claims.scoring import (
     Claim1Category,
@@ -71,6 +71,7 @@ class ClaimSettings:
     master_seed: int
     default_abs_mwh: float
     sf_or_later_runs: frozenset[str]
+    boa_addback: AddBack = "known"
 
 
 def load_claim_settings() -> ClaimSettings:
@@ -95,7 +96,15 @@ def load_claim_settings() -> ClaimSettings:
         master_seed=run.master_seed,
         default_abs_mwh=run.default_abs_mwh,
         sf_or_later_runs=run.sf_or_later_runs,
+        boa_addback=_addback(run.boa_addback),
     )
+
+
+def _addback(value: str) -> AddBack:
+    for rule in ADDBACK_RULES:
+        if value == rule:
+            return rule
+    raise ValueError(f"unknown add-back rule: {value}")
 
 
 @dataclass(frozen=True)
@@ -167,6 +176,7 @@ def score_unit(
             horizon_hours,
             settings.default_abs_mwh,
             end,
+            settings.boa_addback,
         )
         c1.append(claim1_week(meter, declared, eta, screens))
         c2.append(claim2_week(meter, declared, eta, settings.tau_fraction))

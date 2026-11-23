@@ -100,6 +100,39 @@ def declared_at(
     return tuple(values)
 
 
+def in_force_publish_times(
+    submissions: Sequence[Submission],
+    dataset: Dataset,
+    times: Sequence[datetime],
+    default_abs_mwh: float,
+    data_end: datetime,
+) -> tuple[datetime | None, ...]:
+    """Return the publish time of the `dataset` record in force at each time.
+
+    Chosen exactly as `declared_at` chooses the level (M9), so it is None wherever
+    `declared_at` gives None (§12, deviation 5).
+    """
+    require_utc(data_end, "data_end")
+    if default_abs_mwh <= 0:
+        raise ValueError(f"default threshold not positive: {default_abs_mwh}")
+    ordered_times = sorted(times)
+    if list(times) != ordered_times:
+        raise ValueError("times must be sorted")
+    records = [s for s in submissions if s.dataset == dataset]
+    ends = record_ends(records, data_end)
+    out: list[datetime | None] = [None] * len(ordered_times)
+    for record in sorted(
+        records, key=lambda r: (r.publish_time, r.serial, r.time_from)
+    ):
+        end = ends[record]
+        lo = bisect.bisect_left(ordered_times, record.time_from)
+        hi = bisect.bisect_left(ordered_times, end)
+        for i in range(lo, hi):
+            level = record_level(record, ordered_times[i], end)
+            out[i] = None if abs(level) >= default_abs_mwh else record.publish_time
+    return tuple(out)
+
+
 def declared_deliverable_mwh(
     mdo_mwh: float, p_exp_mwh: float, b_exp_mwh: float, eta: float, branch: Branch
 ) -> float:

@@ -38,14 +38,16 @@ import os
 import sys
 from collections.abc import Callable, Sequence
 from concurrent.futures import ProcessPoolExecutor
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import timedelta
+from functools import partial
 from pathlib import Path
 
 import numpy as np
 from numpy.typing import NDArray
 
 from src.claims.claim4 import Claim4Result, load_claim4_settings, score_unit_claim4
+from src.claims.declared_series import ADDBACK_RULES, AddBack
 from src.claims.unit import load_claim_settings, week_starts
 from src.model.params import load_params
 from src.physics.declared import Branch
@@ -148,8 +150,17 @@ class RunRecord:
     cells: dict[tuple[Branch, Branch, str], Cell]
 
 
-def run_once(battery_index: int, length_index: int, run_index: int) -> RunRecord:
-    """Simulate one run, as the Claims 1–2 suite did, and score it on Claim 4."""
+def run_once(
+    battery_index: int,
+    length_index: int,
+    run_index: int,
+    addback: AddBack | None = None,
+) -> RunRecord:
+    """Simulate one run, as the Claims 1–2 suite did, and score it on Claim 4.
+
+    `addback` overrides the configured add-back rule; the committed check ran
+    under "all", before deviation 5.
+    """
     settings = load_synthetic_settings()
     faults = bt.load_faults()
     physics = bt.load_physics()
@@ -169,6 +180,8 @@ def run_once(battery_index: int, length_index: int, run_index: int) -> RunRecord
     scored_from = (weeks[0] - sim.start) // timedelta(minutes=1)
     caps = ceilings(sim.stored_mwh, scored_from, physics.eta, physics.energy_mwh)
     claims = load_claim_settings()
+    if addback is not None:
+        claims = replace(claims, boa_addback=addback)
     c4 = load_claim4_settings()
     lag = bt.lag_minutes(scenario, settings, faults)
     cells: dict[tuple[Branch, Branch, str], Cell] = {}
@@ -323,9 +336,18 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Claim 4 synthetic check")
     parser.add_argument("--output", type=Path, default=OUTPUT)
     parser.add_argument("--workers", type=int, default=None)
+    parser.add_argument(
+        "--addback",
+        choices=ADDBACK_RULES,
+        default=None,
+        help="add-back rule; default config/scoring.toml. The committed check "
+        "(23 Nov 2026) ran under 'all', before deviation 5",
+    )
     args = parser.parse_args(argv)
     runs = load_params().integer("known_answer.runs")
-    summary = run_suite(runs, LENGTHS, args.workers)
+    rule = args.addback or load_claim_settings().boa_addback
+    summary = run_suite(runs, LENGTHS, args.workers, partial(run_once, addback=rule))
+    summary["boa_addback"] = rule
     args.output.parent.mkdir(parents=True, exist_ok=True)
     tmp = args.output.with_suffix(".tmp")
     tmp.write_text(

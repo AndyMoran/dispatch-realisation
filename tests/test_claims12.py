@@ -9,6 +9,7 @@ The battery imports 10 MWh in period 2 (01:00–01:30) and exports 8 MWh in peri
 50 MWh, rising to 58 after the import, back to 50 after the export.
 """
 
+import itertools
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
@@ -16,7 +17,7 @@ import pytest
 
 from src.claims.claim1 import NO_USABLE_PERIODS, Claim1Screens, claim1_week, residuals
 from src.claims.claim2 import NO_DECLARATION, claim2_week, violations
-from src.claims.declared_series import declared_series, protection_end
+from src.claims.declared_series import AddBack, declared_series, protection_end
 from src.claims.results import DayPart, WeekResult, load_scoring_settings
 from src.claims.screens import (
     IDLE,
@@ -270,7 +271,11 @@ def test_declared_series_windowing_changes_nothing() -> None:
     """Passing only nearby segments gives the same D^decl, bit for bit, as passing
     every segment, on a synthetic unit with instructions spanning period ends."""
     from src.claims.screens import week_boundaries
-    from src.physics.declared import declared_at, declared_deliverable_mwh
+    from src.physics.declared import (
+        declared_at,
+        declared_deliverable_mwh,
+        in_force_publish_times,
+    )
     from src.physics.protection import boa_export_mwh, pn_protected_mwh
     from src.synthetic import battery as bt
     from src.synthetic.settings import RunLength, load_synthetic_settings
@@ -289,17 +294,30 @@ def test_declared_series_windowing_changes_nothing() -> None:
     edges = week_boundaries(length.first_scored_week)
     # Period starts, and seven minutes in, where segments begin before t.
     times = sorted([*edges, *(t + timedelta(minutes=7) for t in edges[:-1])])
-    for hours in (None, 6.0):
-        fast = declared_series(unit, times, 0.88, "A", 3, hours, 9999.0, length.end)
+    published = in_force_publish_times(
+        unit.submissions, "MDO", times, 9999.0, length.end
+    )
+    rules: tuple[AddBack, ...] = ("all", "known")
+    for hours, rule in itertools.product((None, 6.0), rules):
+        fast = declared_series(
+            unit, times, 0.88, "A", 3, hours, 9999.0, length.end, rule
+        )
         mdo = declared_at(unit.submissions, "MDO", times, 9999.0, length.end)
         checked = 0
-        for t, m, f in zip(times, mdo, fast, strict=True):
+        for t, m, f, pub in zip(times, mdo, fast, published, strict=True):
             if m is None:  # the run's end: no record in force
                 assert f is None
                 continue
+            assert pub is not None
             end = protection_end(t, 3, hours)
             p_exp, _ = pn_protected_mwh(unit.pn, t, end)
-            b_exp = boa_export_mwh(unit.boas, unit.pn, t, end)
+            boas = [
+                s
+                for s in unit.boas
+                if rule == "all"
+                or (s.acceptance_time is not None and s.acceptance_time < pub)
+            ]
+            b_exp = boa_export_mwh(boas, unit.pn, t, end)
             assert f == declared_deliverable_mwh(m, p_exp, b_exp, 0.88, "A")
             checked += 1
         assert checked == 2 * 336

@@ -34,8 +34,8 @@ jobs:
       - uses: astral-sh/setup-uv@v6
       - name: Install locked dependencies
         run: uv sync --locked
-      - name: Rerun the first Claims 1–2 band run (PREREGISTRATION §8)
-        run: uv run python -m src.synthetic.bands --report-only --output rerun.json
+      - name: Rerun the first Claims 1–2 band run, under its add-back rule (§8; §12, deviation 5)
+        run: uv run python -m src.synthetic.bands --addback all --report-only --output rerun.json
       - name: Check the committed first run reproduces
         run: >-
           uv run python -c "import json, sys;

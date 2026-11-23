@@ -7,7 +7,6 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from src.claims import unit as unit_module
 from src.claims.declared_series import declared_series
 from src.model.types import LevelSegment, Submission, build_unit_inputs
 from src.synthetic import stale_addback as sa
@@ -48,7 +47,7 @@ def d(records: list[Submission], boas: list[LevelSegment], at_min: int) -> tuple
     t = [WEEK0 + at_min * MIN]
     args = (0.8, "A", 3, None, 9999.0, END)
     return (
-        declared_series(u, t, *args)[0],  # type: ignore[arg-type]
+        declared_series(u, t, *args, "all")[0],  # type: ignore[arg-type]
         declared_series_corrected(u, t, *args)[0],  # type: ignore[arg-type]
     )
 
@@ -89,13 +88,14 @@ def test_earlier_acceptance_is_added_back_and_same_minute_is_not() -> None:
     assert same_minute[0] == pytest.approx(20.0 + 40.0 / 3.0)
 
 
-def test_rule_switches_only_inside_the_block() -> None:
-    assert unit_module.declared_series is declared_series
-    with sa.rule(True):
-        assert unit_module.declared_series is declared_series_corrected
-    assert unit_module.declared_series is declared_series
-    with sa.rule(False):
-        assert unit_module.declared_series is declared_series
+def test_production_rule_matches_the_diagnostic_copy() -> None:
+    """Deviation 5 moved the corrected rule into `declared_series` ("known")."""
+    u = build_unit_inputs("u", None, [ROUTINE, REDECLARED], [], [], [boa(10), boa(11)])
+    times = [WEEK0 + m * MIN for m in range(0, 120, 5)]
+    known = declared_series(u, times, 0.8, "A", 3, None, 9999.0, END, "known")
+    assert known == declared_series_corrected(u, times, 0.8, "A", 3, None, 9999.0, END)
+    with pytest.raises(ValueError):
+        declared_series(u, times, 0.8, "A", 3, None, 9999.0, END, "other")  # type: ignore[arg-type]
 
 
 def a_run(original: int, corrected: int) -> StageA:

@@ -26,7 +26,7 @@ weeks is contract-free, and Claim 2's hard flag is not scored for it, as for any
 unit with contract time (§4).
 
 Usage:
-    uv run python -m src.synthetic.bands              # first-run lengths (CI)
+    uv run python -m src.synthetic.bands --addback all  # first run, as run (CI)
     uv run python -m src.synthetic.bands --bands deviation-2 --lengths all \
         --report-only --output outputs/known_answer/claims12_by_length.json
 """
@@ -42,11 +42,12 @@ import sys
 from collections import Counter
 from collections.abc import Sequence
 from concurrent.futures import ProcessPoolExecutor
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime
 from pathlib import Path
 from typing import Literal
 
+from src.claims.declared_series import ADDBACK_RULES, AddBack
 from src.claims.scoring import unit_score
 from src.claims.unit import (
     TOO_FEW_CONTRACT_FREE,
@@ -161,9 +162,17 @@ def outcome_label(category: str | None, reason: str | None) -> str:
 
 
 def run_once(
-    band_set: str, band_index: int, length_index: int, run_index: int
+    band_set: str,
+    band_index: int,
+    length_index: int,
+    run_index: int,
+    addback: AddBack | None = None,
 ) -> RunOutcome:
-    """Simulate one run of a battery and score it under all four branch pairs."""
+    """Simulate one run of a battery and score it under all four branch pairs.
+
+    `addback` overrides config/scoring.toml's add-back rule (deviation 5); "all"
+    reproduces runs made before it.
+    """
     settings = load_synthetic_settings()
     faults = bt.load_faults()
     band = BAND_SETS[band_set][band_index]
@@ -179,6 +188,8 @@ def run_once(
         faults,
     )
     claims = load_claim_settings()
+    if addback is not None:
+        claims = replace(claims, boa_addback=addback)
     weeks = week_starts(length.adoption_week_start, length.end)
     free: frozenset[datetime] = (
         frozenset() if band.scenario.holds_contracts else frozenset(weeks)
@@ -336,6 +347,7 @@ def run_suite(
     runs: int,
     lengths: Sequence[str] = FIRST_RUN_LENGTHS,
     workers: int | None = None,
+    addback: AddBack | None = None,
 ) -> dict[str, object]:
     """Run every band's battery `runs` times at each named length; summarise."""
     bands = BAND_SETS[band_set]
@@ -347,12 +359,19 @@ def run_suite(
     ]
     with ProcessPoolExecutor(max_workers=workers or os.cpu_count()) as pool:
         results = list(
-            pool.map(run_once, [band_set] * len(jobs), *zip(*jobs, strict=True))
+            pool.map(
+                run_once,
+                [band_set] * len(jobs),
+                *zip(*jobs, strict=True),
+                [addback] * len(jobs),
+            )
         )
     outcomes: dict[tuple[int, int], list[RunOutcome]] = {}
     for (b, li, _), result in zip(jobs, results, strict=True):
         outcomes.setdefault((b, li), []).append(result)
-    return summarise(bands, outcomes, runs, by_length=band_set != "first-run")
+    summary = summarise(bands, outcomes, runs, by_length=band_set != "first-run")
+    summary["boa_addback"] = addback or load_claim_settings().boa_addback
+    return summary
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -370,6 +389,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         action="store_true",
         help="exit 0 even if a build band fails (reproducing a recorded run)",
     )
+    parser.add_argument(
+        "--addback",
+        choices=ADDBACK_RULES,
+        default=None,
+        help="add-back rule; default config/scoring.toml. 'all' reproduces runs "
+        "made before deviation 5",
+    )
     args = parser.parse_args(argv)
     names = (
         [length.name for length in load_synthetic_settings().lengths]
@@ -377,7 +403,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         else args.lengths.split(",")
     )
     runs = load_params().integer("known_answer.runs")
-    summary = run_suite(args.bands, runs, names)
+    summary = run_suite(args.bands, runs, names, addback=args.addback)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     tmp = args.output.with_suffix(".tmp")
     tmp.write_text(
@@ -390,10 +416,15 @@ def main(argv: Sequence[str] | None = None) -> int:
 def same_results(a: dict[str, object], b: dict[str, object]) -> bool:
     """Return whether two summaries agree in everything but the settings hash.
 
+    The add-back rule is not compared either: summaries made before deviation 5
+    do not record it, and CI reruns them with `--addback all`.
+
     The settings file gains entries over time (deviation 2 added run lengths); a
     rerun reproduces a recorded run if every cell and verdict is identical.
     """
-    keep = {k for k in a.keys() | b.keys() if k != "settings_sha256"}
+    keep = {
+        k for k in a.keys() | b.keys() if k not in ("settings_sha256", "boa_addback")
+    }
     return all(a.get(k) == b.get(k) for k in keep)
 
 

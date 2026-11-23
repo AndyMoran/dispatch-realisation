@@ -2,6 +2,12 @@
 
 A post-hoc check, reported only; it changes no verdict and no committed result.
 
+Since deviation 5 the corrected rule is the production rule ("known" in
+`declared_series`). The original rule is selected explicitly ("all"), and Stage
+B scores through the production switch; `declared_series_corrected` is kept as
+the implementation the diagnostic was first run with, and a test checks that it
+agrees with the production rule.
+
 D^decl adds back the export energy of every instruction accepted at or before t
 (§3, `boa_export_mwh`). A declaration published before that acceptance already
 counts the same energy as deliverable, so while it stays in force the energy is
@@ -37,15 +43,12 @@ import bisect
 import json
 import os
 import sys
-from collections.abc import Iterator, Sequence
+from collections.abc import Sequence
 from concurrent.futures import ProcessPoolExecutor
-from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from unittest import mock
 
-from src.claims import unit as unit_module
 from src.claims.declared_series import _Index, declared_series, protection_end
 from src.claims.screens import screen_meter, week_boundaries
 from src.claims.unit import load_claim_settings, week_starts
@@ -154,6 +157,25 @@ def declared_series_corrected(
 # ------------------------------------------------------------------ stage A
 
 
+def both_rules(
+    unit: UnitInputs,
+    times: Sequence[datetime],
+    eta: float,
+    extra_periods: int,
+    default_abs_mwh: float,
+    data_end: datetime,
+) -> dict[str, tuple[float | None, ...]]:
+    """Return Branch A D^decl at each period start under the original rule ("all")
+    and the corrected one; the final boundary is dropped."""
+    original = declared_series(
+        unit, times, eta, "A", extra_periods, None, default_abs_mwh, data_end, "all"
+    )
+    corrected = declared_series_corrected(
+        unit, times, eta, "A", extra_periods, None, default_abs_mwh, data_end
+    )
+    return {"original": original[:-1], "corrected": corrected[:-1]}
+
+
 @dataclass(frozen=True)
 class StageA:
     """One run's counts in the Claim 4 frame (true η, gate N, A/A)."""
@@ -185,16 +207,6 @@ def stage_a_run(run_index: int) -> StageA:
     ]
     unit = bt.unit_inputs(sim, "A", bt.lag_minutes(bt.HONEST, settings, faults), faults)
 
-    def both(times: Sequence[datetime]) -> dict[str, tuple[float | None, ...]]:
-        x = (claims.extra_periods, claims.default_abs_mwh, length.end)
-        original = declared_series(
-            unit, times, physics.eta, "A", x[0], None, x[1], x[2]
-        )
-        corrected = declared_series_corrected(
-            unit, times, physics.eta, "A", x[0], None, x[1], x[2]
-        )
-        return {"original": original[:-1], "corrected": corrected[:-1]}
-
     stale = counted = 0
     violations = {"original": 0, "corrected": 0}
     large = {"original": 0, "corrected": 0}
@@ -204,7 +216,14 @@ def stage_a_run(run_index: int) -> StageA:
         if meter.unscored_reason is not None:
             continue
         times = week_boundaries(week_start)
-        rules = both(times)
+        rules = both_rules(
+            unit,
+            times,
+            physics.eta,
+            claims.extra_periods,
+            claims.default_abs_mwh,
+            length.end,
+        )
         first = (week_start - sim.start) // timedelta(minutes=1)
         truth, active = truth_at_starts(sim.stored_mwh, sim.boa_id, first, physics.eta)
         line = line_at_starts(cumulative_change(meter.periods, physics.eta), n, tol)
@@ -271,16 +290,6 @@ def summarise_a(runs: Sequence[StageA]) -> dict[str, object]:
 # ------------------------------------------------------------------ stage B
 
 
-@contextmanager
-def rule(corrected: bool) -> Iterator[None]:
-    """Score with the corrected add-back rule inside the block, if asked."""
-    if not corrected:
-        yield
-        return
-    with mock.patch.object(unit_module, "declared_series", declared_series_corrected):
-        yield
-
-
 @dataclass(frozen=True)
 class StageB:
     """One run of one battery under both rules, and how many boundaries differ."""
@@ -292,10 +301,12 @@ class StageB:
 
 def stage_b_run(band_index: int, length_index: int, run_index: int) -> StageB:
     """Score one Claims 1–2 run under both rules, as `bands.run_once` does."""
-    with rule(False):
-        original = bands.run_once("deviation-2", band_index, length_index, run_index)
-    with rule(True):
-        corrected = bands.run_once("deviation-2", band_index, length_index, run_index)
+    original = bands.run_once(
+        "deviation-2", band_index, length_index, run_index, addback="all"
+    )
+    corrected = bands.run_once(
+        "deviation-2", band_index, length_index, run_index, addback="known"
+    )
     return StageB(
         original, corrected, stale_boundaries(band_index, length_index, run_index)
     )
@@ -334,6 +345,7 @@ def stale_boundaries(band_index: int, length_index: int, run_index: int) -> int:
             None,
             claims.default_abs_mwh,
             length.end,
+            "all",
         )
         b = declared_series_corrected(
             unit,

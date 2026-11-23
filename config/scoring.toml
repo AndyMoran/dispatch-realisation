@@ -22,3 +22,9 @@ default_abs_mwh = 9999.0
 
 # Settlement runs accepted as "SF or later" (PREREGISTRATION §3; ASSUMPTIONS M25).
 sf_or_later_runs = ["SF", "R1", "R2", "R3", "RF", "DF"]
+
+# Which accepted instructions D^decl adds back (PREREGISTRATION §12, deviation 5).
+# "known": only those accepted strictly before the publish time of the MDO record
+# in force. "all": every one accepted at or before t, the rule before deviation 5,
+# kept only to reproduce results run under it. Added 23 Nov 2026.
+boa_addback = "known"

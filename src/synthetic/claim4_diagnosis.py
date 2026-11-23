@@ -38,7 +38,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 from src.claims.claim4 import Claim4Settings, claim4_week, load_claim4_settings
-from src.claims.declared_series import declared_series
+from src.claims.declared_series import AddBack, declared_series
 from src.claims.screens import screen_meter, week_boundaries
 from src.claims.unit import ClaimSettings, load_claim_settings, week_starts
 from src.model.params import load_params
@@ -56,6 +56,9 @@ CHECK = ROOT / "outputs" / "known_answer" / "claim4_check.json"
 LENGTH = "short"
 BATTERY = bt.HONEST
 SUPPORTED_MAX_FAILING = 5
+# The committed check ran before deviation 5, so this diagnostic of it keeps
+# that add-back rule.
+ADDBACK: AddBack = "all"
 # Per scored week: violations, 1 if any, largest excess, swing, inconsistent.
 Week = tuple[int, int, float | None, float, bool]
 
@@ -116,6 +119,7 @@ def diagnose_unit(
             None,
             settings.default_abs_mwh,
             end,
+            ADDBACK,
         )
         times = week_boundaries(week_start)
         declared = declared_series(unit, times, estimated, "A", *args)

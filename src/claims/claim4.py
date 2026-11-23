@@ -213,6 +213,7 @@ def score_unit_claim4(
             horizon_hours,
             settings.default_abs_mwh,
             end,
+            settings.boa_addback,
         )
         for out, n in zip(by_nameplate, nameplates_mwh, strict=True):
             out.append(claim4_week(meter, declared, eta, n, claim4))

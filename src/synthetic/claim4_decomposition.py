@@ -51,7 +51,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from src.claims.claim4 import Claim4Settings, excesses, load_claim4_settings
-from src.claims.declared_series import declared_series
+from src.claims.declared_series import AddBack, declared_series
 from src.claims.screens import WeekMeter, screen_meter, week_boundaries
 from src.claims.unit import load_claim_settings, week_starts
 from src.model.params import load_params
@@ -71,6 +71,9 @@ ACCOUNTS_SHARE = 0.8
 CLASSES = ("declaration", "wall", "both")
 ARMS = ("estimated", "true")
 IDENTITY_TOL_MWH = 1e-9
+# The committed check ran before deviation 5, so this decomposition of it keeps
+# that add-back rule.
+ADDBACK: AddBack = "all"
 
 
 def classify(declaration_gap: float, wall_margin: float) -> str:
@@ -190,6 +193,7 @@ def run_once(run_index: int) -> dict[str, Tally]:
             None,
             claims.default_abs_mwh,
             length.end,
+            ADDBACK,
         )[:-1]
         first = (week_start - sim.start) // timedelta(minutes=1)
         truth, active = truth_at_starts(sim.stored_mwh, sim.boa_id, first, physics.eta)
