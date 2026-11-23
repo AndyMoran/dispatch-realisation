@@ -17,12 +17,13 @@ Design fixed in the decision log on 23 Nov 2026 before any of this ran:
   the settlement dates and periods returned. No fleet unit is scored before the
   pinned scoring run.
 
-This file holds the shared pieces and the probe. The pulls proper follow once
-the probe's output has fixed the field mapping.
+This file holds the shared pieces, the probes and the scoring-window pulls. The
+M23 and M25 checks live in `src/ingest/sign_check.py` and run through here.
 
     uv run python -m src.ingest.pull probe
     uv run python -m src.ingest.pull probe-mdo
     uv run python -m src.ingest.pull mdo-mdb | pn | boalf | boav
+    uv run python -m src.ingest.pull b1610-check    # M23, M25: sign_check.py
 """
 
 from __future__ import annotations
@@ -86,17 +87,18 @@ class Request:
     path: str
     params: tuple[tuple[str, str], ...]
     units: tuple[str, ...] = ()
+    base: str = ELEXON
 
     @property
     def url(self) -> str:
         """Return the full URL sent: parameters, then one `bmUnit` per unit."""
         query = [*self.params, *(("bmUnit", u) for u in self.units)]
-        return f"{ELEXON}{self.path}?{urllib.parse.urlencode(query)}"
+        return f"{self.base}{self.path}?{urllib.parse.urlencode(query)}"
 
     @property
     def public_url(self) -> str:
         """Return the URL without the unit list, for the committed manifest."""
-        return f"{ELEXON}{self.path}?{urllib.parse.urlencode(self.params)}"
+        return f"{self.base}{self.path}?{urllib.parse.urlencode(self.params)}"
 
     @property
     def units_sha256(self) -> str:
@@ -195,9 +197,16 @@ def get_with_retry(
 
 
 def rows_of(body: bytes) -> list[dict[str, object]]:
-    """Return the rows of a JSON response: a list, or a `data` list in a wrapper."""
+    """Return the rows of a JSON response: a list, a `data` list in a wrapper, or
+    NESO's `result.records` list (CKAN `datastore_search`)."""
     parsed = json.loads(body)
-    rows = parsed.get("data") if isinstance(parsed, dict) else parsed
+    rows: object = parsed
+    if isinstance(parsed, dict):
+        result = parsed.get("result")
+        if isinstance(result, dict) and "records" in result:
+            rows = result["records"]
+        else:
+            rows = parsed.get("data")
     if not isinstance(rows, list) or not all(isinstance(r, dict) for r in rows):
         raise PullError("response is not a list of rows")
     return rows
@@ -237,7 +246,7 @@ def save(
     new = not manifest.exists()
     manifest.parent.mkdir(parents=True, exist_ok=True)
     with manifest.open("a", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=MANIFEST_FIELDS)
+        w = csv.DictWriter(f, fieldnames=MANIFEST_FIELDS, lineterminator="\n")
         if new:
             w.writeheader()
         w.writerow(row)
@@ -549,8 +558,20 @@ def run_pull(
     Returns a coverage report (PIPELINE_RULES §2): counts, and each failure's
     dataset, date and reason. No value or unit ID.
     """
+    return run_requests(name, plan(name, units), get, now, raw_root, manifest, pause_s)
+
+
+def run_requests(
+    name: str,
+    requests: Sequence[Request],
+    get: Getter = http_get,
+    now: Callable[[], datetime] = lambda: datetime.now(UTC),
+    raw_root: Path = RAW,
+    manifest: Path = MANIFEST,
+    pause_s: float | None = None,
+) -> dict[str, object]:
+    """Run a list of requests as `run_pull` does, and return the coverage report."""
     wait = PAUSE_S if pause_s is None else pause_s
-    requests = plan(name, units)
     done = done_chunks(manifest)
     arrived = skipped = rows = 0
     failed: list[dict[str, str]] = []
@@ -587,10 +608,16 @@ def run_pull(
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    """Run a subcommand. Only the probe exists until its output fixes the mapping."""
+    """Run a subcommand and write its report; exit non-zero if it is incomplete."""
     parser = argparse.ArgumentParser(description="Scoring-window pulls")
-    parser.add_argument("command", choices=("probe", "probe-mdo", *PULLS))
+    parser.add_argument(
+        "command", choices=("probe", "probe-mdo", *PULLS, "b1610-check")
+    )
     args = parser.parse_args(argv)
+    if args.command == "b1610-check":
+        from src.ingest import sign_check  # imports this module, so not at the top
+
+        return sign_check.main()
     if args.command == "probe":
         result = probe()
         out = PROBE_OUT
