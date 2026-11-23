@@ -128,9 +128,13 @@ def test_fleet_loader(tmp_path: Path) -> None:
     rows = [("U2", "adopted"), ("U1", "adopted"), ("U3", "excluded(fuel_type_PS)")]
     with path.open("w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["unit", "status"])
-        w.writerows(rows)
+        w.writerow(["schema_version", "bm_unit", "status", "fuel_type"])
+        w.writerows(("1.0", u, s, "") for u, s in rows)
     assert load_fleet(path, expected=2) == ["U1", "U2"]
+    wrong = tmp_path / "wrong.csv"
+    wrong.write_text("unit,status\nU1,adopted\n")
+    with pytest.raises(PullError, match="bm_unit"):
+        load_fleet(wrong, expected=1)
     with pytest.raises(PullError):
         load_fleet(path, expected=163)
     with pytest.raises(PullError):

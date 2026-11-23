@@ -223,13 +223,18 @@ def save(
 def load_fleet(path: Path = FLEET_CSV, expected: int = FLEET_SIZE) -> list[str]:
     """Return the fleet's unit IDs, sorted, from Gate A1's adoption table.
 
-    The fleet is every unit with status "adopted" (PREREGISTRATION §2). The table
+    The fleet is every unit with status "adopted" (PREREGISTRATION §2); Gate A1
+    writes the unit ID as `bm_unit` (`src/ingest/gate_a1.py`). The table
     holds unit IDs, so it stays on the machine that ran Gate A1.
     """
     if not path.exists():
         raise PullError(f"no fleet table at {path}; it comes from Gate A1's run")
     with path.open(newline="", encoding="utf-8") as f:
-        units = sorted(r["unit"] for r in csv.DictReader(f) if r["status"] == "adopted")
+        reader = csv.DictReader(f)
+        missing = {"bm_unit", "status"} - set(reader.fieldnames or ())
+        if missing:
+            raise PullError(f"fleet table lacks columns: {sorted(missing)}")
+        units = sorted(r["bm_unit"] for r in reader if r["status"] == "adopted")
     if len(units) != expected:
         raise PullError(f"fleet has {len(units)} units, not the locked {expected}")
     return units
