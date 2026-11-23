@@ -52,7 +52,7 @@ See [`PROJECT.md`](PROJECT.md) for scope and timeline, [`ASSUMPTIONS.md`](ASSUMP
 
 ## Repository layout
 
-`src/model/` holds the input types shared by real and synthetic data, `src/physics/` the §3 physics, and `src/claims/` Claims 1, 2 and 4 with their scoring. `src/claims/unit.py` scores one unit, real or synthetic, from its inputs to its flags. `src/synthetic/` holds the known-answer batteries: their settings, frequency input, the honest and planted-fault batteries, the Claims 1–2 band runner (`src/synthetic/bands.py`), Claim 3's instruction-sizing regimes (`src/synthetic/regimes.py`) and its band runner (`src/synthetic/claim3_bands.py`), and the Claim 4 synthetic check (`src/synthetic/claim4_check.py`). `src/claim3/` holds Claim 3's scoring, kept for the record and for any later deviation; version 1 does not report it.
+`src/model/` holds the input types shared by real and synthetic data, `src/physics/` the §3 physics, and `src/claims/` Claims 1, 2, 4 and 5 with their scoring. `src/claims/unit.py` scores one unit, real or synthetic, from its inputs to its flags. `src/synthetic/` holds the known-answer batteries: their settings, frequency input, the honest and planted-fault batteries, the Claims 1–2 band runner (`src/synthetic/bands.py`), Claim 3's instruction-sizing regimes (`src/synthetic/regimes.py`) and its band runner (`src/synthetic/claim3_bands.py`), the Claim 4 synthetic check (`src/synthetic/claim4_check.py`) and the Claim 5 synthetic report (`src/synthetic/claim5_report.py`). `src/claim3/` holds Claim 3's scoring, kept for the record and for any later deviation; version 1 does not report it.
 
 ```
 ├── README.md
