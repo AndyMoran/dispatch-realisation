@@ -1,0 +1,550 @@
+{
+  "endpoints": {
+    "B1610": {
+      "2026-10-14": {
+        "fields": {
+          "bmUnit": [
+            "string"
+          ],
+          "dataset": [
+            "string"
+          ],
+          "halfHourEndTime": [
+            "string"
+          ],
+          "nationalGridBmUnitId": [
+            "string"
+          ],
+          "psrType": [
+            "string"
+          ],
+          "publishTime": [
+            "string"
+          ],
+          "quantity": [
+            "number"
+          ],
+          "settlementDate": [
+            "string"
+          ],
+          "settlementPeriod": [
+            "number"
+          ],
+          "settlementRunType": [
+            "string"
+          ]
+        },
+        "period_max": 48,
+        "period_min": 1,
+        "rows": 144,
+        "settlement_dates": [
+          "2026-10-14"
+        ]
+      },
+      "2026-10-15": {
+        "fields": {
+          "bmUnit": [
+            "string"
+          ],
+          "dataset": [
+            "string"
+          ],
+          "halfHourEndTime": [
+            "string"
+          ],
+          "nationalGridBmUnitId": [
+            "string"
+          ],
+          "psrType": [
+            "string"
+          ],
+          "publishTime": [
+            "string"
+          ],
+          "quantity": [
+            "number"
+          ],
+          "settlementDate": [
+            "string"
+          ],
+          "settlementPeriod": [
+            "number"
+          ],
+          "settlementRunType": [
+            "string"
+          ]
+        },
+        "period_max": 48,
+        "period_min": 1,
+        "rows": 144,
+        "settlement_dates": [
+          "2026-10-15"
+        ]
+      },
+      "rows_in_both_days": 0
+    },
+    "BOALF": {
+      "2026-10-14": {
+        "fields": {
+          "acceptanceNumber": [
+            "number"
+          ],
+          "acceptanceTime": [
+            "string"
+          ],
+          "amendmentFlag": [
+            "string"
+          ],
+          "bmUnit": [
+            "string"
+          ],
+          "dataset": [
+            "string"
+          ],
+          "deemedBoFlag": [
+            "boolean"
+          ],
+          "levelFrom": [
+            "number"
+          ],
+          "levelTo": [
+            "number"
+          ],
+          "nationalGridBmUnit": [
+            "string"
+          ],
+          "rrFlag": [
+            "boolean"
+          ],
+          "settlementDate": [
+            "string"
+          ],
+          "settlementPeriodFrom": [
+            "number"
+          ],
+          "settlementPeriodTo": [
+            "number"
+          ],
+          "soFlag": [
+            "boolean"
+          ],
+          "storFlag": [
+            "boolean"
+          ],
+          "timeFrom": [
+            "string"
+          ],
+          "timeTo": [
+            "string"
+          ]
+        },
+        "period_max": 48,
+        "period_min": 4,
+        "rows": 270,
+        "settlement_dates": [
+          "2026-10-14"
+        ]
+      },
+      "2026-10-15": {
+        "fields": {
+          "acceptanceNumber": [
+            "number"
+          ],
+          "acceptanceTime": [
+            "string"
+          ],
+          "amendmentFlag": [
+            "string"
+          ],
+          "bmUnit": [
+            "string"
+          ],
+          "dataset": [
+            "string"
+          ],
+          "deemedBoFlag": [
+            "boolean"
+          ],
+          "levelFrom": [
+            "number"
+          ],
+          "levelTo": [
+            "number"
+          ],
+          "nationalGridBmUnit": [
+            "string"
+          ],
+          "rrFlag": [
+            "boolean"
+          ],
+          "settlementDate": [
+            "string"
+          ],
+          "settlementPeriodFrom": [
+            "number"
+          ],
+          "settlementPeriodTo": [
+            "number"
+          ],
+          "soFlag": [
+            "boolean"
+          ],
+          "storFlag": [
+            "boolean"
+          ],
+          "timeFrom": [
+            "string"
+          ],
+          "timeTo": [
+            "string"
+          ]
+        },
+        "period_max": 45,
+        "period_min": 1,
+        "rows": 157,
+        "settlement_dates": [
+          "2026-10-15"
+        ]
+      },
+      "rows_in_both_days": 0
+    },
+    "BOAV_bid": {
+      "2026-10-14": {
+        "fields": {
+          "acceptanceDuration": [
+            "string"
+          ],
+          "acceptanceId": [
+            "number"
+          ],
+          "bmUnit": [
+            "string"
+          ],
+          "bmUnitType": [
+            "string"
+          ],
+          "createdDateTime": [
+            "string"
+          ],
+          "leadPartyName": [
+            "string"
+          ],
+          "nationalGridBmUnit": [
+            "string"
+          ],
+          "pairVolumes": [
+            "object"
+          ],
+          "settlementDate": [
+            "string"
+          ],
+          "settlementPeriod": [
+            "number"
+          ],
+          "startTime": [
+            "string"
+          ],
+          "totalVolumeAccepted": [
+            "number"
+          ]
+        },
+        "period_max": 48,
+        "period_min": 1,
+        "rows": 20573,
+        "settlement_dates": [
+          "2026-10-14"
+        ]
+      },
+      "2026-10-15": {
+        "fields": {
+          "acceptanceDuration": [
+            "string"
+          ],
+          "acceptanceId": [
+            "number"
+          ],
+          "bmUnit": [
+            "string"
+          ],
+          "bmUnitType": [
+            "string"
+          ],
+          "createdDateTime": [
+            "string"
+          ],
+          "leadPartyName": [
+            "string"
+          ],
+          "nationalGridBmUnit": [
+            "string"
+          ],
+          "pairVolumes": [
+            "object"
+          ],
+          "settlementDate": [
+            "string"
+          ],
+          "settlementPeriod": [
+            "number"
+          ],
+          "startTime": [
+            "string"
+          ],
+          "totalVolumeAccepted": [
+            "number"
+          ]
+        },
+        "period_max": 48,
+        "period_min": 1,
+        "rows": 14667,
+        "settlement_dates": [
+          "2026-10-15"
+        ]
+      },
+      "rows_in_both_days": 0
+    },
+    "BOAV_offer": {
+      "2026-10-14": {
+        "fields": {
+          "acceptanceDuration": [
+            "string"
+          ],
+          "acceptanceId": [
+            "number"
+          ],
+          "bmUnit": [
+            "string"
+          ],
+          "bmUnitType": [
+            "string"
+          ],
+          "createdDateTime": [
+            "string"
+          ],
+          "leadPartyName": [
+            "string"
+          ],
+          "nationalGridBmUnit": [
+            "string"
+          ],
+          "pairVolumes": [
+            "object"
+          ],
+          "settlementDate": [
+            "string"
+          ],
+          "settlementPeriod": [
+            "number"
+          ],
+          "startTime": [
+            "string"
+          ],
+          "totalVolumeAccepted": [
+            "number"
+          ]
+        },
+        "period_max": 48,
+        "period_min": 1,
+        "rows": 20573,
+        "settlement_dates": [
+          "2026-10-14"
+        ]
+      },
+      "2026-10-15": {
+        "fields": {
+          "acceptanceDuration": [
+            "string"
+          ],
+          "acceptanceId": [
+            "number"
+          ],
+          "bmUnit": [
+            "string"
+          ],
+          "bmUnitType": [
+            "string"
+          ],
+          "createdDateTime": [
+            "string"
+          ],
+          "leadPartyName": [
+            "string"
+          ],
+          "nationalGridBmUnit": [
+            "string"
+          ],
+          "pairVolumes": [
+            "object"
+          ],
+          "settlementDate": [
+            "string"
+          ],
+          "settlementPeriod": [
+            "number"
+          ],
+          "startTime": [
+            "string"
+          ],
+          "totalVolumeAccepted": [
+            "number"
+          ]
+        },
+        "period_max": 48,
+        "period_min": 1,
+        "rows": 14667,
+        "settlement_dates": [
+          "2026-10-15"
+        ]
+      },
+      "rows_in_both_days": 0
+    },
+    "MDB": {
+      "2026-10-14": {
+        "fields": {},
+        "period_max": null,
+        "period_min": null,
+        "rows": 0,
+        "settlement_dates": []
+      },
+      "2026-10-15": {
+        "fields": {},
+        "period_max": null,
+        "period_min": null,
+        "rows": 0,
+        "settlement_dates": []
+      },
+      "rows_in_both_days": 0
+    },
+    "MDO": {
+      "2026-10-14": {
+        "fields": {},
+        "period_max": null,
+        "period_min": null,
+        "rows": 0,
+        "settlement_dates": []
+      },
+      "2026-10-15": {
+        "fields": {},
+        "period_max": null,
+        "period_min": null,
+        "rows": 0,
+        "settlement_dates": []
+      },
+      "rows_in_both_days": 0
+    },
+    "PN": {
+      "2026-10-14": {
+        "fields": {
+          "bmUnit": [
+            "string"
+          ],
+          "dataset": [
+            "string"
+          ],
+          "levelFrom": [
+            "number"
+          ],
+          "levelTo": [
+            "number"
+          ],
+          "nationalGridBmUnit": [
+            "string"
+          ],
+          "settlementDate": [
+            "string"
+          ],
+          "settlementPeriod": [
+            "number"
+          ],
+          "timeFrom": [
+            "string"
+          ],
+          "timeTo": [
+            "string"
+          ]
+        },
+        "period_max": 48,
+        "period_min": 1,
+        "rows": 172,
+        "settlement_dates": [
+          "2026-10-14"
+        ]
+      },
+      "2026-10-15": {
+        "fields": {
+          "bmUnit": [
+            "string"
+          ],
+          "dataset": [
+            "string"
+          ],
+          "levelFrom": [
+            "number"
+          ],
+          "levelTo": [
+            "number"
+          ],
+          "nationalGridBmUnit": [
+            "string"
+          ],
+          "settlementDate": [
+            "string"
+          ],
+          "settlementPeriod": [
+            "number"
+          ],
+          "timeFrom": [
+            "string"
+          ],
+          "timeTo": [
+            "string"
+          ]
+        },
+        "period_max": 48,
+        "period_min": 1,
+        "rows": 176,
+        "settlement_dates": [
+          "2026-10-15"
+        ]
+      },
+      "rows_in_both_days": 0
+    }
+  },
+  "neso_historic_demand": {
+    "Historic Demand Data 2026": {
+      "fields": {
+        "BRITNED_FLOW": "int4",
+        "EAST_WEST_FLOW": "int4",
+        "ELECLINK_FLOW": "int4",
+        "EMBEDDED_SOLAR_CAPACITY": "int4",
+        "EMBEDDED_SOLAR_GENERATION": "int4",
+        "EMBEDDED_WIND_CAPACITY": "int4",
+        "EMBEDDED_WIND_GENERATION": "int4",
+        "ENGLAND_WALES_DEMAND": "int4",
+        "FORECAST_ACTUAL_INDICATOR": "text",
+        "GREENLINK_FLOW": "int4",
+        "IFA2_FLOW": "int4",
+        "IFA_FLOW": "int4",
+        "MOYLE_FLOW": "int4",
+        "ND": "int4",
+        "NEMO_FLOW": "int4",
+        "NON_BM_STOR": "int4",
+        "NSL_FLOW": "int4",
+        "PUMP_STORAGE_PUMPING": "int4",
+        "SCOTTISH_TRANSFER": "int4",
+        "SETTLEMENT_DATE": "date",
+        "SETTLEMENT_PERIOD": "int4",
+        "TSD": "int4",
+        "VIKING_FLOW": "int4",
+        "_id": "int"
+      },
+      "resource_id": "8a4a771c-3929-4e56-93ad-cdf13219dea5"
+    }
+  },
+  "probe_dates": [
+    "2026-10-14",
+    "2026-10-15"
+  ],
+  "schema_version": "1.0",
+  "units_sampled": 3
+}

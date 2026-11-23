@@ -1,0 +1,187 @@
+{
+  "MDB": {
+    "filtered": {
+      "distinct_units": 3,
+      "fields": {
+        "bmUnit": [
+          "string"
+        ],
+        "dataset": [
+          "string"
+        ],
+        "levelFrom": [
+          "number"
+        ],
+        "levelTo": [
+          "number"
+        ],
+        "nationalGridBmUnit": [
+          "string"
+        ],
+        "publishTime": [
+          "string"
+        ],
+        "serialNumber": [
+          "string"
+        ],
+        "settlementDate": [
+          "string"
+        ],
+        "settlementPeriod": [
+          "number"
+        ],
+        "timeFrom": [
+          "string"
+        ],
+        "timeTo": [
+          "string"
+        ]
+      },
+      "rows": 31,
+      "sample_units_present": {
+        "bmUnit": 3,
+        "nationalGridBmUnit": 0,
+        "nationalGridBmUnitId": 0
+      }
+    },
+    "unfiltered": {
+      "distinct_units": 93,
+      "fields": {
+        "bmUnit": [
+          "string"
+        ],
+        "dataset": [
+          "string"
+        ],
+        "levelFrom": [
+          "number"
+        ],
+        "levelTo": [
+          "number"
+        ],
+        "nationalGridBmUnit": [
+          "string"
+        ],
+        "publishTime": [
+          "string"
+        ],
+        "serialNumber": [
+          "string"
+        ],
+        "settlementDate": [
+          "string"
+        ],
+        "settlementPeriod": [
+          "number"
+        ],
+        "timeFrom": [
+          "string"
+        ],
+        "timeTo": [
+          "string"
+        ]
+      },
+      "rows": 1353,
+      "sample_units_present": {
+        "bmUnit": 3,
+        "nationalGridBmUnit": 0,
+        "nationalGridBmUnitId": 0
+      }
+    }
+  },
+  "MDO": {
+    "filtered": {
+      "distinct_units": 3,
+      "fields": {
+        "bmUnit": [
+          "string"
+        ],
+        "dataset": [
+          "string"
+        ],
+        "levelFrom": [
+          "number"
+        ],
+        "levelTo": [
+          "number"
+        ],
+        "nationalGridBmUnit": [
+          "string"
+        ],
+        "publishTime": [
+          "string"
+        ],
+        "serialNumber": [
+          "string"
+        ],
+        "settlementDate": [
+          "string"
+        ],
+        "settlementPeriod": [
+          "number"
+        ],
+        "timeFrom": [
+          "string"
+        ],
+        "timeTo": [
+          "string"
+        ]
+      },
+      "rows": 69,
+      "sample_units_present": {
+        "bmUnit": 3,
+        "nationalGridBmUnit": 0,
+        "nationalGridBmUnitId": 0
+      }
+    },
+    "unfiltered": {
+      "distinct_units": 93,
+      "fields": {
+        "bmUnit": [
+          "string"
+        ],
+        "dataset": [
+          "string"
+        ],
+        "levelFrom": [
+          "number"
+        ],
+        "levelTo": [
+          "number"
+        ],
+        "nationalGridBmUnit": [
+          "string"
+        ],
+        "publishTime": [
+          "string"
+        ],
+        "serialNumber": [
+          "string"
+        ],
+        "settlementDate": [
+          "string"
+        ],
+        "settlementPeriod": [
+          "number"
+        ],
+        "timeFrom": [
+          "string"
+        ],
+        "timeTo": [
+          "string"
+        ]
+      },
+      "rows": 2138,
+      "sample_units_present": {
+        "bmUnit": 3,
+        "nationalGridBmUnit": 0,
+        "nationalGridBmUnitId": 0
+      }
+    }
+  },
+  "units_sampled": 3,
+  "window": {
+    "from": "2026-10-14T12:00Z",
+    "to": "2026-10-14T13:00Z"
+  }
+}
