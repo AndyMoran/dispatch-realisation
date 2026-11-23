@@ -91,9 +91,10 @@ def test_pn_not_negative_throughout(segments: list[LevelSegment]) -> None:
 # ------------------------------------------------------------------ NESO
 
 
-def test_labels_must_be_exactly_a_and_f() -> None:
+def test_labels_must_be_a_or_f_with_at_least_one_a() -> None:
     check_labels(["A", "F", "A"])
-    for bad in (["A"], ["F"], ["A", "F", "X"], ["actual", "forecast"], []):
+    check_labels(["A", "A"])  # the 2026 resource: outturn only
+    for bad in (["F"], ["A", "X"], ["A", "F", "X"], ["actual", "forecast"], []):
         with pytest.raises(CheckStopped):
             check_labels(bad)
 

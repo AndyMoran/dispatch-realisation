@@ -12,10 +12,12 @@ the result mixed.
 M25: the run codes in this pull are listed; any code other than the six "SF or
 later" codes of `config/scoring.toml` and II stops the run.
 
-Readings of 23 Nov 2026 (decision log): NESO's `FORECAST_ACTUAL_INDICATOR` must
-take exactly the labels A and F across the 2026 resource, A read as actual; only
-A rows are used, and any other label set stops the check. Output is counts and
-run-code labels only; no value and no unit ID.
+Readings of 23 Nov 2026 (decision log): NESO defines `FORECAST_ACTUAL_INDICATOR`
+as A (actual) or F (forecast). Every label across the 2026 resource must be A or
+F, and at least one must be A; only A rows are used, and any other label stops
+the check. (Corrected the same day: the first reading required both labels, but
+the 2026 resource holds only A.) Output is counts and run-code labels only; no
+value and no unit ID.
 """
 
 from __future__ import annotations
@@ -90,10 +92,14 @@ def pn_negative_throughout(segments: Sequence[LevelSegment], start: datetime) ->
 
 
 def check_labels(labels: Iterable[str]) -> None:
-    """Stop unless the indicator's labels are exactly actual and forecast."""
+    """Stop unless every label is actual or forecast and at least one is actual.
+
+    NESO's field definition gives A for actual and F for forecast, so a resource
+    with only A rows holds only outturn.
+    """
     found = set(labels)
-    if found != {ACTUAL, FORECAST}:
-        raise CheckStopped(f"indicator labels are {sorted(found)}, not A and F")
+    if ACTUAL not in found or not found <= {ACTUAL, FORECAST}:
+        raise CheckStopped(f"indicator labels are {sorted(found)}, not A, or A and F")
 
 
 def pumping_periods(rows: Iterable[Mapping[str, object]]) -> set[datetime]:
