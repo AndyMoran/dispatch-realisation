@@ -1,0 +1,73 @@
+{
+  "batteries": [
+    {
+      "battery": "honest",
+      "benchmark_min": 1.0,
+      "boas": 9321,
+      "bound": "L an upper bound; the benchmark share a lower bound (M14)",
+      "censored": {
+        "censoring limit": 0,
+        "end of data": 0,
+        "next acceptance": 0
+      },
+      "default_records": 0,
+      "ended_on_routine": 282,
+      "known_lag_min": 1,
+      "median_min": 1.0,
+      "observed": 9321,
+      "p75_min": 1.0,
+      "p90_min": 1.0,
+      "routine_share_of_observed": 0.030254264563887995,
+      "runs": 100,
+      "share_within_benchmark": 1.0,
+      "units": null
+    },
+    {
+      "battery": "redeclares_after_5_minutes",
+      "benchmark_min": 1.0,
+      "boas": 9178,
+      "bound": "L an upper bound; the benchmark share a lower bound (M14)",
+      "censored": {
+        "censoring limit": 0,
+        "end of data": 0,
+        "next acceptance": 0
+      },
+      "default_records": 0,
+      "ended_on_routine": 1572,
+      "known_lag_min": 5,
+      "median_min": 5.0,
+      "observed": 9178,
+      "p75_min": 5.0,
+      "p90_min": 5.0,
+      "routine_share_of_observed": 0.17127914578339506,
+      "runs": 100,
+      "share_within_benchmark": 0.0713663107430812,
+      "units": null
+    },
+    {
+      "battery": "honest_redeclares_after_25_minutes",
+      "benchmark_min": 1.0,
+      "boas": 9157,
+      "bound": "L an upper bound; the benchmark share a lower bound (M14)",
+      "censored": {
+        "censoring limit": 0,
+        "end of data": 0,
+        "next acceptance": 0
+      },
+      "default_records": 0,
+      "ended_on_routine": 7651,
+      "known_lag_min": 25,
+      "median_min": 15.0,
+      "observed": 9157,
+      "p75_min": 22.0,
+      "p90_min": 25.0,
+      "routine_share_of_observed": 0.8355356557824615,
+      "runs": 100,
+      "share_within_benchmark": 0.06639729168941799,
+      "units": null
+    }
+  ],
+  "branch": "A",
+  "length": "short",
+  "reported_only": true
+}
