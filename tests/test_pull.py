@@ -343,3 +343,64 @@ def test_probe_mdo_counts_only(tmp_path: Path) -> None:
     with manifest.open() as f:
         rows = list(csv.DictReader(f))
     assert len(rows) == 4 and "T_A" not in json.dumps(rows)
+
+
+# ------------------------------------------------------------------ the pulls
+
+
+def test_batches_and_plan() -> None:
+    units = [f"U{i:03d}" for i in range(163)]
+    b = pull.batches(units)
+    assert [len(x) for x in b] == [40, 40, 40, 40, 3]
+    with pytest.raises(PullError):
+        pull.batches(units, 0)
+    mdo = pull.plan("mdo-mdb", units)
+    assert len(mdo) == 2 * 18 * 5
+    assert {r.dataset for r in mdo} == {"MDO", "MDB"}
+    assert min(r.settlement_date for r in mdo) == date(2026, 10, 30)
+    assert max(r.settlement_date for r in mdo) == date(2026, 11, 16)
+    pn = pull.plan("pn", units)
+    assert len(pn) == 148 * 5
+    assert pn[0].settlement_date == date(2026, 6, 22)
+    assert pn[-1].settlement_date == date(2026, 11, 16)
+    boav = pull.plan("boav", [])
+    assert len(boav) == 148 * 2 and not boav[0].units
+    with pytest.raises(PullError):
+        pull.plan("b1610", units)
+
+
+def test_run_pull_resumes_and_records_failures(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(pull, "RETRY_WAIT_S", 0.0)
+    raw = tmp_path / "data" / "raw" / "pull"
+    manifest = tmp_path / "data" / "manifests" / "pull_manifest.csv"
+    broken = {"2026-11-03"}
+
+    def net(url: str) -> bytes:
+        if any(d in url for d in broken):
+            raise OSError("reset")
+        return b'[{"bmUnit": "U1", "levelFrom": 1}]'
+
+    units = ["U1", "U2"]
+    first = pull.run_pull("mdo-mdb", units, net, lambda: NOW, raw, manifest, 0)
+    assert first["requested"] == 36 and first["arrived"] == 32
+    assert first["rows_arrived"] == 32 and first["complete"] is False
+    failed = first["failed"]
+    assert isinstance(failed, list) and len(failed) == 4
+    assert {f["date"] for f in failed} == {"2026-11-02", "2026-11-03"}
+    assert "U1" not in json.dumps(first)
+    broken.clear()
+    second = pull.run_pull("mdo-mdb", units, net, lambda: NOW, raw, manifest, 0)
+    assert second["skipped_already_in_manifest"] == 32
+    assert second["arrived"] == 4 and second["complete"] is True
+    with manifest.open() as f:
+        assert len(list(csv.DictReader(f))) == 36
+
+
+def test_a_body_that_is_not_rows_writes_nothing(tmp_path: Path) -> None:
+    raw = tmp_path / "data" / "raw" / "pull"
+    manifest = tmp_path / "data" / "manifests" / "pull_manifest.csv"
+    with pytest.raises(PullError):
+        save(stream_request("PN", D, ["U1"]), b'{"error": 1}', NOW, raw, manifest)
+    assert not manifest.exists() and not raw.exists()

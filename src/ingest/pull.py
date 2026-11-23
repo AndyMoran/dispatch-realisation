@@ -22,6 +22,7 @@ the probe's output has fixed the field mapping.
 
     uv run python -m src.ingest.pull probe
     uv run python -m src.ingest.pull probe-mdo
+    uv run python -m src.ingest.pull mdo-mdb | pn | boalf | boav
 """
 
 from __future__ import annotations
@@ -209,7 +210,11 @@ def save(
     raw_root: Path = RAW,
     manifest: Path = MANIFEST,
 ) -> dict[str, str]:
-    """Save a response as downloaded and append its manifest row; return the row."""
+    """Save a response as downloaded and append its manifest row; return the row.
+
+    A body that is not a list of rows is refused before anything is written.
+    """
+    rows = rows_of(body)
     stamp = downloaded.strftime("%Y%m%dT%H%M%S%f")
     digest = hashlib.sha256(body).hexdigest()
     folder = raw_root / request.dataset
@@ -226,7 +231,7 @@ def save(
         "units_sha256": request.units_sha256 if request.units else "",
         "utc_downloaded": downloaded.isoformat(),
         "sha256": digest,
-        "rows": str(len(rows_of(body))),
+        "rows": str(len(rows)),
         "raw_file": str(path.relative_to(raw_root.parents[2])),
     }
     new = not manifest.exists()
@@ -478,23 +483,131 @@ def probe_mdo(
     return out
 
 
+# ------------------------------------------------------------------ the pulls
+
+# Windows fixed in the decision log, 23 Nov 2026 (dates inclusive).
+MDO_MDB_DAYS = (date(2026, 10, 30), date(2026, 11, 16))  # UTC days
+SCORING_DAYS = (date(2026, 6, 22), date(2026, 11, 16))  # settlement dates
+UNIT_BATCH = 40
+PAUSE_S = 0.2
+PULLS = ("mdo-mdb", "pn", "boalf", "boav")
+
+
+def batches(units: Sequence[str], size: int = UNIT_BATCH) -> list[tuple[str, ...]]:
+    """Return the sorted units in batches of at most `size`."""
+    if size < 1:
+        raise PullError("batch size must be positive")
+    ordered = sorted(units)
+    return [tuple(ordered[i : i + size]) for i in range(0, len(ordered), size)]
+
+
+def chunk_key(request: Request) -> tuple[str, str, str]:
+    """Return what identifies a chunk in the manifest: dataset, URL, unit hash."""
+    units = request.units_sha256 if request.units else ""
+    return (request.dataset, request.public_url, units)
+
+
+def done_chunks(manifest: Path = MANIFEST) -> set[tuple[str, str, str]]:
+    """Return the chunks the manifest already holds, so a rerun can skip them."""
+    if not manifest.exists():
+        return set()
+    with manifest.open(newline="", encoding="utf-8") as f:
+        return {(r["dataset"], r["url"], r["units_sha256"]) for r in csv.DictReader(f)}
+
+
+def plan(name: str, units: Sequence[str]) -> list[Request]:
+    """Return every request of one pull, in a fixed order."""
+    if name == "mdo-mdb":
+        days = settlement_dates(*MDO_MDB_DAYS)
+        return [
+            stream_request(ds, d, b)
+            for ds in ("MDO", "MDB")
+            for d in days
+            for b in batches(units)
+        ]
+    if name in ("pn", "boalf"):
+        ds = name.upper()
+        days = settlement_dates(*SCORING_DAYS)
+        return [stream_request(ds, d, b) for d in days for b in batches(units)]
+    if name == "boav":
+        days = settlement_dates(*SCORING_DAYS)
+        return [boav_request(d, side) for d in days for side in ("bid", "offer")]
+    raise PullError(f"unknown pull: {name}")
+
+
+def run_pull(
+    name: str,
+    units: Sequence[str],
+    get: Getter = http_get,
+    now: Callable[[], datetime] = lambda: datetime.now(UTC),
+    raw_root: Path = RAW,
+    manifest: Path = MANIFEST,
+    pause_s: float | None = None,
+) -> dict[str, object]:
+    """Run one pull: skip chunks already in the manifest, record every failure.
+
+    Returns a coverage report (PIPELINE_RULES §2): counts, and each failure's
+    dataset, date and reason. No value or unit ID.
+    """
+    wait = PAUSE_S if pause_s is None else pause_s
+    requests = plan(name, units)
+    done = done_chunks(manifest)
+    arrived = skipped = rows = 0
+    failed: list[dict[str, str]] = []
+    for request in requests:
+        if chunk_key(request) in done:
+            skipped += 1
+            continue
+        try:
+            body = get_with_retry(get, request.url)
+            row = save(request, body, now(), raw_root, manifest)
+        except PullError as exc:
+            failed.append(
+                {
+                    "dataset": request.dataset,
+                    "date": request.settlement_date.isoformat(),
+                    "reason": str(exc).replace(request.url, request.public_url),
+                }
+            )
+            continue
+        arrived += 1
+        rows += int(row["rows"])
+        if wait:
+            time.sleep(wait)
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "pull": name,
+        "requested": len(requests),
+        "skipped_already_in_manifest": skipped,
+        "arrived": arrived,
+        "rows_arrived": rows,
+        "failed": failed,
+        "complete": not failed and arrived + skipped == len(requests),
+    }
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Run a subcommand. Only the probe exists until its output fixes the mapping."""
     parser = argparse.ArgumentParser(description="Scoring-window pulls")
-    parser.add_argument("command", choices=("probe", "probe-mdo"))
+    parser.add_argument("command", choices=("probe", "probe-mdo", *PULLS))
     args = parser.parse_args(argv)
     if args.command == "probe":
         result = probe()
         out = PROBE_OUT
-    else:
+    elif args.command == "probe-mdo":
         result = probe_mdo()
         out = PROBE_OUT.with_name("probe_mdo.json")
+    else:
+        units = [] if args.command == "boav" else load_fleet()
+        result = run_pull(args.command, units)
+        out = PROBE_OUT.with_name(f"coverage_{args.command.replace('-', '_')}.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(
         json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     print(json.dumps(result, indent=2, sort_keys=True))
-    return 0
+    complete = result.get("complete", True)
+    return 0 if complete else 1
 
 
 if __name__ == "__main__":
