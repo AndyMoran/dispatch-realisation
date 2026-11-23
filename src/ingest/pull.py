@@ -23,6 +23,7 @@ M23 and M25 checks live in `src/ingest/sign_check.py` and run through here.
     uv run python -m src.ingest.pull probe
     uv run python -m src.ingest.pull probe-mdo
     uv run python -m src.ingest.pull mdo-mdb | pn | boalf | boav
+    uv run python -m src.ingest.pull b1610    # refuses until SF covers 15 Nov
     uv run python -m src.ingest.pull b1610-check    # M23, M25: sign_check.py
 """
 
@@ -36,7 +37,8 @@ import sys
 import time
 import urllib.parse
 import urllib.request
-from collections.abc import Callable, Mapping, Sequence
+from collections import Counter
+from collections.abc import Callable, Collection, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import UTC, date, datetime, timedelta
 from functools import partial
@@ -499,7 +501,9 @@ MDO_MDB_DAYS = (date(2026, 10, 30), date(2026, 11, 16))  # UTC days
 SCORING_DAYS = (date(2026, 6, 22), date(2026, 11, 16))  # settlement dates
 UNIT_BATCH = 40
 PAUSE_S = 0.2
-PULLS = ("mdo-mdb", "pn", "boalf", "boav")
+B1610_DAYS = (date(2026, 6, 22), date(2026, 11, 15))  # settlement dates
+LOCK_DAY = date(2026, 11, 15)  # the SF run must cover this day before `b1610` runs
+PULLS = ("mdo-mdb", "pn", "boalf", "boav", "b1610")
 
 
 def batches(units: Sequence[str], size: int = UNIT_BATCH) -> list[tuple[str, ...]]:
@@ -541,7 +545,59 @@ def plan(name: str, units: Sequence[str]) -> list[Request]:
     if name == "boav":
         days = settlement_dates(*SCORING_DAYS)
         return [boav_request(d, side) for d in days for side in ("bid", "offer")]
+    if name == "b1610":
+        days = settlement_dates(*B1610_DAYS)
+        return [b1610_request(d, b) for d in days for b in batches(units)]
     raise PullError(f"unknown pull: {name}")
+
+
+def sf_lock(
+    units: Sequence[str], sf_or_later: Collection[str], get: Getter = http_get
+) -> dict[str, object]:
+    """Return whether the SF run covers `LOCK_DAY` for the fleet, saving nothing.
+
+    B1610's stream serves only the latest run (ASSUMPTIONS M6), so a pull made
+    before SF would save earlier-run values that a resumed pull then skips. The
+    lock requests `LOCK_DAY` for every batch and opens only if rows arrive and
+    every row's run code is SF or later. Reports counts and run codes only.
+    """
+    codes: Counter[str] = Counter()
+    rows = 0
+    for batch in batches(units):
+        for row in rows_of(get_with_retry(get, b1610_request(LOCK_DAY, batch).url)):
+            rows += 1
+            codes[str(row.get("settlementRunType"))] += 1
+    early = sorted(set(codes) - set(sf_or_later))
+    return {
+        "lock_day": LOCK_DAY.isoformat(),
+        "rows": rows,
+        "run_codes": dict(sorted(codes.items())),
+        "codes_before_sf": early,
+        "open": rows > 0 and not early,
+    }
+
+
+def planned_chunks(
+    requests: Sequence[Request], manifest: Path = MANIFEST, root: Path = ROOT
+) -> tuple[dict[Request, tuple[Path, str]], int]:
+    """Return each request's raw file and SHA-256 from the manifest, and how many
+    chunks the manifest holds more than once (read from the latest row).
+
+    Only the planned chunks are returned, so probe chunks are never read.
+    """
+    want = {chunk_key(r): r for r in requests}
+    found: dict[Request, tuple[Path, str]] = {}
+    seen: Counter[tuple[str, str, str]] = Counter()
+    with manifest.open(newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            key = (row["dataset"], row["url"], row["units_sha256"])
+            if key in want:
+                seen[key] += 1
+                found[want[key]] = (root / row["raw_file"], row["sha256"])
+    missing = len(want) - len(found)
+    if missing:
+        raise PullError(f"{missing} planned chunks are not in the manifest")
+    return found, sum(1 for n in seen.values() if n > 1)
 
 
 def run_pull(
@@ -624,6 +680,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     elif args.command == "probe-mdo":
         result = probe_mdo()
         out = PROBE_OUT.with_name("probe_mdo.json")
+    elif args.command == "b1610":
+        from src.claims.results import load_scoring_settings
+
+        units = load_fleet()
+        lock = sf_lock(units, load_scoring_settings().sf_or_later_runs, http_get)
+        result = {"sf_lock": lock}
+        if lock["open"]:
+            result |= run_pull("b1610", units)
+        else:
+            result["complete"] = False
+        out = PROBE_OUT.with_name("coverage_b1610.json")
     else:
         units = [] if args.command == "boav" else load_fleet()
         result = run_pull(args.command, units)

@@ -366,7 +366,7 @@ def test_batches_and_plan() -> None:
     boav = pull.plan("boav", [])
     assert len(boav) == 148 * 2 and not boav[0].units
     with pytest.raises(PullError):
-        pull.plan("b1610", units)
+        pull.plan("b1611", units)
 
 
 def test_run_pull_resumes_and_records_failures(
@@ -404,3 +404,83 @@ def test_a_body_that_is_not_rows_writes_nothing(tmp_path: Path) -> None:
     with pytest.raises(PullError):
         save(stream_request("PN", D, ["U1"]), b'{"error": 1}', NOW, raw, manifest)
     assert not manifest.exists() and not raw.exists()
+
+
+# ------------------------------------------------------------------ b1610 and its lock
+
+
+def b1610_body(*codes: str) -> bytes:
+    rows = [{"bmUnit": "U1", "settlementRunType": c, "quantity": 1.0} for c in codes]
+    return json.dumps({"data": rows}).encode()
+
+
+SF_OR_LATER = ("SF", "R1", "R2", "R3", "RF", "DF")
+
+
+def test_b1610_plan_covers_22_jun_to_15_nov_in_batches() -> None:
+    units = [f"U{i:03d}" for i in range(163)]
+    requests = pull.plan("b1610", units)
+    assert len(requests) == 147 * 5
+    assert {r.settlement_date for r in requests} == set(
+        settlement_dates(date(2026, 6, 22), date(2026, 11, 15))
+    )
+    assert all(r.dataset == "B1610" for r in requests)
+
+
+def test_sf_lock_opens_only_when_every_row_is_sf_or_later() -> None:
+    urls: list[str] = []
+
+    def get(body: bytes) -> pull.Getter:
+        def inner(url: str) -> bytes:
+            urls.append(url)
+            return body
+
+        return inner
+
+    units = [f"U{i:03d}" for i in range(45)]  # two batches
+    lock = pull.sf_lock(units, SF_OR_LATER, get(b1610_body("SF", "R1")))
+    assert lock["open"] and lock["rows"] == 4 and lock["codes_before_sf"] == []
+    assert len(urls) == 2 and all("settlementDateFrom=2026-11-15" in u for u in urls)
+    early = pull.sf_lock(units, SF_OR_LATER, get(b1610_body("SF", "II")))
+    assert not early["open"] and early["codes_before_sf"] == ["II"]
+    empty = pull.sf_lock(units, SF_OR_LATER, get(b1610_body()))
+    assert not empty["open"] and empty["rows"] == 0
+    missing = pull.sf_lock(units, SF_OR_LATER, get(json.dumps({"data": [{}]}).encode()))
+    assert not missing["open"] and missing["codes_before_sf"] == ["None"]
+
+
+def test_b1610_command_saves_nothing_while_locked(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(pull, "load_fleet", lambda: ["U1", "U2"])
+    monkeypatch.setattr(pull, "http_get", lambda url: b1610_body("II"))
+    monkeypatch.setattr(pull, "PROBE_OUT", tmp_path / "probe.json")
+    monkeypatch.setattr(pull, "MANIFEST", tmp_path / "manifest.csv")
+    calls: list[str] = []
+
+    def no_pull(*args: object, **kwargs: object) -> dict[str, object]:
+        calls.append("pulled")
+        return {}
+
+    monkeypatch.setattr(pull, "run_pull", no_pull)
+    assert pull.main(["b1610"]) == 1
+    report = json.loads((tmp_path / "coverage_b1610.json").read_text())
+    assert report["sf_lock"]["open"] is False and report["complete"] is False
+    assert calls == [] and not (tmp_path / "manifest.csv").exists()
+
+
+def test_planned_chunks_reads_only_planned_rows(tmp_path: Path) -> None:
+    manifest = tmp_path / "m.csv"
+    raw = tmp_path / "data" / "raw" / "pull"
+    probe_req = stream_request("PN", D, ["U1"])
+    fleet_req = stream_request("PN", D, ["U1", "U2"])
+    body = json.dumps({"data": []}).encode()
+    save(probe_req, body, NOW, raw, manifest)
+    save(fleet_req, body, NOW, raw, manifest)
+    save(fleet_req, body, NOW.replace(hour=19), raw, manifest)
+    found, twice = pull.planned_chunks([fleet_req], manifest, tmp_path)
+    assert twice == 1 and list(found) == [fleet_req]
+    path, sha = found[fleet_req]
+    assert "190000" in path.name and sha == hashlib.sha256(body).hexdigest()
+    with pytest.raises(PullError, match="1 planned chunks"):
+        pull.planned_chunks([stream_request("PN", D, ["U3"])], manifest, tmp_path)
