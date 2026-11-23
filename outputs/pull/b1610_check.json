@@ -1,0 +1,39 @@
+{
+  "b1610_excluded": {},
+  "b1610_rows": 23840,
+  "coverage": {
+    "arrived": 0,
+    "complete": true,
+    "failed": [],
+    "pull": "b1610-check",
+    "requested": 63,
+    "rows_arrived": 0,
+    "schema_version": "1.0",
+    "skipped_already_in_manifest": 63
+  },
+  "indicator_labels": [
+    "A"
+  ],
+  "neso_pumping_periods_in_window": 1452,
+  "neso_rows": 14688,
+  "pn_excluded": {},
+  "pn_rows": 26297,
+  "ps_units": 16,
+  "reference_snapshot": "bmunits__dl20261023T130744.json",
+  "result": {
+    "negative": 1443,
+    "positive": 11,
+    "run_codes": {
+      "R1": 3840,
+      "SF": 20000
+    },
+    "selected": 1457,
+    "sf_periods": 20000,
+    "units": 16,
+    "unknown_run_codes": [],
+    "verdict": "mixed",
+    "zero": 3
+  },
+  "schema_version": "1.0",
+  "stops": "sign check mixed (M23)"
+}
