@@ -1,0 +1,22 @@
+{
+  "confirmed_share": 0.8,
+  "counted_periods": 134400,
+  "frame": "honest, short, A/A, K from true \u03b7, gate ceiling",
+  "large_declaration_crossings": {
+    "corrected": 0,
+    "original": 85
+  },
+  "large_declaration_crossings_at_stale_periods": 85,
+  "runs": 100,
+  "runs_with_violation": {
+    "corrected": 25,
+    "original": 74
+  },
+  "share_removed": 1.0,
+  "stale_periods": 129,
+  "timing_confirmed": true,
+  "violations": {
+    "corrected": 1765,
+    "original": 1874
+  }
+}

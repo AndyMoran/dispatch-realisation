@@ -1,0 +1,4701 @@
+{
+  "band_flips": [
+    {
+      "corrected": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 100
+        },
+        "declared": "A",
+        "in_band": 100,
+        "kind": "build",
+        "length": "short",
+        "passed": true,
+        "required": 95,
+        "scored": "A"
+      },
+      "original": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 91,
+          "indeterminate": 9
+        },
+        "declared": "A",
+        "in_band": 91,
+        "kind": "build",
+        "length": "short",
+        "passed": false,
+        "required": 95,
+        "scored": "A"
+      }
+    },
+    {
+      "corrected": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 100
+        },
+        "declared": "B",
+        "in_band": 100,
+        "kind": "build",
+        "length": "short",
+        "passed": true,
+        "required": 95,
+        "scored": "B"
+      },
+      "original": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 91,
+          "indeterminate": 9
+        },
+        "declared": "B",
+        "in_band": 91,
+        "kind": "build",
+        "length": "short",
+        "passed": false,
+        "required": 95,
+        "scored": "B"
+      }
+    },
+    {
+      "corrected": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest_frequency_response",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 100
+        },
+        "declared": "A",
+        "in_band": 100,
+        "kind": "build",
+        "length": "short",
+        "passed": true,
+        "required": 95,
+        "scored": "A"
+      },
+      "original": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest_frequency_response",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 94,
+          "indeterminate": 6
+        },
+        "declared": "A",
+        "in_band": 94,
+        "kind": "build",
+        "length": "short",
+        "passed": false,
+        "required": 95,
+        "scored": "A"
+      }
+    },
+    {
+      "corrected": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest_ramp_limited",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 100
+        },
+        "declared": "A",
+        "in_band": 100,
+        "kind": "build",
+        "length": "short",
+        "passed": true,
+        "required": 95,
+        "scored": "A"
+      },
+      "original": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest_ramp_limited",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 93,
+          "indeterminate": 7
+        },
+        "declared": "A",
+        "in_band": 93,
+        "kind": "build",
+        "length": "short",
+        "passed": false,
+        "required": 95,
+        "scored": "A"
+      }
+    },
+    {
+      "corrected": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest_ramp_limited",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 100
+        },
+        "declared": "B",
+        "in_band": 100,
+        "kind": "build",
+        "length": "short",
+        "passed": true,
+        "required": 95,
+        "scored": "B"
+      },
+      "original": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest_ramp_limited",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 93,
+          "indeterminate": 7
+        },
+        "declared": "B",
+        "in_band": 93,
+        "kind": "build",
+        "length": "short",
+        "passed": false,
+        "required": 95,
+        "scored": "B"
+      }
+    },
+    {
+      "corrected": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest_derating",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 100
+        },
+        "declared": "A",
+        "in_band": 100,
+        "kind": "build",
+        "length": "short",
+        "passed": true,
+        "required": 95,
+        "scored": "A"
+      },
+      "original": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest_derating",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 87,
+          "indeterminate": 13
+        },
+        "declared": "A",
+        "in_band": 87,
+        "kind": "build",
+        "length": "short",
+        "passed": false,
+        "required": 95,
+        "scored": "A"
+      }
+    },
+    {
+      "corrected": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest_derating",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 100
+        },
+        "declared": "B",
+        "in_band": 100,
+        "kind": "build",
+        "length": "short",
+        "passed": true,
+        "required": 95,
+        "scored": "B"
+      },
+      "original": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest_derating",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 88,
+          "indeterminate": 12
+        },
+        "declared": "B",
+        "in_band": 88,
+        "kind": "build",
+        "length": "short",
+        "passed": false,
+        "required": 95,
+        "scored": "B"
+      }
+    },
+    {
+      "corrected": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest_dc_efa",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 100
+        },
+        "declared": "A",
+        "in_band": 100,
+        "kind": "withdrawal",
+        "length": "short",
+        "passed": true,
+        "required": 95,
+        "scored": "A"
+      },
+      "original": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest_dc_efa",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 94,
+          "indeterminate": 6
+        },
+        "declared": "A",
+        "in_band": 94,
+        "kind": "withdrawal",
+        "length": "short",
+        "passed": false,
+        "required": 95,
+        "scored": "A"
+      }
+    },
+    {
+      "corrected": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest_dc_efa",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 100
+        },
+        "declared": "B",
+        "in_band": 100,
+        "kind": "withdrawal",
+        "length": "short",
+        "passed": true,
+        "required": 95,
+        "scored": "B"
+      },
+      "original": {
+        "allowed": [
+          "coherent"
+        ],
+        "battery": "honest_dc_efa",
+        "claim": "claim1",
+        "counts": {
+          "coherent": 94,
+          "indeterminate": 6
+        },
+        "declared": "B",
+        "in_band": 94,
+        "kind": "withdrawal",
+        "length": "short",
+        "passed": false,
+        "required": 95,
+        "scored": "B"
+      }
+    }
+  ],
+  "corrected_cells": [
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 83,
+        "provable under-declaration": 17
+      },
+      "declared": "A",
+      "in_band": 83,
+      "kind": "recorded",
+      "length": "short",
+      "passed": false,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 22,
+        "provable under-declaration": 78
+      },
+      "declared": "A",
+      "in_band": 22,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 90,
+        "provable under-declaration": 10
+      },
+      "declared": "B",
+      "in_band": 90,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 80,
+        "provable under-declaration": 20
+      },
+      "declared": "B",
+      "in_band": 80,
+      "kind": "recorded",
+      "length": "short",
+      "passed": false,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest",
+      "claim": "claim2",
+      "counts": {
+        "provable under-declaration": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not scored: fewer contract-free scored weeks than required"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not scored: fewer contract-free scored weeks than required"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not scored: fewer contract-free scored weeks than required"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not scored: fewer contract-free scored weeks than required"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not scored: fewer contract-free scored weeks than required"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not scored: fewer contract-free scored weeks than required"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not scored: fewer contract-free scored weeks than required"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not scored: fewer contract-free scored weeks than required"
+      ],
+      "battery": "honest_frequency_response",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 74,
+        "provable under-declaration": 26
+      },
+      "declared": "A",
+      "in_band": 74,
+      "kind": "recorded",
+      "length": "short",
+      "passed": false,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 17,
+        "provable under-declaration": 83
+      },
+      "declared": "A",
+      "in_band": 17,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 86,
+        "provable under-declaration": 14
+      },
+      "declared": "B",
+      "in_band": 86,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 75,
+        "provable under-declaration": 25
+      },
+      "declared": "B",
+      "in_band": 75,
+      "kind": "recorded",
+      "length": "short",
+      "passed": false,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim2",
+      "counts": {
+        "provable under-declaration": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_ramp_limited",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 98,
+        "provable under-declaration": 2
+      },
+      "declared": "A",
+      "in_band": 98,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "constant_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 97,
+        "provable under-declaration": 3
+      },
+      "declared": "A",
+      "in_band": 97,
+      "kind": "recorded",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 96,
+        "provable under-declaration": 4
+      },
+      "declared": "A",
+      "in_band": 96,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 97,
+        "provable under-declaration": 3
+      },
+      "declared": "B",
+      "in_band": 97,
+      "kind": "recorded",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "proportional_over_declaration",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "static_profile_from_maximum",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 43,
+        "indeterminate": 57
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 44,
+        "indeterminate": 56
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 82,
+        "provable under-declaration": 18
+      },
+      "declared": "A",
+      "in_band": 82,
+      "kind": "recorded",
+      "length": "short",
+      "passed": false,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 22,
+        "provable under-declaration": 78
+      },
+      "declared": "A",
+      "in_band": 22,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 87,
+        "provable under-declaration": 13
+      },
+      "declared": "B",
+      "in_band": 87,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 82,
+        "provable under-declaration": 18
+      },
+      "declared": "B",
+      "in_band": 82,
+      "kind": "recorded",
+      "length": "short",
+      "passed": false,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim2",
+      "counts": {
+        "provable under-declaration": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 78,
+        "provable under-declaration": 22
+      },
+      "declared": "A",
+      "in_band": 78,
+      "kind": "recorded",
+      "length": "short",
+      "passed": false,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 25,
+        "provable under-declaration": 75
+      },
+      "declared": "A",
+      "in_band": 25,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 86,
+        "provable under-declaration": 14
+      },
+      "declared": "B",
+      "in_band": 86,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 78,
+        "provable under-declaration": 22
+      },
+      "declared": "B",
+      "in_band": 78,
+      "kind": "recorded",
+      "length": "short",
+      "passed": false,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent",
+        "indeterminate"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim2",
+      "counts": {
+        "provable under-declaration": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 86,
+        "provable under-declaration": 14
+      },
+      "declared": "A",
+      "in_band": 86,
+      "kind": "recorded",
+      "length": "short",
+      "passed": false,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 29,
+        "provable under-declaration": 71
+      },
+      "declared": "A",
+      "in_band": 29,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 90,
+        "provable under-declaration": 10
+      },
+      "declared": "B",
+      "in_band": 90,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 85,
+        "provable under-declaration": 15
+      },
+      "declared": "B",
+      "in_band": 85,
+      "kind": "recorded",
+      "length": "short",
+      "passed": false,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim2",
+      "counts": {
+        "provable under-declaration": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "pn_protection_ignored",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 99,
+        "not shown coherent": 1
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "build",
+      "length": "short",
+      "passed": false,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 3,
+        "not shown coherent": 97
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 8,
+        "not shown coherent": 92
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 99,
+        "not shown coherent": 1
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "build",
+      "length": "short",
+      "passed": false,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "provable under-declaration"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim2",
+      "counts": {
+        "provable under-declaration": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "provable under-declaration"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim2",
+      "counts": {
+        "provable under-declaration": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "provable under-declaration"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim2",
+      "counts": {
+        "provable under-declaration": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "provable under-declaration"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim2",
+      "counts": {
+        "provable under-declaration": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "build",
+      "length": "long",
+      "passed": false,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "build",
+      "length": "long",
+      "passed": false,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "provable under-declaration"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim2",
+      "counts": {
+        "provable under-declaration": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "provable under-declaration"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim2",
+      "counts": {
+        "provable under-declaration": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "provable under-declaration"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim2",
+      "counts": {
+        "provable under-declaration": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "provable under-declaration"
+      ],
+      "battery": "constant_under_declaration",
+      "claim": "claim2",
+      "counts": {
+        "provable under-declaration": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 68,
+        "provable under-declaration": 32
+      },
+      "declared": "A",
+      "in_band": 68,
+      "kind": "recorded",
+      "length": "short",
+      "passed": false,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 18,
+        "provable under-declaration": 82
+      },
+      "declared": "A",
+      "in_band": 18,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 79,
+        "provable under-declaration": 21
+      },
+      "declared": "B",
+      "in_band": 79,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 67,
+        "provable under-declaration": 33
+      },
+      "declared": "B",
+      "in_band": 67,
+      "kind": "recorded",
+      "length": "short",
+      "passed": false,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "build",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 1,
+        "provable under-declaration": 99
+      },
+      "declared": "A",
+      "in_band": 1,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "none detected"
+      ],
+      "battery": "honest_derating",
+      "claim": "claim2",
+      "counts": {
+        "none detected": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "recorded",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_dc_efa",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "withdrawal",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_dc_efa",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_dc_efa",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_dc_efa",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "withdrawal",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [],
+      "battery": "honest_dc_efa",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "A",
+      "in_band": null,
+      "kind": "report",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [],
+      "battery": "honest_dc_efa",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "A",
+      "in_band": null,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [],
+      "battery": "honest_dc_efa",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "B",
+      "in_band": null,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [],
+      "battery": "honest_dc_efa",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "B",
+      "in_band": null,
+      "kind": "report",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_dc_efa",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "withdrawal",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_dc_efa",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "A",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_dc_efa",
+      "claim": "claim1",
+      "counts": {
+        "indeterminate": 100
+      },
+      "declared": "B",
+      "in_band": 0,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "coherent"
+      ],
+      "battery": "honest_dc_efa",
+      "claim": "claim1",
+      "counts": {
+        "coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "withdrawal",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [],
+      "battery": "honest_dc_efa",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "A",
+      "in_band": null,
+      "kind": "report",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [],
+      "battery": "honest_dc_efa",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "A",
+      "in_band": null,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [],
+      "battery": "honest_dc_efa",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "B",
+      "in_band": null,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [],
+      "battery": "honest_dc_efa",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "B",
+      "in_band": null,
+      "kind": "report",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "withdrawal",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "withdrawal",
+      "length": "short",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "A",
+      "in_band": null,
+      "kind": "report",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "A",
+      "in_band": null,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "B",
+      "in_band": null,
+      "kind": "cross-pair diagnostic",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "B",
+      "in_band": null,
+      "kind": "report",
+      "length": "short",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "withdrawal",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "A",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [
+        "not shown coherent"
+      ],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim1",
+      "counts": {
+        "not shown coherent": 100
+      },
+      "declared": "B",
+      "in_band": 100,
+      "kind": "withdrawal",
+      "length": "long",
+      "passed": true,
+      "required": 95,
+      "scored": "B"
+    },
+    {
+      "allowed": [],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "A",
+      "in_band": null,
+      "kind": "report",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "A",
+      "in_band": null,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    },
+    {
+      "allowed": [],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "B",
+      "in_band": null,
+      "kind": "cross-pair diagnostic",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "A"
+    },
+    {
+      "allowed": [],
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim2",
+      "counts": {
+        "not scored: fewer contract-free scored weeks than required": 100
+      },
+      "declared": "B",
+      "in_band": null,
+      "kind": "report",
+      "length": "long",
+      "passed": null,
+      "required": null,
+      "scored": "B"
+    }
+  ],
+  "corrected_lengths": [
+    {
+      "batteries": 13,
+      "claim1_reportable": false,
+      "claim2_bands_passed": false,
+      "length": "short",
+      "max_limited_minutes": 1871,
+      "one_sided_reading_stands": false,
+      "scored_weeks": 4
+    },
+    {
+      "batteries": 13,
+      "claim1_reportable": false,
+      "claim2_bands_passed": true,
+      "length": "long",
+      "max_limited_minutes": 7603,
+      "one_sided_reading_stands": false,
+      "scored_weeks": 20
+    }
+  ],
+  "lengths": [
+    "short",
+    "long"
+  ],
+  "material": true,
+  "material_runs": 1,
+  "most_runs_changed": 13,
+  "original_lengths": [
+    {
+      "batteries": 13,
+      "claim1_reportable": false,
+      "claim2_bands_passed": false,
+      "length": "short",
+      "max_limited_minutes": 1871,
+      "one_sided_reading_stands": false,
+      "scored_weeks": 4
+    },
+    {
+      "batteries": 13,
+      "claim1_reportable": false,
+      "claim2_bands_passed": true,
+      "length": "long",
+      "max_limited_minutes": 7603,
+      "one_sided_reading_stands": false,
+      "scored_weeks": 20
+    }
+  ],
+  "reproduces_committed": true,
+  "runs": 100,
+  "runs_changed": [
+    {
+      "battery": "honest",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 9
+    },
+    {
+      "battery": "honest",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 9
+    },
+    {
+      "battery": "honest",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_frequency_response",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 6
+    },
+    {
+      "battery": "honest_frequency_response",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 5
+    },
+    {
+      "battery": "honest_frequency_response",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_frequency_response",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_frequency_response",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_frequency_response",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_frequency_response",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_frequency_response",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_ramp_limited",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 7
+    },
+    {
+      "battery": "honest_ramp_limited",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 7
+    },
+    {
+      "battery": "honest_ramp_limited",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_ramp_limited",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_ramp_limited",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_ramp_limited",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_ramp_limited",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_ramp_limited",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "constant_over_declaration",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 4
+    },
+    {
+      "battery": "constant_over_declaration",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 4
+    },
+    {
+      "battery": "constant_over_declaration",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "constant_over_declaration",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "constant_over_declaration",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "constant_over_declaration",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "constant_over_declaration",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "constant_over_declaration",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "static_profile_from_maximum",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "static_profile_from_maximum",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "static_profile_from_maximum",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "static_profile_from_maximum",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "static_profile_from_maximum",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "static_profile_from_maximum",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "static_profile_from_maximum",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "static_profile_from_maximum",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 12
+    },
+    {
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 12
+    },
+    {
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 5
+    },
+    {
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 5
+    },
+    {
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "redeclares_after_5_minutes",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_redeclares_after_25_minutes",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "pn_protection_ignored",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "pn_protection_ignored",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "pn_protection_ignored",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "pn_protection_ignored",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "pn_protection_ignored",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "pn_protection_ignored",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "pn_protection_ignored",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "pn_protection_ignored",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "constant_under_declaration",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 1
+    },
+    {
+      "battery": "constant_under_declaration",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "constant_under_declaration",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "constant_under_declaration",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "constant_under_declaration",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "constant_under_declaration",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "constant_under_declaration",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "constant_under_declaration",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_derating",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 13
+    },
+    {
+      "battery": "honest_derating",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 12
+    },
+    {
+      "battery": "honest_derating",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_derating",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_derating",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_derating",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_derating",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_derating",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_dc_efa",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 6
+    },
+    {
+      "battery": "honest_dc_efa",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 6
+    },
+    {
+      "battery": "honest_dc_efa",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_dc_efa",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_dc_efa",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_dc_efa",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_dc_efa",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "honest_dc_efa",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim1",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim2",
+      "length": "short",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim1",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "AA",
+      "runs_changed": 0
+    },
+    {
+      "battery": "proportional_over_declaration_with_reserve",
+      "claim": "claim2",
+      "length": "long",
+      "pair": "BB",
+      "runs_changed": 0
+    }
+  ],
+  "stale_boundaries_declared_A": {
+    "constant_over_declaration/long": 776,
+    "constant_over_declaration/short": 144,
+    "constant_under_declaration/long": 760,
+    "constant_under_declaration/short": 130,
+    "honest/long": 771,
+    "honest/short": 130,
+    "honest_dc_efa/long": 681,
+    "honest_dc_efa/short": 145,
+    "honest_derating/long": 756,
+    "honest_derating/short": 138,
+    "honest_frequency_response/long": 737,
+    "honest_frequency_response/short": 127,
+    "honest_ramp_limited/long": 741,
+    "honest_ramp_limited/short": 154,
+    "honest_redeclares_after_25_minutes/long": 715,
+    "honest_redeclares_after_25_minutes/short": 152,
+    "pn_protection_ignored/long": 713,
+    "pn_protection_ignored/short": 154,
+    "proportional_over_declaration/long": 701,
+    "proportional_over_declaration/short": 148,
+    "proportional_over_declaration_with_reserve/long": 422,
+    "proportional_over_declaration_with_reserve/short": 81,
+    "redeclares_after_5_minutes/long": 827,
+    "redeclares_after_5_minutes/short": 162,
+    "static_profile_from_maximum/long": 774,
+    "static_profile_from_maximum/short": 155
+  }
+}
