@@ -1,0 +1,2537 @@
+{
+  "battery": "honest",
+  "cause_supported": false,
+  "ceiling": "gate",
+  "committed_check_runs_failing": 91,
+  "estimated": {
+    "eta": "\u03b7\u0302 per run",
+    "inconsistent_weeks": 69,
+    "largest_excess_mwh": 50.02114945221871,
+    "runs_failing": 91,
+    "violating_periods": 19497,
+    "week_violation_rate": 0.5625,
+    "weeks_with_violation": 225
+  },
+  "eta_hat": {
+    "max": 0.9005651775604088,
+    "median": 0.878712802979325,
+    "min": 0.8631125489843477
+  },
+  "largest_k_gap_mwh": 22.76448154614986,
+  "length": "short",
+  "pair": "AA",
+  "per_run": [
+    {
+      "estimated": {
+        "eta": 0.8764604822632331,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.7804245451549434,
+        "largest_swing_mwh": 91.64183347896446,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8764604822632331,
+      "largest_k_gap_mwh": 3.895308702788955,
+      "nameplate_mwh": 92.93096915016505,
+      "run": 0,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.6420286893836504,
+        "largest_swing_mwh": 92.52630922101034,
+        "violating_periods": 45,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8777898837193431,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 11.552697807709265,
+        "largest_swing_mwh": 93.7281829088659,
+        "violating_periods": 3,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8777898837193431,
+      "largest_k_gap_mwh": 2.553366169928637,
+      "nameplate_mwh": 93.52023065243303,
+      "run": 1,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 11.907692194582708,
+        "largest_swing_mwh": 94.66421541336125,
+        "violating_periods": 3,
+        "weeks_with_violation": 3
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.878300154105912,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 11.454920021493109,
+        "largest_swing_mwh": 92.19842097838024,
+        "violating_periods": 5,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.878300154105912,
+      "largest_k_gap_mwh": 1.9823951301969842,
+      "nameplate_mwh": 93.4173525991142,
+      "run": 2,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 12.193993092848402,
+        "largest_swing_mwh": 92.84856875325897,
+        "violating_periods": 5,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8774835113466658,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 31.86147763523011,
+        "largest_swing_mwh": 93.02393841888795,
+        "violating_periods": 19,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8774835113466658,
+      "largest_k_gap_mwh": 2.855819701399719,
+      "nameplate_mwh": 92.59235340483653,
+      "run": 3,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 31.898755334463686,
+        "largest_swing_mwh": 92.18977986384833,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8828266858257411,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 1.7316363159054156,
+        "largest_swing_mwh": 94.11819760456876,
+        "violating_periods": 314,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8828266858257411,
+      "largest_k_gap_mwh": 3.2474406775912,
+      "nameplate_mwh": 93.51546742727359,
+      "run": 4,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 2.362437269520168,
+        "largest_swing_mwh": 92.7155052677096,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8755610728015922,
+        "failed": true,
+        "inconsistent_weeks": 2,
+        "largest_excess_mwh": 2.3063851137166864,
+        "largest_swing_mwh": 96.7519132345366,
+        "violating_periods": 394,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8755610728015922,
+      "largest_k_gap_mwh": 5.305309705539297,
+      "nameplate_mwh": 93.53706538762682,
+      "run": 5,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.0489134350086573,
+        "largest_swing_mwh": 94.35003288861165,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8663155577186925,
+        "failed": true,
+        "inconsistent_weeks": 3,
+        "largest_excess_mwh": 11.019678232395052,
+        "largest_swing_mwh": 101.79412268367817,
+        "violating_periods": 705,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8663155577186925,
+      "largest_k_gap_mwh": 16.54709801964708,
+      "nameplate_mwh": 93.11777742498538,
+      "run": 6,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 11.967900182268494,
+        "largest_swing_mwh": 92.96645911052141,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8814801752972007,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 11.872270686599194,
+        "largest_swing_mwh": 95.30478683389666,
+        "violating_periods": 113,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8814801752972007,
+      "largest_k_gap_mwh": 1.5860133883826428,
+      "nameplate_mwh": 93.78658840224936,
+      "run": 7,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 11.69730519860913,
+        "largest_swing_mwh": 94.35159124161376,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8797209109097908,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 42.50824906015606,
+        "largest_swing_mwh": 93.1489322312936,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8797209109097908,
+      "largest_k_gap_mwh": 0.30786484699567396,
+      "nameplate_mwh": 93.58944609041056,
+      "run": 8,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 42.58456193489158,
+        "largest_swing_mwh": 93.08461919076399,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8790971111782757,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 8.21549914979105,
+        "largest_swing_mwh": 94.03071552438486,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8790971111782757,
+      "largest_k_gap_mwh": 1.0710963905973259,
+      "nameplate_mwh": 93.64820876911102,
+      "run": 9,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 8.716195525772697,
+        "largest_swing_mwh": 94.46108640817198,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8746244495663514,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 7.343764917756523,
+        "largest_swing_mwh": 95.51321657498325,
+        "violating_periods": 238,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8746244495663514,
+      "largest_k_gap_mwh": 6.087535637749369,
+      "nameplate_mwh": 93.74895390523122,
+      "run": 10,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 10.899357035213875,
+        "largest_swing_mwh": 92.8623027696751,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8819750254722849,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 44.5652204820818,
+        "largest_swing_mwh": 94.17881656558876,
+        "violating_periods": 3,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8819750254722849,
+      "largest_k_gap_mwh": 2.2850902828777127,
+      "nameplate_mwh": 93.78289665641307,
+      "run": 11,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 44.84684713843173,
+        "largest_swing_mwh": 94.05391375652742,
+        "violating_periods": 17,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.881550445822846,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 40.22752092653445,
+        "largest_swing_mwh": 96.30427188310992,
+        "violating_periods": 173,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.881550445822846,
+      "largest_k_gap_mwh": 1.7011917315006588,
+      "nameplate_mwh": 93.75069078094407,
+      "run": 12,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 40.30634025733555,
+        "largest_swing_mwh": 94.81451084026442,
+        "violating_periods": 159,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8785581083349863,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 9.920532997398738,
+        "largest_swing_mwh": 93.72211816399727,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8785581083349863,
+      "largest_k_gap_mwh": 1.6685278710802791,
+      "nameplate_mwh": 93.80678009031281,
+      "run": 13,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 10.721143849454513,
+        "largest_swing_mwh": 93.36154639316734,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8768870102270533,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.0014118977297954416,
+        "largest_swing_mwh": 93.50174673889974,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8768870102270533,
+      "largest_k_gap_mwh": 3.574555588662051,
+      "nameplate_mwh": 93.20551182675494,
+      "run": 14,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 92.97278473749688,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8787574249339184,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 9.525588025109073,
+        "largest_swing_mwh": 93.22339538590747,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8787574249339184,
+      "largest_k_gap_mwh": 1.3883389444868968,
+      "nameplate_mwh": 93.72798164709268,
+      "run": 15,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 9.701683040280557,
+        "largest_swing_mwh": 93.778393106998,
+        "violating_periods": 93,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8778553536446594,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 9.179788138338353,
+        "largest_swing_mwh": 93.76882590217824,
+        "violating_periods": 76,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8778553536446594,
+      "largest_k_gap_mwh": 2.4536882890890155,
+      "nameplate_mwh": 93.72383259838347,
+      "run": 16,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 8.719190791623376,
+        "largest_swing_mwh": 93.57685496369943,
+        "violating_periods": 59,
+        "weeks_with_violation": 3
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8784289272465473,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.350203070076617,
+        "largest_swing_mwh": 93.88733149540528,
+        "violating_periods": 32,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8784289272465473,
+      "largest_k_gap_mwh": 1.7202605125456714,
+      "nameplate_mwh": 93.31889953969073,
+      "run": 17,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 92.76086952068667,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8895253272607613,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 8.174336269795866,
+        "largest_swing_mwh": 102.71395430623477,
+        "violating_periods": 514,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8895253272607613,
+      "largest_k_gap_mwh": 10.959846994031716,
+      "nameplate_mwh": 93.43935656495249,
+      "run": 18,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 3.1259023588619286,
+        "largest_swing_mwh": 93.40072402820283,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8800330661520982,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 17.336560017922352,
+        "largest_swing_mwh": 91.03850628553303,
+        "violating_periods": 2,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8800330661520982,
+      "largest_k_gap_mwh": 0.03669773521197506,
+      "nameplate_mwh": 91.84121923975357,
+      "run": 19,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 17.34472785363515,
+        "largest_swing_mwh": 91.02555953684809,
+        "violating_periods": 2,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.9005651775604088,
+        "failed": true,
+        "inconsistent_weeks": 4,
+        "largest_excess_mwh": 14.258985256885092,
+        "largest_swing_mwh": 107.00845563057575,
+        "violating_periods": 679,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.9005651775604088,
+      "largest_k_gap_mwh": 22.76448154614986,
+      "nameplate_mwh": 93.78730354909389,
+      "run": 20,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 3.7657370492622615,
+        "largest_swing_mwh": 93.22820570504881,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8798028195632214,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 19.866467480495466,
+        "largest_swing_mwh": 93.69353831423895,
+        "violating_periods": 108,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8798028195632214,
+      "largest_k_gap_mwh": 0.21376078531753606,
+      "nameplate_mwh": 93.71840088644628,
+      "run": 21,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 19.90410721774763,
+        "largest_swing_mwh": 93.7311780514911,
+        "violating_periods": 139,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8774716165883321,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 94.20500057413636,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      },
+      "eta_hat": 0.8774716165883321,
+      "largest_k_gap_mwh": 2.8794010332479125,
+      "nameplate_mwh": 93.74982747257997,
+      "run": 22,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.435201195038438,
+        "largest_swing_mwh": 92.78985259839442,
+        "violating_periods": 4,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8875723026670947,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 9.785228450385954,
+        "largest_swing_mwh": 98.10060278674236,
+        "violating_periods": 386,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8875723026670947,
+      "largest_k_gap_mwh": 8.361332808591769,
+      "nameplate_mwh": 93.46311547199862,
+      "run": 23,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 8.666685317989998,
+        "largest_swing_mwh": 93.66649825243883,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8852773131162801,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 2.611159186146253,
+        "largest_swing_mwh": 95.80687557983721,
+        "violating_periods": 160,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8852773131162801,
+      "largest_k_gap_mwh": 5.924630933492345,
+      "nameplate_mwh": 93.16491127952473,
+      "run": 24,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 92.78895525126616,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8800062293919237,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 46.882736428503165,
+        "largest_swing_mwh": 93.12357602316516,
+        "violating_periods": 52,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8800062293919237,
+      "largest_k_gap_mwh": 0.006555456231815526,
+      "nameplate_mwh": 93.76734759538573,
+      "run": 25,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 46.88585731395425,
+        "largest_swing_mwh": 93.12164573255075,
+        "violating_periods": 52,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8856424183267453,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 43.31590793391357,
+        "largest_swing_mwh": 95.84010500441649,
+        "violating_periods": 400,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8856424183267453,
+      "largest_k_gap_mwh": 5.935324422909831,
+      "nameplate_mwh": 92.98580671868653,
+      "run": 26,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 37.62653639732942,
+        "largest_swing_mwh": 92.27177719734576,
+        "violating_periods": 3,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.884625382235491,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 2.047693691163488,
+        "largest_swing_mwh": 94.47334387469249,
+        "violating_periods": 129,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.884625382235491,
+      "largest_k_gap_mwh": 4.923512245877831,
+      "nameplate_mwh": 93.44067686681836,
+      "run": 27,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 92.99875222322478,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8809165812655487,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 10.109197210714953,
+        "largest_swing_mwh": 94.0002346621691,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8809165812655487,
+      "largest_k_gap_mwh": 1.0196526485863444,
+      "nameplate_mwh": 93.74567710192113,
+      "run": 28,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 9.90483641555835,
+        "largest_swing_mwh": 93.75616677405269,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8789991785565343,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 16.488973891460798,
+        "largest_swing_mwh": 93.14819677659592,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8789991785565343,
+      "largest_k_gap_mwh": 1.1475286712332355,
+      "nameplate_mwh": 93.51766213170846,
+      "run": 29,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 16.971932510166308,
+        "largest_swing_mwh": 93.06888869570338,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8736383863002313,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 10.314966066809063,
+        "largest_swing_mwh": 97.57836188719898,
+        "violating_periods": 339,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8736383863002313,
+      "largest_k_gap_mwh": 7.679283891273638,
+      "nameplate_mwh": 93.76712786315478,
+      "run": 30,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 11.465092778824186,
+        "largest_swing_mwh": 93.82470683213515,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8735991142979923,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 10.899796953083083,
+        "largest_swing_mwh": 97.34041047973746,
+        "violating_periods": 382,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8735991142979923,
+      "largest_k_gap_mwh": 7.12214595818552,
+      "nameplate_mwh": 93.75336168198949,
+      "run": 31,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 4.784189733845196,
+        "largest_swing_mwh": 94.25820564544559,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8806265811475056,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 21.08422213321259,
+        "largest_swing_mwh": 92.40751893864726,
+        "violating_periods": 2,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8806265811475056,
+      "largest_k_gap_mwh": 0.7604355923062798,
+      "nameplate_mwh": 93.67077910634872,
+      "run": 32,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 21.08422213321259,
+        "largest_swing_mwh": 92.29710961338039,
+        "violating_periods": 2,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8775963929791898,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 92.31399907849371,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      },
+      "eta_hat": 0.8775963929791898,
+      "largest_k_gap_mwh": 2.6747770061680143,
+      "nameplate_mwh": 93.80637872999085,
+      "run": 33,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 92.8251704561847,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8793001264773795,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 7.757508708886888,
+        "largest_swing_mwh": 93.26334709912054,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8793001264773795,
+      "largest_k_gap_mwh": 0.7615895421561358,
+      "nameplate_mwh": 93.51555465358022,
+      "run": 34,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 8.088325044641664,
+        "largest_swing_mwh": 93.43438185529706,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8794789543685126,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 92.44692474615536,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      },
+      "eta_hat": 0.8794789543685126,
+      "largest_k_gap_mwh": 0.5695576758591177,
+      "nameplate_mwh": 93.14900634164913,
+      "run": 35,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 92.3181073347644,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8699899061960082,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 8.708645460742517,
+        "largest_swing_mwh": 101.8492138145396,
+        "violating_periods": 765,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8699899061960082,
+      "largest_k_gap_mwh": 11.83690908561848,
+      "nameplate_mwh": 93.61426025432436,
+      "run": 36,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 93.01766455156447,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8913316083127573,
+        "failed": true,
+        "inconsistent_weeks": 3,
+        "largest_excess_mwh": 8.811685646713702,
+        "largest_swing_mwh": 99.94869916060847,
+        "violating_periods": 524,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8913316083127573,
+      "largest_k_gap_mwh": 11.892995393204561,
+      "nameplate_mwh": 93.51931681518998,
+      "run": 37,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.20688949686794444,
+        "largest_swing_mwh": 94.2423593436575,
+        "violating_periods": 13,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8646239420732637,
+        "failed": true,
+        "inconsistent_weeks": 2,
+        "largest_excess_mwh": 9.081827597063366,
+        "largest_swing_mwh": 101.56859631326714,
+        "violating_periods": 744,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8646239420732637,
+      "largest_k_gap_mwh": 16.941964091889773,
+      "nameplate_mwh": 93.6311999428776,
+      "run": 38,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 12.914985224762631,
+        "largest_swing_mwh": 96.06864085061841,
+        "violating_periods": 220,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.876859375611365,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.3517928329649074,
+        "largest_swing_mwh": 93.32744380773768,
+        "violating_periods": 29,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.876859375611365,
+      "largest_k_gap_mwh": 3.676979855602797,
+      "nameplate_mwh": 93.08372730287238,
+      "run": 39,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 93.29417671635328,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8783210740198305,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 6.92071564870654,
+        "largest_swing_mwh": 93.56161821113739,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8783210740198305,
+      "largest_k_gap_mwh": 1.8312333654416904,
+      "nameplate_mwh": 93.65161580207675,
+      "run": 40,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 6.476319549965062,
+        "largest_swing_mwh": 93.28534406927594,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8772027173132245,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 1.9283461551221706,
+        "largest_swing_mwh": 97.38149978730401,
+        "violating_periods": 257,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8772027173132245,
+      "largest_k_gap_mwh": 3.0261311864015994,
+      "nameplate_mwh": 93.7492046641805,
+      "run": 41,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 95.43427121519316,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8874750707725708,
+        "failed": true,
+        "inconsistent_weeks": 3,
+        "largest_excess_mwh": 7.003546560231932,
+        "largest_swing_mwh": 98.6503116843663,
+        "violating_periods": 592,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8874750707725708,
+      "largest_k_gap_mwh": 8.596744841463469,
+      "nameplate_mwh": 93.60251905861564,
+      "run": 42,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 1.3556375189977459,
+        "largest_swing_mwh": 94.14624343668335,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.881938875507454,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 7.855962109122629,
+        "largest_swing_mwh": 95.62054685882407,
+        "violating_periods": 39,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.881938875507454,
+      "largest_k_gap_mwh": 2.2919095703955703,
+      "nameplate_mwh": 93.54719566217493,
+      "run": 43,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 6.437431176173519,
+        "largest_swing_mwh": 93.8626125665935,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8739955851806234,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 11.110961445211203,
+        "largest_swing_mwh": 93.14325277797693,
+        "violating_periods": 25,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8739955851806234,
+      "largest_k_gap_mwh": 6.374596541462903,
+      "nameplate_mwh": 92.74264050968151,
+      "run": 44,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 12.626787355988597,
+        "largest_swing_mwh": 93.05292710425712,
+        "violating_periods": 24,
+        "weeks_with_violation": 3
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8728477182274611,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 3.587878845731481,
+        "largest_swing_mwh": 94.17279679815867,
+        "violating_periods": 171,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8728477182274611,
+      "largest_k_gap_mwh": 7.992515969392436,
+      "nameplate_mwh": 93.58921543126951,
+      "run": 45,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 93.31595254408471,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8696408867989213,
+        "failed": true,
+        "inconsistent_weeks": 3,
+        "largest_excess_mwh": 9.420741436667182,
+        "largest_swing_mwh": 101.30502060863111,
+        "violating_periods": 635,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8696408867989213,
+      "largest_k_gap_mwh": 12.188806097471094,
+      "nameplate_mwh": 93.80639441019007,
+      "run": 46,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 9.164983501139059,
+        "largest_swing_mwh": 93.32373824459891,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8776693163521095,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 3.4127051010875,
+        "largest_swing_mwh": 93.9629703188603,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8776693163521095,
+      "largest_k_gap_mwh": 2.5784544722263045,
+      "nameplate_mwh": 93.66500006364203,
+      "run": 47,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 2.6293013248991066,
+        "largest_swing_mwh": 94.9591883317144,
+        "violating_periods": 54,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8821735446488544,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.38672992887386215,
+        "largest_swing_mwh": 92.11843188378177,
+        "violating_periods": 50,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8821735446488544,
+      "largest_k_gap_mwh": 2.455588695016175,
+      "nameplate_mwh": 91.71711560978687,
+      "run": 48,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 91.73103006205703,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8876473834086221,
+        "failed": true,
+        "inconsistent_weeks": 3,
+        "largest_excess_mwh": 21.464045462034292,
+        "largest_swing_mwh": 97.63615615315885,
+        "violating_periods": 398,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8876473834086221,
+      "largest_k_gap_mwh": 8.824843947127627,
+      "nameplate_mwh": 93.57305578085388,
+      "run": 49,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 24.140230706137984,
+        "largest_swing_mwh": 93.17665773473927,
+        "violating_periods": 113,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8892345061544785,
+        "failed": true,
+        "inconsistent_weeks": 2,
+        "largest_excess_mwh": 7.973939624527178,
+        "largest_swing_mwh": 97.1728021003696,
+        "violating_periods": 658,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8892345061544785,
+      "largest_k_gap_mwh": 10.036886510870373,
+      "nameplate_mwh": 93.59657315895215,
+      "run": 50,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 93.31021722987332,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8818167686353083,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 28.739945188913552,
+        "largest_swing_mwh": 95.59631921566341,
+        "violating_periods": 8,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8818167686353083,
+      "largest_k_gap_mwh": 2.1146552828716896,
+      "nameplate_mwh": 93.70703575495601,
+      "run": 51,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 27.854438340309414,
+        "largest_swing_mwh": 94.1267978086121,
+        "violating_periods": 3,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8825719898899054,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 12.633356135078504,
+        "largest_swing_mwh": 94.09404882593402,
+        "violating_periods": 77,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8825719898899054,
+      "largest_k_gap_mwh": 2.8777057727120194,
+      "nameplate_mwh": 93.7865800811611,
+      "run": 52,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 11.118760285126914,
+        "largest_swing_mwh": 92.54140381516369,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8759513029292717,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 46.78740393138098,
+        "largest_swing_mwh": 93.56726469061907,
+        "violating_periods": 141,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8759513029292717,
+      "largest_k_gap_mwh": 4.312998050691,
+      "nameplate_mwh": 93.73436613338457,
+      "run": 53,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 47.3293694548716,
+        "largest_swing_mwh": 92.97451644689724,
+        "violating_periods": 3,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.876890963907881,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 13.311854180811714,
+        "largest_swing_mwh": 93.35864321632533,
+        "violating_periods": 3,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.876890963907881,
+      "largest_k_gap_mwh": 3.4482236439491656,
+      "nameplate_mwh": 92.85141205161989,
+      "run": 54,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 11.446691521436463,
+        "largest_swing_mwh": 92.13979573538631,
+        "violating_periods": 3,
+        "weeks_with_violation": 3
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8931715425655611,
+        "failed": true,
+        "inconsistent_weeks": 4,
+        "largest_excess_mwh": 21.901741486483846,
+        "largest_swing_mwh": 101.3530331510729,
+        "violating_periods": 702,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8931715425655611,
+      "largest_k_gap_mwh": 14.389767492732929,
+      "nameplate_mwh": 93.5819433953261,
+      "run": 55,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 19.21966312027606,
+        "largest_swing_mwh": 93.64362647888287,
+        "violating_periods": 2,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8840635130984393,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 19.05317937005242,
+        "largest_swing_mwh": 96.63650969950959,
+        "violating_periods": 220,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8840635130984393,
+      "largest_k_gap_mwh": 4.545408875210299,
+      "nameplate_mwh": 93.75444594042072,
+      "run": 56,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 20.856675568579362,
+        "largest_swing_mwh": 92.87443861002345,
+        "violating_periods": 3,
+        "weeks_with_violation": 3
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8745230999111715,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.9555406529179038,
+        "largest_swing_mwh": 93.93068610752452,
+        "violating_periods": 68,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8745230999111715,
+      "largest_k_gap_mwh": 6.511307124217193,
+      "nameplate_mwh": 92.85475961036319,
+      "run": 57,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 92.62182568719452,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8775632906183378,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 93.54362699241133,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      },
+      "eta_hat": 0.8775632906183378,
+      "largest_k_gap_mwh": 2.7786602631667154,
+      "nameplate_mwh": 93.77653009776611,
+      "run": 58,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 93.8038378434806,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8815430507688847,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.15817209307750524,
+        "largest_swing_mwh": 90.40640504922632,
+        "violating_periods": 16,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8815430507688847,
+      "largest_k_gap_mwh": 1.6815612553401138,
+      "nameplate_mwh": 92.72034850784266,
+      "run": 59,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 90.15446507297533,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8762825238564234,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 29.720441941292243,
+        "largest_swing_mwh": 93.83789292146857,
+        "violating_periods": 2,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8762825238564234,
+      "largest_k_gap_mwh": 4.234433521502815,
+      "nameplate_mwh": 93.80392910459364,
+      "run": 60,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 27.7725644370043,
+        "largest_swing_mwh": 94.45390656248806,
+        "violating_periods": 2,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8844594250438429,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 26.75356096785127,
+        "largest_swing_mwh": 96.67377198153973,
+        "violating_periods": 430,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8844594250438429,
+      "largest_k_gap_mwh": 5.135859140127739,
+      "nameplate_mwh": 93.71298158397629,
+      "run": 61,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 28.200942684739275,
+        "largest_swing_mwh": 92.95209025137828,
+        "violating_periods": 183,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8749200839374429,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 5.4771155478557,
+        "largest_swing_mwh": 96.23610098923884,
+        "violating_periods": 139,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8749200839374429,
+      "largest_k_gap_mwh": 5.726786557831119,
+      "nameplate_mwh": 93.33567759389062,
+      "run": 62,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 6.825339935849595,
+        "largest_swing_mwh": 94.08015719396974,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8747326598249947,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 91.5004305889282,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      },
+      "eta_hat": 0.8747326598249947,
+      "largest_k_gap_mwh": 5.671237087325089,
+      "nameplate_mwh": 93.6890520447923,
+      "run": 63,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 1.3121344231581347,
+        "largest_swing_mwh": 94.38380858496222,
+        "violating_periods": 48,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8654870139278558,
+        "failed": true,
+        "inconsistent_weeks": 3,
+        "largest_excess_mwh": 14.034276035659794,
+        "largest_swing_mwh": 100.10281512565808,
+        "violating_periods": 609,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8654870139278558,
+      "largest_k_gap_mwh": 15.93648311307552,
+      "nameplate_mwh": 93.3207235225062,
+      "run": 64,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 1.4691877343273987,
+        "largest_swing_mwh": 93.3932210885322,
+        "violating_periods": 36,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8631125489843477,
+        "failed": true,
+        "inconsistent_weeks": 3,
+        "largest_excess_mwh": 50.02114945221871,
+        "largest_swing_mwh": 103.0982896181358,
+        "violating_periods": 627,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8631125489843477,
+      "largest_k_gap_mwh": 18.882076104550762,
+      "nameplate_mwh": 93.50313170651552,
+      "run": 65,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 39.91479785490624,
+        "largest_swing_mwh": 92.87407549817777,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.880849481574273,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.7020792866082388,
+        "largest_swing_mwh": 93.7541175409627,
+        "violating_periods": 35,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.880849481574273,
+      "largest_k_gap_mwh": 0.9803136738307323,
+      "nameplate_mwh": 93.66726518785472,
+      "run": 66,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.2522383732212745,
+        "largest_swing_mwh": 93.66362779100669,
+        "violating_periods": 24,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8755817497797239,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 1.377429323910917,
+        "largest_swing_mwh": 95.21540701752666,
+        "violating_periods": 211,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8755817497797239,
+      "largest_k_gap_mwh": 4.597621970431394,
+      "nameplate_mwh": 93.57076037875574,
+      "run": 67,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 93.57424159994815,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8791791699205941,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 15.821979763902455,
+        "largest_swing_mwh": 93.37859137884737,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8791791699205941,
+      "largest_k_gap_mwh": 0.8643270465240382,
+      "nameplate_mwh": 93.75673997519375,
+      "run": 68,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 15.584056404605697,
+        "largest_swing_mwh": 93.84265597364212,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8819376101264282,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 23.73179005125958,
+        "largest_swing_mwh": 94.67938611030867,
+        "violating_periods": 80,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8819376101264282,
+      "largest_k_gap_mwh": 2.2286731270758606,
+      "nameplate_mwh": 93.53900319233554,
+      "run": 69,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 23.009027563051355,
+        "largest_swing_mwh": 93.62120019772884,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8679532551575164,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 6.624800574677479,
+        "largest_swing_mwh": 95.56867980385375,
+        "violating_periods": 422,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8679532551575164,
+      "largest_k_gap_mwh": 12.985166112553962,
+      "nameplate_mwh": 93.41486209519772,
+      "run": 70,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 91.82259288005531,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8797740245309932,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 9.92583089519178,
+        "largest_swing_mwh": 93.72099661551307,
+        "violating_periods": 3,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8797740245309932,
+      "largest_k_gap_mwh": 0.2625186453990711,
+      "nameplate_mwh": 93.76697802006774,
+      "run": 71,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 9.91718558081432,
+        "largest_swing_mwh": 93.85968626243806,
+        "violating_periods": 3,
+        "weeks_with_violation": 3
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8798002166197669,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 20.538676606231505,
+        "largest_swing_mwh": 94.1892150565903,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8798002166197669,
+      "largest_k_gap_mwh": 0.21760806383844777,
+      "nameplate_mwh": 93.14830662812878,
+      "run": 72,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 20.538676606231505,
+        "largest_swing_mwh": 94.09870943523326,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8783916093244244,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 10.455584055945474,
+        "largest_swing_mwh": 94.13354380313201,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8783916093244244,
+      "largest_k_gap_mwh": 1.7899758114005668,
+      "nameplate_mwh": 93.73241849188385,
+      "run": 73,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 9.995289350635044,
+        "largest_swing_mwh": 93.78795266084032,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.875200510381908,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 32.02891641533135,
+        "largest_swing_mwh": 94.64750894156077,
+        "violating_periods": 94,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.875200510381908,
+      "largest_k_gap_mwh": 5.398675135525011,
+      "nameplate_mwh": 93.43554973127085,
+      "run": 74,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 33.07307873157099,
+        "largest_swing_mwh": 92.55603645951027,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8717349698831326,
+        "failed": true,
+        "inconsistent_weeks": 3,
+        "largest_excess_mwh": 6.519321307650763,
+        "largest_swing_mwh": 95.20994898283503,
+        "violating_periods": 581,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8717349698831326,
+      "largest_k_gap_mwh": 9.476291752674161,
+      "nameplate_mwh": 92.98220942781745,
+      "run": 75,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 1.246910275132425,
+        "largest_swing_mwh": 92.64926366253636,
+        "violating_periods": 54,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8888519699663359,
+        "failed": true,
+        "inconsistent_weeks": 2,
+        "largest_excess_mwh": 6.5680946915240845,
+        "largest_swing_mwh": 100.56802889335722,
+        "violating_periods": 507,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8888519699663359,
+      "largest_k_gap_mwh": 9.949464242224224,
+      "nameplate_mwh": 93.40836743589102,
+      "run": 76,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 93.0672948604331,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8924165830836907,
+        "failed": true,
+        "inconsistent_weeks": 3,
+        "largest_excess_mwh": 12.930566266155058,
+        "largest_swing_mwh": 101.22129225538694,
+        "violating_periods": 735,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8924165830836907,
+      "largest_k_gap_mwh": 14.508227389715792,
+      "nameplate_mwh": 93.60366621649605,
+      "run": 77,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 9.558833739034341,
+        "largest_swing_mwh": 94.3336992797204,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8711121278974043,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 10.960419659477182,
+        "largest_swing_mwh": 98.19440778073536,
+        "violating_periods": 281,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8711121278974043,
+      "largest_k_gap_mwh": 10.094851574905324,
+      "nameplate_mwh": 93.7039300621052,
+      "run": 78,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 7.748867552874344,
+        "largest_swing_mwh": 94.6752367551047,
+        "violating_periods": 97,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8768071226259355,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 10.247944955161351,
+        "largest_swing_mwh": 95.14131161926693,
+        "violating_periods": 39,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8768071226259355,
+      "largest_k_gap_mwh": 3.5816948526616805,
+      "nameplate_mwh": 93.49194148002628,
+      "run": 79,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 11.177585151465728,
+        "largest_swing_mwh": 94.18124282420105,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.881407699506734,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 4.827350623742348,
+        "largest_swing_mwh": 92.41102134482449,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.881407699506734,
+      "largest_k_gap_mwh": 1.643992759697488,
+      "nameplate_mwh": 93.76844955698277,
+      "run": 80,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 4.680742710530097,
+        "largest_swing_mwh": 93.07035148394911,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8801884011125194,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.6763156247140216,
+        "largest_swing_mwh": 93.37659716818479,
+        "violating_periods": 83,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8801884011125194,
+      "largest_k_gap_mwh": 0.20318395465224626,
+      "nameplate_mwh": 93.4860217396735,
+      "run": 81,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.5801111317241805,
+        "largest_swing_mwh": 93.31681096836577,
+        "violating_periods": 71,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8836340980557649,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 2.7343087363726344,
+        "largest_swing_mwh": 94.85855060685509,
+        "violating_periods": 195,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8836340980557649,
+      "largest_k_gap_mwh": 4.287466077195033,
+      "nameplate_mwh": 93.4645547840333,
+      "run": 82,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 93.44297589461598,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8736315182817651,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 16.20914182788477,
+        "largest_swing_mwh": 96.60664611712068,
+        "violating_periods": 371,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8736315182817651,
+      "largest_k_gap_mwh": 7.599670610891522,
+      "nameplate_mwh": 93.59563389386558,
+      "run": 83,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 10.78190403656577,
+        "largest_swing_mwh": 92.62423343505209,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8636482013876979,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 8.809619006624345,
+        "largest_swing_mwh": 94.94786152495315,
+        "violating_periods": 516,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8636482013876979,
+      "largest_k_gap_mwh": 18.87967752321382,
+      "nameplate_mwh": 93.60340493188556,
+      "run": 84,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 8.156598270199638,
+        "largest_swing_mwh": 90.74957258431692,
+        "violating_periods": 116,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.881503413466857,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 5.99447109647582,
+        "largest_swing_mwh": 94.92579423999639,
+        "violating_periods": 6,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.881503413466857,
+      "largest_k_gap_mwh": 1.8309927207578909,
+      "nameplate_mwh": 93.69731618608607,
+      "run": 85,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 6.41541365458535,
+        "largest_swing_mwh": 93.86321257539882,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8782020387149776,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 93.59459537563058,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      },
+      "eta_hat": 0.8782020387149776,
+      "largest_k_gap_mwh": 2.130466751490644,
+      "nameplate_mwh": 93.71966729170371,
+      "run": 86,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 94.45978710211052,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8717963586162955,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 4.275765829115436,
+        "largest_swing_mwh": 97.38542467197468,
+        "violating_periods": 370,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8717963586162955,
+      "largest_k_gap_mwh": 9.34766843103884,
+      "nameplate_mwh": 93.60055609952448,
+      "run": 87,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 94.6384402058527,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8737986341798949,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 1.4414102239463595,
+        "largest_swing_mwh": 95.96585541997001,
+        "violating_periods": 102,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8737986341798949,
+      "largest_k_gap_mwh": 7.108978041764971,
+      "nameplate_mwh": 93.38309264386281,
+      "run": 88,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.20070468007204312,
+        "largest_swing_mwh": 95.04370996089749,
+        "violating_periods": 18,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8826509009920654,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 14.23243826353135,
+        "largest_swing_mwh": 96.12582563953143,
+        "violating_periods": 173,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8826509009920654,
+      "largest_k_gap_mwh": 2.892949673474135,
+      "nameplate_mwh": 93.70012399569501,
+      "run": 89,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 14.03826547912611,
+        "largest_swing_mwh": 93.99607321406475,
+        "violating_periods": 2,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8764765275955386,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 31.300619676335607,
+        "largest_swing_mwh": 94.00878684793122,
+        "violating_periods": 25,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8764765275955386,
+      "largest_k_gap_mwh": 4.157051217984458,
+      "nameplate_mwh": 93.17143251063443,
+      "run": 90,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 31.740667762036182,
+        "largest_swing_mwh": 92.65399648921343,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8825212260408476,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 94.11941138416047,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      },
+      "eta_hat": 0.8825212260408476,
+      "largest_k_gap_mwh": 2.6515657666919292,
+      "nameplate_mwh": 93.65986850613722,
+      "run": 91,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 94.00465993602852,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8786828533735003,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 93.22438898789805,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      },
+      "eta_hat": 0.8786828533735003,
+      "largest_k_gap_mwh": 1.5093193644841776,
+      "nameplate_mwh": 93.3509354200944,
+      "run": 92,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 92.81489368541185,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8805636020221529,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 28.153915042167405,
+        "largest_swing_mwh": 92.52640075629817,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8805636020221529,
+      "largest_k_gap_mwh": 0.6528903501264374,
+      "nameplate_mwh": 93.6803941312591,
+      "run": 93,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 28.221243127783687,
+        "largest_swing_mwh": 92.89165397568883,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8661352914920563,
+        "failed": true,
+        "inconsistent_weeks": 2,
+        "largest_excess_mwh": 8.308836065763643,
+        "largest_swing_mwh": 96.22044214459879,
+        "violating_periods": 275,
+        "weeks_with_violation": 3
+      },
+      "eta_hat": 0.8661352914920563,
+      "largest_k_gap_mwh": 15.88626622937415,
+      "nameplate_mwh": 92.82116430361577,
+      "run": 94,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 12.742299236716235,
+        "largest_swing_mwh": 93.42870909400557,
+        "violating_periods": 1,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8787427525851498,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 0.6603230398388433,
+        "largest_swing_mwh": 93.91549749741701,
+        "violating_periods": 15,
+        "weeks_with_violation": 1
+      },
+      "eta_hat": 0.8787427525851498,
+      "largest_k_gap_mwh": 1.4663126940153006,
+      "nameplate_mwh": 93.80701035888484,
+      "run": 95,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 1.542717434357698,
+        "largest_swing_mwh": 93.8735863825813,
+        "violating_periods": 83,
+        "weeks_with_violation": 1
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8809183518805153,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 13.639568574257943,
+        "largest_swing_mwh": 95.31006842304686,
+        "violating_periods": 103,
+        "weeks_with_violation": 2
+      },
+      "eta_hat": 0.8809183518805153,
+      "largest_k_gap_mwh": 1.0622462111219768,
+      "nameplate_mwh": 93.41118231426671,
+      "run": 96,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": true,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": 13.04879690507164,
+        "largest_swing_mwh": 94.62562935006875,
+        "violating_periods": 66,
+        "weeks_with_violation": 2
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8696460933755201,
+        "failed": true,
+        "inconsistent_weeks": 2,
+        "largest_excess_mwh": 8.89566037481677,
+        "largest_swing_mwh": 97.80316083533202,
+        "violating_periods": 613,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8696460933755201,
+      "largest_k_gap_mwh": 11.295964271230226,
+      "nameplate_mwh": 93.53841147547408,
+      "run": 97,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 94.6077632483089,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8688530993380287,
+        "failed": true,
+        "inconsistent_weeks": 1,
+        "largest_excess_mwh": 7.584386764104355,
+        "largest_swing_mwh": 100.33302788081153,
+        "violating_periods": 484,
+        "weeks_with_violation": 4
+      },
+      "eta_hat": 0.8688530993380287,
+      "largest_k_gap_mwh": 12.464007016481572,
+      "nameplate_mwh": 93.58865754270656,
+      "run": 98,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 93.39637562027929,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    },
+    {
+      "estimated": {
+        "eta": 0.8788721885671594,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 92.57034181492224,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      },
+      "eta_hat": 0.8788721885671594,
+      "largest_k_gap_mwh": 1.312607179057646,
+      "nameplate_mwh": 93.46102104848457,
+      "run": 99,
+      "scored_weeks": 4,
+      "true": {
+        "eta": 0.88,
+        "failed": false,
+        "inconsistent_weeks": 0,
+        "largest_excess_mwh": null,
+        "largest_swing_mwh": 93.32337929672164,
+        "violating_periods": 0,
+        "weeks_with_violation": 0
+      }
+    }
+  ],
+  "reproduces_committed_check": true,
+  "runs": 100,
+  "supported_max_failing": 5,
+  "true": {
+    "eta": 0.88,
+    "inconsistent_weeks": 1,
+    "largest_excess_mwh": 47.3293694548716,
+    "runs_failing": 74,
+    "violating_periods": 1874,
+    "week_violation_rate": 0.2925,
+    "weeks_with_violation": 117
+  }
+}
