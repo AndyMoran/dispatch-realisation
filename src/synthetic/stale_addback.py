@@ -209,7 +209,7 @@ def stage_a_run(run_index: int) -> StageA:
         truth, active = truth_at_starts(sim.stored_mwh, sim.boa_id, first, physics.eta)
         line = line_at_starts(cumulative_change(meter.periods, physics.eta), n, tol)
         differs = [
-            a is not None and b is not None and a != b
+            a is not None and b is not None and bool(a != b)
             for a, b in zip(rules["original"], rules["corrected"], strict=True)
         ]
         stale += sum(differs)
@@ -228,7 +228,20 @@ def stage_a_run(run_index: int) -> StageA:
 
 
 def summarise_a(runs: Sequence[StageA]) -> dict[str, object]:
-    """Return Stage A's totals and the reading fixed before the run."""
+    """Return Stage A's totals and the reading fixed before the run.
+
+    Every count is a Python int, so the summary can be written as JSON.
+    """
+    runs = [
+        StageA(
+            int(r.stale_periods),
+            int(r.counted_periods),
+            {k: int(v) for k, v in r.violations.items()},
+            {k: int(v) for k, v in r.large_declaration.items()},
+            int(r.large_declaration_at_stale),
+        )
+        for r in runs
+    ]
     original = sum(r.large_declaration["original"] for r in runs)
     corrected = sum(r.large_declaration["corrected"] for r in runs)
     removed = (original - corrected) / original if original else None

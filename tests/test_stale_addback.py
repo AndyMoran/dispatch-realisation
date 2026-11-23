@@ -185,3 +185,20 @@ def test_stage_b_band_flip_is_material_and_a_mismatch_is_not_judged() -> None:
     assert s["band_flips"] and s["material"] is True
     other = {"cells": []}
     assert sa.summarise_b({(0, short): runs}, 2, other)["material"] is False
+
+
+def test_stage_a_summary_is_json_even_from_numpy_counts() -> None:
+    """The first Stage A run stopped on a NumPy integer it could not write."""
+    import json
+
+    import numpy as np
+
+    one = np.int64(1)
+    run = StageA(
+        one,
+        one,
+        {"original": one, "corrected": one},  # type: ignore[arg-type]
+        {"original": one, "corrected": one},
+        one,
+    )  # type: ignore[arg-type]
+    json.dumps(summarise_a([run]))
