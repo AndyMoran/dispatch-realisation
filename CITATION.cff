@@ -17,6 +17,12 @@ authors:
     orcid: "https://orcid.org/0009-0004-2194-8084"
 identifiers:
   - type: doi
+    value: 10.5281/zenodo.24484015
+    description: "Deviation 9, fleet corrected to 162 BM units (tag v1.0.7-lock)"
+  - type: doi
+    value: 10.5281/zenodo.24484006
+    description: "Pinned scoring-run design; deviations 6-8 (tag v1.0.6-lock)"
+  - type: doi
     value: 10.5281/zenodo.24473559
     description: "Deviation 5, accepted-BOA add-back corrected (tag v1.0.5-lock)"
   - type: doi

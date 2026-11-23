@@ -8,13 +8,17 @@ Version 1 delivers a preregistered auditability assessment of GB public balancin
 
 ## Status
 
-Pre-registration locked on 18 November 2026 ([zenodo.24343931](https://doi.org/10.5281/zenodo.24343931)). Five deviations were recorded before any real unit was scored (`PREREGISTRATION.md` §12):
+Pre-registration locked on 18 November 2026 ([zenodo.24343931](https://doi.org/10.5281/zenodo.24343931)). Nine deviations were recorded before any real unit was scored (`PREREGISTRATION.md` §12):
 
 1. Nested resampling of unit-score intervals ([zenodo.24354704](https://doi.org/10.5281/zenodo.24354704)).
 2. After the first known-answer run failed at 4 weeks of scored data, Claim 1 is reported only at window lengths where its tests pass, and Claim 2's wall is reported as failing its known-answer band ([zenodo.24416574](https://doi.org/10.5281/zenodo.24416574)).
 3. Claim 4 gained a known-answer gate, and version 1 is bounded as an auditability assessment ([zenodo.24439737](https://doi.org/10.5281/zenodo.24439737)).
 4. Claim 4 results may be released only without identifying any unit ([zenodo.24439749](https://doi.org/10.5281/zenodo.24439749)).
 5. Declared energy rebuilt during instructions was corrected: an instruction accepted after the declaration in force was published is no longer added back, which had counted its energy twice ([zenodo.24473559](https://doi.org/10.5281/zenodo.24473559)).
+6. Private packs report Claim 2's lower-wall status over all weeks not certified contract-free, under one label, because version 1 cannot separate contract-exposed weeks from those of unknown status ([zenodo.24484006](https://doi.org/10.5281/zenodo.24484006)).
+7. Sensitivity analysis covers the fleet results rather than flags, since version 1 publishes no flags; no variant selects a headline ([zenodo.24484006](https://doi.org/10.5281/zenodo.24484006)).
+8. Every public figure derived from unit scores covers at least five units, with complementary suppression ([zenodo.24484006](https://doi.org/10.5281/zenodo.24484006)).
+9. The fleet is 162 BM units, not 163: one null-`bmUnit` bucket was mistakenly counted as a fleet entry. Eligible and scoreable counts are unchanged ([zenodo.24484015](https://doi.org/10.5281/zenodo.24484015)).
 
 Two claims did not reach the reporting stage. Claim 3 was dropped after its known-answer suite missed its bands (§8; [result](docs/results/claim3_known_answer.md)). Claim 4 failed its synthetic check: honest batteries crossed the upper wall in most runs, so it is not run on real units in version 1 (deviation 3).
 
@@ -131,12 +135,14 @@ Neither Elexon nor NESO endorses this project. Scores, flags and estimates here 
 
 Cite the latest lock:
 
-> Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24473559 (tag `v1.0.5-lock`, commit 7b65082).
+> Moran, A. (2026). *Can GB Battery Declarations Be Audited From Public Data?* Heaviside Analytics. https://doi.org/10.5281/zenodo.24484015 (tag `v1.0.7-lock`, commit bc8b262).
 
 Every lock is archived on Zenodo:
 
 | Tag | What it locked | Zenodo |
 |---|---|---|
+| `v1.0.7-lock` | Deviation 9: fleet corrected to 162 BM units | [zenodo.24484015](https://doi.org/10.5281/zenodo.24484015) |
+| `v1.0.6-lock` | Pinned scoring-run design; deviations 6–8: Claim 2 weeks in packs, sensitivity on fleet results, minimum group size | [zenodo.24484006](https://doi.org/10.5281/zenodo.24484006) |
 | `v1.0.5-lock` | Deviation 5: accepted-BOA add-back corrected | [zenodo.24473559](https://doi.org/10.5281/zenodo.24473559) |
 | `v1.0.4-lock` | Deviation 4: Claim 4 release rule | [zenodo.24439749](https://doi.org/10.5281/zenodo.24439749) |
 | `v1.0.3-lock` | Deviation 3: Claim 4 known-answer gate; version 1 as an auditability assessment | [zenodo.24439737](https://doi.org/10.5281/zenodo.24439737) |
