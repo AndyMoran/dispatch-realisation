@@ -1,0 +1,55 @@
+{
+  "accounts_share": 0.8,
+  "arms": {
+    "estimated": {
+      "declaration_with_instruction": 101,
+      "large": {
+        "both": 184,
+        "declaration": 82,
+        "wall": 3349
+      },
+      "largest_declaration_gap_mwh": 49.16666666666668,
+      "lowest_wall_margin_mwh": -14.258985256885092,
+      "periods": {
+        "both": 1034,
+        "declaration": 101,
+        "wall": 18362
+      },
+      "runs": {
+        "both": 57,
+        "declaration": 63,
+        "wall": 68
+      }
+    },
+    "true": {
+      "declaration_with_instruction": 109,
+      "large": {
+        "both": 2,
+        "declaration": 85,
+        "wall": 0
+      },
+      "largest_declaration_gap_mwh": 49.16666666666668,
+      "lowest_wall_margin_mwh": -2.8048172980276362,
+      "periods": {
+        "both": 81,
+        "declaration": 109,
+        "wall": 1684
+      },
+      "runs": {
+        "both": 19,
+        "declaration": 65,
+        "wall": 24
+      }
+    }
+  },
+  "battery": "honest",
+  "ceiling": "gate",
+  "large_mwh": 5.0,
+  "length": "short",
+  "pair": "AA",
+  "reading": "declaration",
+  "runs": 100,
+  "true_large_violations": 87,
+  "true_leading_class": "declaration",
+  "true_leading_share": 0.9770114942528736
+}
