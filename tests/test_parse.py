@@ -139,24 +139,59 @@ B1610_ROW = {
     "bmUnit": "U1",
     "settlementDate": "2026-10-14",
     "settlementPeriod": 27,
-    "halfHourEndTime": "2026-10-14T13:00:00Z",
+    "halfHourEndTime": "2026-10-14T13:00:00",  # as B1610 writes it: no offset
     "quantity": -12.25,
     "settlementRunType": "SF",
     "publishTime": "2026-11-05T09:00:00Z",
 }
 
 
-def test_meter_period_starts_half_an_hour_before_its_end() -> None:
+def test_meter_period_comes_from_settlement_date_and_period() -> None:
     out = parse_meter(
         [B1610_ROW, {**B1610_ROW, "settlementRunType": "R1", "quantity": -12.0}]
     )
     sf, r1 = out.by_unit["U1"]
-    assert (sf.period_start, sf.net_mwh, sf.run_type) == (at(12, 30), -12.25, "SF")
+    # Period 27 starts at 13:00 local, 12:00 UTC in British Summer Time.
+    assert (sf.period_start, sf.net_mwh, sf.run_type) == (at(12, 0), -12.25, "SF")
     assert r1.run_type == "R1"
-    bad = parse_meter([{**B1610_ROW, "halfHourEndTime": "2026-10-14T13:10:00Z"}])
-    assert "off a boundary" in next(iter(bad.excluded))
+    # halfHourEndTime is never read, so a nonsense value changes nothing.
+    odd = parse_meter([{**B1610_ROW, "halfHourEndTime": "x"}])
+    assert odd.by_unit["U1"][0].period_start == at(12, 0)
     empty = parse_meter([{**B1610_ROW, "settlementRunType": ""}])
     assert "settlementRunType" in next(iter(empty.excluded))
+
+
+def test_meter_periods_on_the_autumn_clock_change() -> None:
+    rows = [
+        {**B1610_ROW, "settlementDate": "2026-10-25", "settlementPeriod": k}
+        for k in (3, 5, 50)
+    ]
+    starts = [p.period_start for p in parse_meter(rows).by_unit["U1"]]
+    # 01:00 local happens twice: BST (00:00 UTC), then GMT (01:00 UTC).
+    assert starts == [
+        datetime(2026, 10, 25, 0, 0, tzinfo=UTC),
+        datetime(2026, 10, 25, 1, 0, tzinfo=UTC),
+        datetime(2026, 10, 25, 23, 30, tzinfo=UTC),
+    ]
+
+
+@pytest.mark.parametrize(
+    ("change", "reason"),
+    [
+        ({"settlementPeriod": 49}, "outside its day"),  # 14 Oct has 48
+        ({"settlementPeriod": 0}, "outside its day"),
+        ({"settlementPeriod": None}, "settlementPeriod"),
+        ({"settlementDate": "2026-10-14T00:00:00"}, "settlementDate"),
+        ({"settlementDate": "14/10/2026"}, "settlementDate"),
+        ({"settlementDate": "20261014"}, "settlementDate"),  # ISO basic form
+        ({"settlementDate": None}, "settlementDate"),
+    ],
+)
+def test_meter_rows_with_a_bad_period_are_excluded(
+    change: dict[str, object], reason: str
+) -> None:
+    out = parse_meter([{**B1610_ROW, **change}])
+    assert out.records == 0 and reason in next(iter(out.excluded))
 
 
 def test_field_helpers() -> None:

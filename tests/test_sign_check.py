@@ -12,13 +12,12 @@ from pathlib import Path
 import pytest
 
 from src.ingest import pull, sign_check
+from src.ingest.parse import period_start, periods_in
 from src.ingest.sign_check import (
     CheckStopped,
     check_labels,
     check_plan,
     neso_rows,
-    period_start,
-    periods_in,
     pn_negative_throughout,
     ps_units,
     pumping_periods,
@@ -247,9 +246,9 @@ def fake_network(sf: list[float]) -> Callable[[str], bytes]:
             rows = [
                 {
                     "bmUnit": "PS1",
-                    "halfHourEndTime": (period_start(D, 20 + i) + timedelta(minutes=30))
-                    .isoformat()
-                    .replace("+00:00", "Z"),
+                    "settlementDate": "2026-10-14",
+                    "settlementPeriod": 20 + i,
+                    "halfHourEndTime": "2026-10-14T00:00:00",  # no offset: not read
                     "quantity": v,
                     "settlementRunType": run,
                 }

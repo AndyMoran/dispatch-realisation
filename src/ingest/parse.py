@@ -15,7 +15,8 @@ import json
 from collections import Counter
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, time, timedelta
+from zoneinfo import ZoneInfo
 
 from src.model.types import (
     Dataset,
@@ -26,6 +27,8 @@ from src.model.types import (
 )
 
 Row = Mapping[str, object]
+LONDON = ZoneInfo("Europe/London")
+PERIOD = timedelta(minutes=30)
 
 
 @dataclass
@@ -109,6 +112,39 @@ def instant(row: Row, name: str) -> datetime:
     return t.astimezone(UTC)
 
 
+def period_start(day: date, period: int) -> datetime:
+    """Return the UTC start of a settlement period: local midnight plus periods.
+
+    Counting from local midnight in UTC handles both clock-change days (46 and 50
+    periods).
+    """
+    if not 1 <= period <= 50:
+        raise ValueError(f"settlement period outside 1–50: {period}")
+    midnight = datetime.combine(day, time(0), tzinfo=LONDON).astimezone(UTC)
+    return midnight + (period - 1) * PERIOD
+
+
+def periods_in(day: date) -> int:
+    """Return how many settlement periods a day has: 46, 48 or 50."""
+    nxt = datetime.combine(day + timedelta(days=1), time(0), tzinfo=LONDON)
+    return round((nxt.astimezone(UTC) - period_start(day, 1)) / PERIOD)
+
+
+def settlement_period_start(row: Row) -> datetime:
+    """Return a row's period start from `settlementDate` and `settlementPeriod`."""
+    raw = text(row, "settlementDate")
+    try:
+        day = date.fromisoformat(raw)
+    except ValueError as exc:
+        raise FieldError("settlementDate not a date") from exc
+    if len(raw) != 10:
+        raise FieldError("settlementDate not a date")
+    period = whole(row, "settlementPeriod")
+    if not 1 <= period <= periods_in(day):
+        raise FieldError("settlementPeriod outside its day")
+    return period_start(day, period)
+
+
 def parse_submissions(dataset: Dataset, rows: Iterable[Row]) -> Parsed[Submission]:
     """MDO or MDB rows to `Submission`s, by unit."""
     out: Parsed[Submission] = Parsed()
@@ -174,8 +210,11 @@ def parse_segments(kind: str, rows: Iterable[Row]) -> Parsed[LevelSegment]:
 def parse_meter(rows: Iterable[Row]) -> Parsed[MeterPeriod]:
     """B1610 rows to `MeterPeriod`s, by unit; every run type kept (M6).
 
-    The period starts 30 minutes before `halfHourEndTime`. Choosing the latest SF
-    or later run per period is the scoring run's job, not the parser's.
+    The period start comes from `settlementDate` and `settlementPeriod`, counted
+    from local midnight. `halfHourEndTime` is not used: B1610 writes it without
+    a UTC offset (diagnostic, 23 Nov 2026), so on 25 Oct it cannot tell the two
+    01:00–02:00 hours apart. Choosing the latest SF or later run per period is the
+    scoring run's job, not the parser's.
     """
     out: Parsed[MeterPeriod] = Parsed()
     kept, out.duplicates = unique_rows(rows)
@@ -183,7 +222,7 @@ def parse_meter(rows: Iterable[Row]) -> Parsed[MeterPeriod]:
         try:
             unit = text(r, "bmUnit")
             period = MeterPeriod(
-                instant(r, "halfHourEndTime") - timedelta(minutes=30),
+                settlement_period_start(r),
                 number(r, "quantity"),
                 text(r, "settlementRunType"),
             )

@@ -27,19 +27,22 @@ import json
 from collections import Counter
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import asdict, dataclass
-from datetime import UTC, date, datetime, time, timedelta
+from datetime import UTC, date, datetime
 from pathlib import Path
-from zoneinfo import ZoneInfo
 
 from src.claims.results import load_scoring_settings
 from src.ingest import pull
 from src.ingest.gate_a1 import load_reference_fuel
-from src.ingest.parse import parse_meter, parse_segments
+from src.ingest.parse import (
+    PERIOD,
+    parse_meter,
+    parse_segments,
+    period_start,
+    periods_in,
+)
 from src.ingest.pull import Getter, PullError, Request
 from src.model.types import LevelSegment, MeterPeriod
 
-LONDON = ZoneInfo("Europe/London")
-PERIOD = timedelta(minutes=30)
 II = "II"
 ACTUAL, FORECAST = "A", "F"
 SF = "SF"
@@ -52,24 +55,6 @@ OUT = pull.ROOT / "outputs" / "pull" / "b1610_check.json"
 
 class CheckStopped(RuntimeError):
     """The check cannot reach a verdict; nothing downstream may run."""
-
-
-def period_start(day: date, period: int) -> datetime:
-    """Return the UTC start of a settlement period: local midnight plus periods.
-
-    Counting from local midnight in UTC handles both clock-change days (46 and 50
-    periods).
-    """
-    if not 1 <= period <= 50:
-        raise ValueError(f"settlement period outside 1–50: {period}")
-    midnight = datetime.combine(day, time(0), tzinfo=LONDON).astimezone(UTC)
-    return midnight + (period - 1) * PERIOD
-
-
-def periods_in(day: date) -> int:
-    """Return how many settlement periods a day has: 46, 48 or 50."""
-    nxt = datetime.combine(day + timedelta(days=1), time(0), tzinfo=LONDON)
-    return round((nxt.astimezone(UTC) - period_start(day, 1)) / PERIOD)
 
 
 def pn_negative_throughout(segments: Sequence[LevelSegment], start: datetime) -> bool:
