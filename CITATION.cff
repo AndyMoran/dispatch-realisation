@@ -17,6 +17,9 @@ authors:
     orcid: "https://orcid.org/0009-0004-2194-8084"
 identifiers:
   - type: doi
+    value: 10.5281/zenodo.24473559
+    description: "Deviation 5, accepted-BOA add-back corrected (tag v1.0.5-lock)"
+  - type: doi
     value: 10.5281/zenodo.24439749
     description: "Deviation 4, Claim 4 release rule (tag v1.0.4-lock)"
   - type: doi
