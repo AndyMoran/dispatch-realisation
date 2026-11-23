@@ -1,0 +1,10 @@
+{
+  "arrived": 740,
+  "complete": true,
+  "failed": [],
+  "pull": "boalf",
+  "requested": 740,
+  "rows_arrived": 2260658,
+  "schema_version": "1.0",
+  "skipped_already_in_manifest": 0
+}
