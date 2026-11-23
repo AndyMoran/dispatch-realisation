@@ -61,7 +61,7 @@ Methodology: NESO / LCP Delta skip rate methodology (v2.0, May 2025).
 ## Week 1 checks
 
 - [x] MDO/MDB production endpoints return data from 25 June 2026 (23 Oct; R6)
-- [x] Count battery BMUs with any MDO submission; derive adoption date per unit: 163 adopted by 29 Oct (Gate A1, 30 Oct)
+- [x] Count battery BMUs with any MDO submission; derive adoption date per unit: 162 BM units adopted by 29 Oct (Gate A1, 30 Oct, which listed 163 entries: one null-`bmUnit` bucket was mistakenly counted as a fleet entry; PREREGISTRATION §12, deviation 9)
 - [x] FSoE: not published (23 Oct; R5a)
 - [ ] Lead party → optimiser mapping: deferred to version 2 (optimiser claims)
 - [ ] Count units that changed optimiser since 2024: deferred to version 2
@@ -71,4 +71,4 @@ Methodology: NESO / LCP Delta skip rate methodology (v2.0, May 2025).
 - [x] Is NESO's migration schedule published? No (23 Oct; I7a)
 - [ ] NESO reserve grace-period end date announced? (R9): deferred to version 2
 - [x] BMRS and NESO licence terms permit a per-unit derived table: yes, with attribution (23 Oct; R10)
-- [x] Registered MW: GC = 0 for 33 of 163 units; rule GC, else |DC| (30 Oct; M16)
+- [x] Registered MW: GC = 0 for 33 of the 162 BM units; rule GC, else |DC| (30 Oct; M16)

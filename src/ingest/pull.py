@@ -52,7 +52,12 @@ RAW = ROOT / "data" / "raw" / "pull"
 MANIFEST = ROOT / "data" / "manifests" / "pull_manifest.csv"
 FLEET_CSV = ROOT / "outputs" / "gate_a1" / "adoption_dates.csv"
 PROBE_OUT = ROOT / "outputs" / "pull" / "probe.json"
-FLEET_SIZE = 163  # PREREGISTRATION §2: the Gate A1 run of 30 Oct 2026
+FLEET_SIZE = 163  # adopted entries in Gate A1's table of 30 Oct 2026, as pulled
+# Gate A1 grouped MDO/MDB records with no `bmUnit` under the text "None"; that
+# null-bmUnit bucket was mistakenly counted as a fleet entry. It is no BM unit and
+# is dropped before assembly and scoring (PREREGISTRATION §12, deviation 9).
+NULL_BUCKET = "None"
+BM_UNITS = 162  # the fleet's BM units (deviation 9)
 PROBE_DATES = (date(2026, 10, 14), date(2026, 10, 15))
 PROBE_UNITS = 3
 RETRY_WAIT_S = 5.0
@@ -276,6 +281,11 @@ def load_fleet(path: Path = FLEET_CSV, expected: int = FLEET_SIZE) -> list[str]:
     if len(units) != expected:
         raise PullError(f"fleet has {len(units)} units, not the locked {expected}")
     return units
+
+
+def bm_units(entries: Sequence[str]) -> list[str]:
+    """Return the fleet's BM units: the entries without the null-bmUnit bucket."""
+    return [u for u in entries if u != NULL_BUCKET]
 
 
 # ------------------------------------------------------------------ the probe
@@ -683,7 +693,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     elif args.command == "b1610":
         from src.claims.results import load_scoring_settings
 
-        units = load_fleet()
+        units = bm_units(load_fleet())  # B1610 is planned for BM units only
+        if len(units) != BM_UNITS:
+            raise PullError(f"{len(units)} BM units, not {BM_UNITS}")
         lock = sf_lock(units, load_scoring_settings().sf_or_later_runs, http_get)
         result = {"sf_lock": lock}
         if lock["open"]:

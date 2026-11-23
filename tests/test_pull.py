@@ -452,8 +452,15 @@ def test_sf_lock_opens_only_when_every_row_is_sf_or_later() -> None:
 def test_b1610_command_saves_nothing_while_locked(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setattr(pull, "load_fleet", lambda: ["U1", "U2"])
-    monkeypatch.setattr(pull, "http_get", lambda url: b1610_body("II"))
+    monkeypatch.setattr(pull, "load_fleet", lambda: ["None", "U1", "U2"])
+    monkeypatch.setattr(pull, "BM_UNITS", 2)
+    urls: list[str] = []
+
+    def get(url: str) -> bytes:
+        urls.append(url)
+        return b1610_body("II")
+
+    monkeypatch.setattr(pull, "http_get", get)
     monkeypatch.setattr(pull, "PROBE_OUT", tmp_path / "probe.json")
     monkeypatch.setattr(pull, "MANIFEST", tmp_path / "manifest.csv")
     calls: list[str] = []
@@ -467,6 +474,15 @@ def test_b1610_command_saves_nothing_while_locked(
     report = json.loads((tmp_path / "coverage_b1610.json").read_text())
     assert report["sf_lock"]["open"] is False and report["complete"] is False
     assert calls == [] and not (tmp_path / "manifest.csv").exists()
+    assert len(urls) == 1 and "bmUnit=None" not in urls[0]  # BM units only
+    monkeypatch.setattr(pull, "BM_UNITS", 3)
+    with pytest.raises(PullError, match="2 BM units, not 3"):
+        pull.main(["b1610"])
+
+
+def test_bm_units_drops_only_the_null_bucket() -> None:
+    assert pull.bm_units(["A", "None", "B"]) == ["A", "B"]
+    assert pull.bm_units(["NONE1", "None2"]) == ["NONE1", "None2"]
 
 
 def test_planned_chunks_reads_only_planned_rows(tmp_path: Path) -> None:

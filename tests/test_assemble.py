@@ -28,6 +28,7 @@ from src.model.types import LevelSegment
 
 NOW = datetime(2026, 11, 23, 21, 0, tzinfo=UTC)
 FLEET = ("U1", "U2")
+ENTRIES = ("None", "U1", "U2")  # as Gate A1 listed them: the null bucket included
 
 
 def z(t: datetime) -> str:
@@ -72,6 +73,7 @@ def fake_elexon(url: str) -> bytes:
             BOUNDARY,
             sub("U1", at(2, 9), 35.0, at(2, 8)),
             sub("U9", at(2, 9), 1, at(2, 8)),
+            {**sub("U1", at(2, 9), 1, at(2, 8)), "bmUnit": None},  # no bmUnit
         ]
     if "/PN/" in url and q["from"] in ("2026-11-02", "2026-11-03"):
         day = int(q["from"][-2:])
@@ -121,6 +123,7 @@ def build_repo(
         w.writerow(["1.0", "U1", "adopted", "2026-W44"])  # first scored week 2 Nov
         w.writerow(["1.0", "U2", "adopted", "2026-W46"])  # no complete week by 16 Nov
         w.writerow(["1.0", "X1", "excluded", "2026-W30"])
+        w.writerow(["1.0", "None", "adopted", "2026-W44"])  # the null-bmUnit bucket
     reference: list[dict[str, object]] = [
         {
             "elexonBmUnit": "U1",
@@ -189,7 +192,7 @@ def build_repo(
     for name in names:
         report = pull.run_requests(
             name,
-            pull.plan(name, FLEET),
+            pull.plan(name, FLEET if name == "b1610" else ENTRIES),  # as pulled
             fake_elexon,
             lambda: NOW,
             raw,
@@ -250,12 +253,13 @@ def test_pn_gaps_and_overlaps() -> None:
 
 
 def test_assembly_reads_only_the_pinned_chunks(repo: Path) -> None:
-    a = asm.assemble(repo, with_meter=True, fleet_size=2)
+    a = asm.assemble(repo, with_meter=True, entries=3, bm_units=2)
     u1, u2 = a.inputs["U1"], a.inputs["U2"]
     levels = sorted(s.level_from_mwh for s in u1.submissions)
     assert levels == [30.0, 35.0, 40.0]  # 27 Oct run never read; boundary once
     assert a.counts["MDO"].duplicate_records == 1
-    assert a.counts["MDO"].rows_outside_fleet == 1
+    assert a.counts["MDO"].rows_outside_fleet == 2  # U9, and a row with no bmUnit
+    assert sorted(a.units) == ["U1", "U2"] and a.adoption_entries == 3
     assert a.counts["MDO"].files == 127 + 18
     assert len(u1.pn) == 2 and len(u1.boas) == 1
     assert a.counts["BOALF"].duplicate_records == 1
@@ -289,12 +293,12 @@ def test_probe_chunks_are_never_read(repo: Path) -> None:
         repo / "data/raw/pull",
         repo / "data/manifests/pull_manifest.csv",
     )
-    a = asm.assemble(repo, with_meter=True, fleet_size=2)
+    a = asm.assemble(repo, with_meter=True, entries=3, bm_units=2)
     assert len(a.inputs["U1"].pn) == 2
 
 
 def test_check_report_counts_only(repo: Path) -> None:
-    code = asm.main(["check"], root=repo, fleet_size=2)
+    code = asm.main(["check"], root=repo, entries=3, bm_units=2)
     assert code == 0
     report = json.loads((repo / asm.CHECK_OUT).read_text())
     text = json.dumps(report)
@@ -312,19 +316,30 @@ def test_check_report_counts_only(repo: Path) -> None:
     }
     assert pn["gap_hours"] == 4 + (12 * 24 + 4)  # 2 Nov 20–24; 3 Nov 20 to 16 Nov
     assert report["units"] == 2 and report["secondary_units"] == 1
+    assert report["fleet"] == {
+        "adoption_entries_as_pulled": 3,
+        "null_bmunit_buckets_dropped": 1,
+        "bm_units": 2,
+    }
+    cover = report["pull_coverage_by_batch"]
+    assert cover["PN"] == [
+        {"batch": 1, "bm_units": 2, "bm_units_with_rows": 1, "holds_null_bucket": True}
+    ]
+    assert cover["MDO"][0]["bm_units_with_rows"] == 1
+    assert cover["MDB"][0]["bm_units_with_rows"] == 0
     assert report["units_with_no_records"] == {"MDO/MDB": 1, "PN": 1, "BOALF": 1}
     assert "B1610" not in report["datasets"]
-    assert asm.main(["score"], root=repo, fleet_size=2) == 2
+    assert asm.main(["score"], root=repo, entries=3, bm_units=2) == 2
 
 
 def test_check_runs_without_any_b1610(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     build_repo(tmp_path, monkeypatch, meter=False)
-    a = asm.assemble(tmp_path, with_meter=False, fleet_size=2)
+    a = asm.assemble(tmp_path, with_meter=False, entries=3, bm_units=2)
     assert all(i.meter == () for i in a.inputs.values())
     with pytest.raises(AssemblyError, match="b1610"):
-        asm.assemble(tmp_path, with_meter=True, fleet_size=2)
+        asm.assemble(tmp_path, with_meter=True, entries=3, bm_units=2)
 
 
 # ------------------------------------------------------------------ it stops
@@ -352,7 +367,7 @@ def rewrite_manifest(path: Path, keep: Callable[[dict[str, str]], bool]) -> None
 def test_a_changed_file_stops(repo: Path) -> None:
     tamper(gate_file(repo, "20261029"))
     with pytest.raises(AssemblyError, match="SHA-256"):
-        asm.assemble(repo, fleet_size=2)
+        asm.assemble(repo, entries=3, bm_units=2)
 
 
 def test_a_missing_gate_a1_day_stops(repo: Path) -> None:
@@ -366,7 +381,7 @@ def test_a_missing_gate_a1_day_stops(repo: Path) -> None:
         ),
     )
     with pytest.raises(AssemblyError, match="252 of 254"):
-        asm.assemble(repo, fleet_size=2)
+        asm.assemble(repo, entries=3, bm_units=2)
 
 
 def test_a_missing_pull_chunk_stops(repo: Path) -> None:
@@ -375,18 +390,18 @@ def test_a_missing_pull_chunk_stops(repo: Path) -> None:
         lambda r: not (r["dataset"] == "PN" and "2026-08-01" in r["url"]),
     )
     with pytest.raises(AssemblyError, match="pn: 1 planned chunks"):
-        asm.assemble(repo, fleet_size=2)
+        asm.assemble(repo, entries=3, bm_units=2)
 
 
 def test_reference_problems_stop(repo: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(asm, "REFERENCE_SHA256", "0" * 64)
     with pytest.raises(AssemblyError, match="SHA-256"):
-        asm.assemble(repo, fleet_size=2)
+        asm.assemble(repo, entries=3, bm_units=2)
     rows = [{"elexonBmUnit": "U1"}, {"elexonBmUnit": "U1"}, {"elexonBmUnit": "U2"}]
     with pytest.raises(AssemblyError, match="2 reference rows"):
-        asm.fleet_units(repo / asm.ADOPTION_CSV, rows, 2)
+        asm.fleet_units(repo / asm.ADOPTION_CSV, rows, FLEET)
     with pytest.raises(AssemblyError, match="0 reference rows"):
-        asm.fleet_units(repo / asm.ADOPTION_CSV, rows[:1], 2)
+        asm.fleet_units(repo / asm.ADOPTION_CSV, rows[:1], FLEET)
 
 
 def test_two_meter_values_for_one_period_stop(repo: Path) -> None:
@@ -420,4 +435,19 @@ def test_two_meter_values_for_one_period_stop(repo: Path) -> None:
         w.writeheader()
         w.writerows(rows_out)
     with pytest.raises(AssemblyError, match="two values"):
-        asm.assemble(repo, fleet_size=2)
+        asm.assemble(repo, entries=3, bm_units=2)
+
+
+def test_the_null_bucket_is_never_a_unit(repo: Path) -> None:
+    rows: list[dict[str, object]] = [
+        {"elexonBmUnit": None, "generationCapacity": 5},
+        {"elexonBmUnit": "", "generationCapacity": 5},
+        {"elexonBmUnit": "U1"},
+        {"elexonBmUnit": "U2"},
+    ]
+    units = asm.fleet_units(repo / asm.ADOPTION_CSV, rows, FLEET)
+    assert sorted(units) == ["U1", "U2"]
+    with pytest.raises(AssemblyError, match="null-bmUnit bucket"):
+        asm.fleet_units(repo / asm.ADOPTION_CSV, rows, ENTRIES)
+    with pytest.raises(AssemblyError, match="2 BM units, not 3"):
+        asm.assemble(repo, entries=3, bm_units=3)

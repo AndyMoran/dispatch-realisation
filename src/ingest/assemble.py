@@ -9,7 +9,11 @@ Design fixed in the decision log on 23 Nov 2026 (`v1.0.6-lock`), before this cod
 - PN, BOALF and B1610: the `pn`, `boalf` and `b1610` pulls.
 - Registered MW (GC if positive, else |DC|, else none; M16), lead party and
   secondary status (BMRS type V) from the pinned reference snapshot of 23 Oct.
-- Adoption week from Gate A1's adoption table.
+- Adoption week from Gate A1's adoption table. That table holds one entry that is
+  no BM unit: the null-bmUnit bucket, Gate A1's grouping of records with no
+  `bmUnit` (PREREGISTRATION §12, deviation 9). It is dropped here, so the fleet
+  is 162 BM units; the pulls already made keep the 163-entry batches they ran
+  with, and `check` reports what each batch returned.
 
 Only the chunks each pull plans for the fleet are read, so the probes' chunks
 never are. Every file is checked against its manifest SHA-256 before it is read.
@@ -142,21 +146,24 @@ def reference_rows(root: Path) -> list[dict[str, object]]:
 def fleet_units(
     adoption_csv: Path,
     reference: Sequence[Mapping[str, object]],
-    fleet_size: int = pull.FLEET_SIZE,
+    units: Sequence[str],
 ) -> dict[str, FleetUnit]:
-    """Return the 163 fleet units with their fixed facts, by unit ID.
+    """Return the fleet's BM units with their fixed facts, by unit ID.
 
     Stops if a unit lacks an adoption week, or has no reference row, or has two
-    reference rows.
+    reference rows. Reference rows with no `elexonBmUnit` are never matched.
     """
-    units = pull.load_fleet(adoption_csv, fleet_size)
     with adoption_csv.open(newline="", encoding="utf-8") as f:
         cohort = {r["bm_unit"]: r.get("cohort", "") for r in csv.DictReader(f)}
     by_unit: dict[str, list[Mapping[str, object]]] = {}
     for row in reference:
-        by_unit.setdefault(str(row.get("elexonBmUnit")), []).append(row)
+        key = row.get("elexonBmUnit")
+        if isinstance(key, str) and key:
+            by_unit.setdefault(key, []).append(row)
     out: dict[str, FleetUnit] = {}
     for u in units:
+        if u == pull.NULL_BUCKET:
+            raise AssemblyError("the null-bmUnit bucket is not a BM unit")
         rows = by_unit.get(u, [])
         if len(rows) != 1:
             raise AssemblyError(f"{len(rows)} reference rows for a fleet unit, not 1")
@@ -183,6 +190,7 @@ class Chunk:
     dataset: str
     path: Path
     sha256: str
+    units: tuple[str, ...] = ()  # the batch a pulled chunk asked for
 
 
 def gate_a1_chunks(root: Path) -> list[Chunk]:
@@ -222,7 +230,7 @@ def pull_chunks(name: str, units: Sequence[str], root: Path) -> tuple[list[Chunk
         found, twice = pull.planned_chunks(requests, manifest, root)
     except PullError as exc:
         raise AssemblyError(f"{name}: {exc}") from exc
-    return [Chunk(r.dataset, *found[r]) for r in requests], twice
+    return [Chunk(r.dataset, *found[r], r.units) for r in requests], twice
 
 
 # ------------------------------------------------------------------ reading
@@ -239,6 +247,7 @@ class DatasetCounts:
     duplicate_records: int = 0
     records: int = 0
     excluded: Counter[str] = field(default_factory=Counter)
+    rows_by_batch: dict[tuple[str, ...], set[str]] = field(default_factory=dict)
 
     def as_dict(self) -> dict[str, object]:
         """Return the counts as plain JSON values."""
@@ -270,6 +279,9 @@ def read_records[T](
         counts.rows += len(rows)
         keep = [r for r in rows if r.get("bmUnit") in fleet]
         counts.rows_outside_fleet += len(rows) - len(keep)
+        if chunk.units:
+            seen = counts.rows_by_batch.setdefault(chunk.units, set())
+            seen.update(str(r["bmUnit"]) for r in keep)
         parsed = parse(keep)
         counts.duplicate_rows += parsed.duplicates
         counts.excluded.update(parsed.excluded)
@@ -289,25 +301,34 @@ class Assembly:
     inputs: dict[str, UnitInputs]
     counts: dict[str, DatasetCounts]
     chunks_held_twice: dict[str, int]
+    adoption_entries: int
+    batches: dict[str, list[tuple[str, ...]]]
 
 
 def assemble(
-    root: Path = pull.ROOT, with_meter: bool = True, fleet_size: int = pull.FLEET_SIZE
+    root: Path = pull.ROOT,
+    with_meter: bool = True,
+    entries: int = pull.FLEET_SIZE,
+    bm_units: int = pull.BM_UNITS,
 ) -> Assembly:
     """Return each fleet unit's inputs from the pinned files (module docstring).
 
     Without the meter, `meter` is empty for every unit: `check` uses this before
     fleet B1610 exists. Stops if B1610 gives one unit two values for a period.
     """
-    units = fleet_units(root / ADOPTION_CSV, reference_rows(root), fleet_size)
-    ids = sorted(units)
+    pulled_as = pull.load_fleet(root / ADOPTION_CSV, entries)
+    ids = pull.bm_units(pulled_as)
+    if len(ids) != bm_units:
+        raise AssemblyError(f"{len(ids)} BM units, not {bm_units}")
+    units = fleet_units(root / ADOPTION_CSV, reference_rows(root), ids)
     fleet = set(ids)
     counts = {k: DatasetCounts() for k in ("MDO", "MDB", "PN", "BOALF", "B1610")}
     twice: dict[str, int] = {}
     pulled: dict[str, list[Chunk]] = {}
     names = ["mdo-mdb", "pn", "boalf", *(["b1610"] if with_meter else [])]
+    plans = {n: ids if n == "b1610" else pulled_as for n in names}  # as pulled
     for name in names:
-        pulled[name], twice[name] = pull_chunks(name, ids, root)
+        pulled[name], twice[name] = pull_chunks(name, plans[name], root)
     gate = gate_a1_chunks(root)
 
     mdo: dict[str, set[Submission]] = {}
@@ -357,7 +378,8 @@ def assemble(
         )
         for u in ids
     }
-    return Assembly(units, inputs, counts, twice)
+    batches = {n: pull.batches(plans[n]) for n in names}
+    return Assembly(units, inputs, counts, twice, len(pulled_as), batches)
 
 
 # ------------------------------------------------------------------ the check
@@ -440,6 +462,28 @@ def pn_report(assembly: Assembly, end: datetime = SCORING_END) -> dict[str, obje
     }
 
 
+PULL_DATASETS = {"mdo-mdb": ("MDO", "MDB"), "pn": ("PN",), "boalf": ("BOALF",)}
+
+
+def pull_coverage(assembly: Assembly) -> dict[str, list[dict[str, object]]]:
+    """Return, per pulled dataset and batch, how many of the batch's BM units the
+    pull returned rows for: counts and batch numbers only (deviation 9)."""
+    out: dict[str, list[dict[str, object]]] = {}
+    for name, datasets in PULL_DATASETS.items():
+        for ds in datasets:
+            seen_by_batch = assembly.counts[ds].rows_by_batch
+            out[ds] = [
+                {
+                    "batch": i + 1,
+                    "bm_units": len(pull.bm_units(batch)),
+                    "bm_units_with_rows": len(seen_by_batch.get(batch, set())),
+                    "holds_null_bucket": pull.NULL_BUCKET in batch,
+                }
+                for i, batch in enumerate(assembly.batches[name])
+            ]
+    return out
+
+
 def check_report(assembly: Assembly) -> dict[str, object]:
     """Return the assemble check's report: counts only, no unit ID, no value."""
     empty = {
@@ -448,6 +492,13 @@ def check_report(assembly: Assembly) -> dict[str, object]:
     }
     return {
         "schema_version": SCHEMA_VERSION,
+        "fleet": {
+            "adoption_entries_as_pulled": assembly.adoption_entries,
+            "null_bmunit_buckets_dropped": assembly.adoption_entries
+            - len(assembly.units),
+            "bm_units": len(assembly.units),
+        },
+        "pull_coverage_by_batch": pull_coverage(assembly),
         "units": len(assembly.units),
         "secondary_units": sum(u.secondary for u in assembly.units.values()),
         "units_without_registered_mw": sum(
@@ -466,14 +517,15 @@ def check_report(assembly: Assembly) -> dict[str, object]:
 def main(
     argv: Sequence[str] | None = None,
     root: Path = pull.ROOT,
-    fleet_size: int = pull.FLEET_SIZE,
+    entries: int = pull.FLEET_SIZE,
+    bm_units: int = pull.BM_UNITS,
 ) -> int:
     """Run `check`: assemble without B1610 and write the counts-only report."""
     args = list(sys.argv[1:] if argv is None else argv)
     if args != ["check"]:
         print("usage: python -m src.ingest.assemble check", file=sys.stderr)
         return 2
-    report = check_report(assemble(root, with_meter=False, fleet_size=fleet_size))
+    report = check_report(assemble(root, False, entries, bm_units))
     out = root / CHECK_OUT
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(
