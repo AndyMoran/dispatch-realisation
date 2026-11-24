@@ -82,6 +82,7 @@ files = [
     "tests/test_sign_check.py",
     "tests/test_assemble.py",
     "tests/test_scoring_run.py",
+    "tests/test_packs.py",
 ]
 
 # Frozen lock code that checked modules import: read as untyped, not checked.

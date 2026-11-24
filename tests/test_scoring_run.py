@@ -20,9 +20,7 @@ from src.ingest import assemble as asm
 from src.ingest import pull
 from src.scoring import fleet as fl
 from src.scoring import run as sr
-from src.synthetic import battery as bt
-from src.synthetic.bands import BAND_SETS
-from src.synthetic.settings import load_synthetic_settings
+from src.synthetic.fleet import synthetic_assembly as synthetic_fleet
 
 KNOWN = json.loads((pull.ROOT / sr.KNOWN_ANSWER).read_text())
 UNITS = 7  # one secondary
@@ -111,40 +109,7 @@ def test_pooled_median_and_slope() -> None:
 
 
 def synthetic_assembly() -> tuple[asm.Assembly, datetime]:
-    settings = load_synthetic_settings()
-    faults = bt.load_faults()
-    band = next(b for b in BAND_SETS["deviation-2"] if b.scenario.name == "honest")
-    length = settings.lengths[0]  # 4 scored weeks
-    units: dict[str, asm.FleetUnit] = {}
-    inputs = {}
-    for i in range(UNITS):
-        rng = bt.run_rng(settings.master_seed, band.scenario.name, 0, i)
-        sim = bt.simulate(
-            band.scenario,
-            length,
-            settings,
-            bt.load_physics(),
-            bt.load_dc_energy(settings),
-            rng,
-            faults,
-        )
-        uid = f"UNIT-{i:02d}"
-        inputs[uid] = replace(
-            bt.unit_inputs(
-                sim, "A", bt.lag_minutes(band.scenario, settings, faults), faults
-            ),
-            unit_key=uid,
-        )
-        units[uid] = asm.FleetUnit(
-            unit=uid,
-            adoption_week_start=length.adoption_week_start,
-            adopted_at=length.adoption_week_start + timedelta(hours=9),
-            registered_mw=inputs[uid].registered_mw,
-            lead_party=f"Lead Party {i % 3}",
-            secondary=i == 0,
-        )
-    a = asm.Assembly(units, inputs, {}, {}, UNITS, {})
-    return a, length.end
+    return synthetic_fleet(UNITS)
 
 
 @pytest.fixture(scope="module")
