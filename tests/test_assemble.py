@@ -119,11 +119,17 @@ def build_repo(
     adoption.parent.mkdir(parents=True)
     with adoption.open("w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["schema_version", "bm_unit", "status", "cohort"])
-        w.writerow(["1.0", "U1", "adopted", "2026-W44"])  # first scored week 2 Nov
-        w.writerow(["1.0", "U2", "adopted", "2026-W46"])  # no complete week by 16 Nov
-        w.writerow(["1.0", "X1", "excluded", "2026-W30"])
-        w.writerow(["1.0", "None", "adopted", "2026-W44"])  # the null-bmUnit bucket
+        w.writerow(["schema_version", "bm_unit", "status", "cohort", "first_real_utc"])
+        w.writerow(
+            ["1.0", "U1", "adopted", "2026-W44", "2026-10-27T09:00:00+00:00"]
+        )  # first scored week 2 Nov
+        w.writerow(
+            ["1.0", "U2", "adopted", "2026-W46", "2026-11-10T12:30:00+00:00"]
+        )  # no complete week by 16 Nov
+        w.writerow(["1.0", "X1", "excluded", "2026-W30", ""])
+        w.writerow(
+            ["1.0", "None", "adopted", "2026-W44", "2026-10-28T00:00:00+00:00"]
+        )  # the null-bmUnit bucket
     reference: list[dict[str, object]] = [
         {
             "elexonBmUnit": "U1",
@@ -268,6 +274,11 @@ def test_assembly_reads_only_the_pinned_chunks(repo: Path) -> None:
     assert a.units["U1"].registered_mw == 50 and not a.units["U1"].secondary
     assert a.units["U2"].registered_mw == 20 and a.units["U2"].secondary
     assert a.units["U2"].lead_party == "Lead B"
+    assert a.units["U1"].adopted_at == datetime(2026, 10, 27, 9, tzinfo=UTC)
+    with pytest.raises(AssemblyError, match="first non-default"):
+        asm.adoption_instant("")
+    with pytest.raises(AssemblyError, match="not in UTC"):
+        asm.adoption_instant("2026-10-27T09:00:00+01:00")
     assert a.chunks_held_twice == {"b1610": 0, "boalf": 0, "mdo-mdb": 0, "pn": 0}
 
 

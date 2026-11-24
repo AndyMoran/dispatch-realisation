@@ -88,6 +88,7 @@ class FleetUnit:
 
     unit: str
     adoption_week_start: datetime
+    adopted_at: datetime  # first non-default MDO/MDB record (M4a)
     registered_mw: float | None
     lead_party: str
     secondary: bool
@@ -106,6 +107,17 @@ def week_start_of(cohort: str) -> datetime:
     except ValueError as exc:
         raise AssemblyError(f"not an ISO week: {cohort!r}") from exc
     return datetime(day.year, day.month, day.day, tzinfo=UTC)
+
+
+def adoption_instant(text: str) -> datetime:
+    """Return Gate A1's `first_real_utc` as a UTC datetime."""
+    try:
+        t = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise AssemblyError("a fleet unit has no first non-default record") from exc
+    if t.tzinfo is None or t.utcoffset() != timedelta(0):
+        raise AssemblyError("first_real_utc is not in UTC")
+    return t.astimezone(UTC)
 
 
 def registered_mw(row: Mapping[str, object]) -> float | None:
@@ -154,7 +166,9 @@ def fleet_units(
     reference rows. Reference rows with no `elexonBmUnit` are never matched.
     """
     with adoption_csv.open(newline="", encoding="utf-8") as f:
-        cohort = {r["bm_unit"]: r.get("cohort", "") for r in csv.DictReader(f)}
+        table = list(csv.DictReader(f))
+    cohort = {r["bm_unit"]: r.get("cohort", "") for r in table}
+    first = {r["bm_unit"]: r.get("first_real_utc", "") for r in table}
     by_unit: dict[str, list[Mapping[str, object]]] = {}
     for row in reference:
         key = row.get("elexonBmUnit")
@@ -173,6 +187,7 @@ def fleet_units(
         out[u] = FleetUnit(
             unit=u,
             adoption_week_start=week_start_of(cohort[u]),
+            adopted_at=adoption_instant(first.get(u, "")),
             registered_mw=registered_mw(ref),
             lead_party=str(ref.get("leadPartyName") or ""),
             secondary=str(ref.get("bmUnitType")) == SECONDARY_TYPE,
