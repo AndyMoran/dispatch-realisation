@@ -2,7 +2,7 @@
 
 *Partly. A preregistered test of what public balancing data can verify, and the two gaps that stop the rest.*
 
-Andy Moran, Heaviside Analytics. Draft 3, 25 November 2026: sections 1–4 and 7. Sections 5, 6, 8 and 9 follow.
+Andy Moran, Heaviside Analytics. Draft 4, 25 November 2026: sections 1–4 and 7. Sections 5, 6, 8 and 9 follow.
 
 For: an analyst at NESO, Ofgem or a battery owner who was not part of this project. It sets out what can be checked, how the checks were tested, and what would close the gaps.
 
@@ -12,7 +12,7 @@ Sources: the method is fixed in [`PREREGISTRATION.md`](../PREREGISTRATION.md), l
 
 ## 1. Summary
 
-**The question.** GB's Balancing Mechanism is the market in which NESO, the system operator, buys last-minute changes in output. Since Grid Code modification GC0166, batteries and other units that can run only for a limited time declare how much energy they can deliver and absorb. The two figures are Maximum Delivery Offer (MDO) and Maximum Delivery Bid (MDB). NESO sizes its instructions from them, and Elexon publishes them for each unit. Batteries began submitting on 25 June 2026, one unit at a time, and all were due to comply by 5 November 2026 (R3). We studied the 162 battery units that had started by 29 October. Can anyone outside NESO check their declarations from public data?
+**The question.** GB's Balancing Mechanism is the market in which NESO, the system operator, buys last-minute changes in output. Since Grid Code modification GC0166, batteries and other units that can run only for a limited time declare how much energy they can deliver and absorb. The two figures are Maximum Delivery Offer (MDO) and Maximum Delivery Bid (MDB). NESO sizes its instructions from them, and Elexon publishes them for each unit. Batteries began submitting on 25 June 2026, one unit at a time, and all were due to comply by 5 November 2026 (R3). We studied the 162 battery units that had started by 29 October. By the deadline, Modo Energy counted 184 of 196 operational battery units submitting ([Modo Energy, November 2026](https://modoenergy.com/research/gb-gc0166-mdo-mdb-battery-balancing-mechanism-dispatch-duration-skip-rates-november-2026)), so our fleet covers most of the rollout but not its last week. Can anyone outside NESO check their declarations from public data?
 
 **The answer: partly.** Each battery's settlement meter records every MWh it exports and imports. From the meter alone, we can rebuild how much energy the battery could deliver at each moment, up to an unknown starting level. We can then test whether its declarations moved as the meter says they should. Two gaps stop a complete audit:
 
@@ -90,7 +90,7 @@ An honest declaration sits between the walls and moves with the path. Figure 1 s
 >
 > **Branch B** (MDO is energy in the cells): D^decl_t = √η̂ · MDO_t + P^exp_t + B^exp_t
 
-P^exp and B^exp are the energy still to be exported for the unit's schedule and for instructions already accepted, within the protection horizon: the current half-hour and the next three. The walls are the same under both branches; only the conversion of MDO differs. Branch B assumes charging and discharging are equally efficient, so that each is √η. Public data give only the round trip, so this split cannot be tested; it is recorded as a choice, with its alternative (M26). Under Branch B, MDB is likewise divided by √η̂.
+P^exp and B^exp are the energy still to be exported for the unit's schedule and for instructions already accepted, within the protection horizon: the current half-hour and the next three. The walls are the same under both branches; only the conversion of MDO differs. Branch B assumes charging and discharging are equally efficient, so that each is √η. Public data give only the round trip, so this split cannot be tested; it is recorded as a choice, with its alternative (M26). NESO receives each unit's charging and discharging efficiencies separately, so it could replace this assumption with each unit's own figures. Under Branch B, MDB is likewise divided by √η̂.
 
 **The weak point is the efficiency.** The wall rises by η̂ times each import, and η̂ comes from the same meter. Over a short window it can be a few points out. A few points of a week's imports move the wall by more than the allowed tolerance. Section 4 shows the effect.
 
@@ -245,7 +245,7 @@ The gaps in section 4 are of two kinds, and so are the fixes. Some information c
 
 ### 7.1 Why this is a public matter
 
-Consumers pay for balancing. Since April 2023, the charges that recover NESO's balancing costs (BSUoS) have been levied on final demand only (PROVISIONAL: confirm against CMP308 and NESO's charging statement). Capacity Market payments are recovered from electricity suppliers (PROVISIONAL: confirm against the Electricity Settlements Company's charging). When a declaration is wrong, NESO may skip a battery and buy something dearer, or count on energy that is not there. Either way, consumers pay. That gives the public an interest in declarations being right.
+Consumers pay for balancing. Since April 2023, the charges that recover NESO's balancing costs (BSUoS) have been levied on final demand only ([Ofgem, CMP308 decision](https://www.ofgem.gov.uk/decision/cmp308-removal-bsuos-charges-generation)). Capacity Market payments are funded by a charge on electricity suppliers ([Electricity Capacity (Supplier Payment etc.) Regulations 2014, regulation 6](https://www.legislation.gov.uk/uksi/2014/3354/part/3/made)). When a declaration is wrong, NESO may skip a battery and buy something dearer, or count on energy that is not there. Either way, consumers pay. That gives the public an interest in declarations being right.
 
 This is not a call for a compliance audit. NESO already receives the declarations and can check them. The question is whether anyone else can.
 
@@ -254,7 +254,7 @@ This is not a call for a compliance audit. NESO already receives the declaration
 None of these needs new measurement. None risks identifying a unit, because BMRS already names every unit they concern.
 
 1. **A register of storage energy for each unit.** Usable and nameplate MWh, with the dates they apply from, for every unit that declares MDO and MDB. SSEN's register has the field, but it is empty (R22). Linking each site to its unit is new work, and the larger task. A secondary unit may group several sites, which join and leave over time, so the register needs the sites behind each unit and their dates, not a single figure.
-2. **Auction results that can be joined to units.** A dated table linking each auction unit to the assets behind it and their Balancing Mechanism units. An auction unit is not a Balancing Mechanism unit and may group several assets, so the link needs dates as well as IDs. NESO probably holds it already, because it withholds reserve payments when declarations fail (R4). That is an inference, not yet confirmed (R29). Mandatory frequency response should be covered too: it has no results by unit at all.
+2. **Auction results that can be joined to units.** A dated table linking each auction unit to the assets behind it and their Balancing Mechanism units. An auction unit is not a Balancing Mechanism unit and may group several assets, so the link needs dates as well as IDs. NESO probably holds it already. It says it calculates each unit's time-varying energy limits from its reserve and response contracts, which needs the link ([NESO, GC0166 Q&A workshop, 27 March 2026](https://www.neso.energy/document/379756/download)). Whether NESO keeps the link by Balancing Mechanism unit is not confirmed (R29). Mandatory frequency response should be covered too: it has no results by unit at all.
 3. **A written definition of what MDO counts.** Whether it is energy at the meter or energy in the cells (M13). One sentence from NESO would remove a branch from every result here.
 4. **Better timestamps and flags on declarations.** NESO's receipt time beside BMRS's publish time (M14), a flag on placeholder defaults, and a flag marking a record as a response to a named instruction.
 5. **Settlement runs that can be cited.** BMRS's B1610 data return the latest settlement run by default (M6), so the same figure, downloaded on different dates, can differ. Archived runs that can be cited would let anyone reproduce a published figure.
@@ -265,10 +265,10 @@ Publishing data for each unit is already the norm. BMRS names every unit's sched
 
 Two figures would close most of what remains: each unit's round-trip efficiency, and the energy it commits to contracts in each half-hour. Neither should simply be published, for two reasons:
 
-- **Removing names does not protect them.** BMRS names each unit's metered energy. An unnamed efficiency or commitment series could be matched to its unit by comparing it with those named series. Re-identification here is a demonstrated risk, not a hypothetical one (PROVISIONAL: cite the demonstration, or show it, before publication).
+- **Removing names is unlikely to protect them.** BMRS already names each unit's metered energy. An unnamed efficiency or commitment series could be compared with those named series to find its unit. This is an argument, not a demonstration: we have not tried it.
 - **They are commercially sensitive.** Efficiency reflects equipment and operation; commitments reveal contract positions.
 
-So the second track is controlled access. NESO, or a body it appoints, would check declarations against efficiency and commitment data, under need-to-know terms, and publish only fleet results and the method. Much of the input already reaches NESO, which sizes its instructions from what each unit declares. The step is to use it to verify as well as to dispatch (PROVISIONAL: confirm which GC0166 submissions include efficiency or commitment data).
+So the second track is controlled access. NESO, or a body it appoints, would check declarations against efficiency and commitment data, under need-to-know terms, and publish only fleet results and the method. NESO already receives the inputs. Under GC0166, each unit sends NESO its charging and discharging efficiencies and its real-time state of energy, and NESO calculates time-varying limits on stored energy from reserve and response contracts ([NESO, GC0166 Q&A workshop, 27 March 2026](https://www.neso.energy/document/379756/download)). The step is to use them to verify declarations, as well as to schedule and dispatch.
 
 ### 7.4 What each fix would unlock
 
